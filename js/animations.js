@@ -10,33 +10,26 @@
   DOM-узле #calculator-result (наблюдение за изменением содержимого, а не
   обращение к формуле/состоянию калькулятора).
 
-  Прогрессивное улучшение: единственный элемент, скрытый чистым CSS до
-  инициализации анимаций, — `.hero__stage-label` (правило `.js .hero__stage-label`
-  в css/styles.css). Если GSAP/ScrollTrigger не загрузились с CDN, этот файл
-  принудительно возвращает эти подписи в видимое состояние ниже. Все остальные
-  анимируемые элементы и так видимы по умолчанию в CSS — GSAP лишь анимирует
-  переход из «видимого» состояния, которое сам же и выставляет через
-  gsap.set/gsap.from непосредственно перед созданием анимации.
+  Прогрессивное улучшение: единственное место, где CSS прячет контент до
+  инициализации анимаций, — кинематографическая раскладка Hero (блок
+  «5.1 HERO» в css/styles.css: `.hero__act-inner` и `.hero__glyph` там стоят
+  в `opacity: 0`). Весь этот блок включён условием
+  `.js:not(.no-anim)` + `(min-width: 768px)` + `(prefers-reduced-motion: no-preference)`,
+  то есть ровно там, где отработает scrub-таймлайн ниже. Если GSAP/ScrollTrigger
+  не загрузились с CDN, этот файл вешает на <html> класс `no-anim` — блок 5.1
+  выключается, и Hero падает обратно в обычную потоковую раскладку, где все
+  6 этапов видны списком. Все остальные анимируемые элементы страницы и так
+  видимы по умолчанию в CSS.
 */
 
 (function () {
   'use strict';
 
-  var HERO_STAGE_SELECTOR = '.hero__stage-label';
-
-  function revealHeroStagesStatically() {
-    var stages = document.querySelectorAll(HERO_STAGE_SELECTOR);
-    for (var i = 0; i < stages.length; i += 1) {
-      stages[i].style.opacity = '1';
-      stages[i].style.transform = 'none';
-    }
-  }
-
   // Нет GSAP/ScrollTrigger (CDN недоступен, скрипт заблокирован и т.п.) —
-  // контент не должен зависеть от анимации: снимаем единственное состояние,
-  // спрятанное чистым CSS, и на этом останавливаемся.
+  // контент не должен зависеть от анимации: возвращаем Hero в потоковую
+  // раскладку и на этом останавливаемся.
   if (typeof window.gsap === 'undefined' || typeof window.ScrollTrigger === 'undefined') {
-    revealHeroStagesStatically();
+    document.documentElement.classList.add('no-anim');
     return;
   }
 
@@ -72,75 +65,82 @@
   }
 
   /* ==========================================================
-     HERO — пин + scrub-сцена, самая насыщенная анимация страницы.
+     HERO — полноэкранная scroll-driven сцена.
+
+     Один непрерывный scrub-таймлайн на весь пин. Условная единица
+     таймлайна = один этап; всего 6.6 единиц (0.6 — уход титульной
+     карточки, дальше 6 этапов по единице), и они растянуты на 6 высот
+     вьюпорта пина. Ощущение «одной живой сцены» держат три вещи:
+
+     1. Сквозные слои, которые идут через ВЕСЬ прогресс без перезапуска:
+        currentTime видео, наезд камеры (scale видео), панорама слоя сцены
+        (`hero-field`), параллакс вуали, дорисовка маршрута и движение
+        транспорта по нему. Они не знают про границы этапов — именно они
+        превращают шесть сегментов в одно движение.
+     2. Этапы не гаснут «на месте»: текст и глифы въезжают в кадр с одной
+        стороны (`data-from`) и уезжают за противоположный край
+        (`data-to`) — камера будто проезжает мимо объекта, а не
+        перелистывает слайд.
+     3. Глубина: `data-depth` умножает и дистанцию входа/выхода, и
+        стартовый масштаб, и яркость глифа — дальние объекты движутся
+        меньше и тусклее ближних (параллакс внутри одного этапа).
      ========================================================== */
+
+  var HERO_ACT_COUNT = 6;
+  var HERO_OVERTURE_SPAN = 0.6; // единиц таймлайна на уход титульной карточки
+  var HERO_ACT_SPAN = 1;        // единиц таймлайна на один этап
+  var HERO_TOTAL = HERO_OVERTURE_SPAN + HERO_ACT_COUNT * HERO_ACT_SPAN;
+  var HERO_PIN_SCREENS = 6;     // высот вьюпорта на весь пин
+
+  // Пара "x,y" из data-атрибута разметки — смещения задаются в разметке,
+  // потому что они часть композиции конкретного этапа, а не логики движка.
+  function heroPair(el, attr) {
+    var raw = el.getAttribute(attr);
+    if (!raw) {
+      return null;
+    }
+    var parts = raw.split(',');
+    return {
+      x: parseFloat(parts[0]) || 0,
+      y: parseFloat(parts[1]) || 0
+    };
+  }
+
   function initHero(isMobile) {
     var hero = document.querySelector('.hero');
-    var stageWrap = document.querySelector('.hero__stage');
-    var scene = document.querySelector('[data-animate="hero-scrub-scene"]');
     var video = document.querySelector('[data-animate="hero-scrub-video"]');
+    var veil = document.querySelector('[data-animate="hero-veil"]');
+    var field = document.querySelector('[data-animate="hero-field"]');
     var routeLine = document.querySelector('[data-animate="hero-route-line"]');
     var transport = document.querySelector('[data-animate="hero-transport"]');
-    var veil = document.querySelector('[data-animate="hero-veil"]');
-    var badges = gsap.utils.toArray('[data-animate="hero-badge"]');
-    var intro = document.querySelector('[data-animate="hero-intro"]');
+    var overture = document.querySelector('[data-animate="hero-overture"]');
+    var actions = document.querySelector('[data-animate="hero-actions"]');
+    var hint = document.querySelector('[data-animate="hero-hint"]');
     var seam = document.querySelector('[data-animate="transition-hero-out"]');
-    var stageEls = [
-      document.querySelector('[data-animate="hero-stage-factory"]'),
-      document.querySelector('[data-animate="hero-stage-production"]'),
-      document.querySelector('[data-animate="hero-stage-documents"]'),
-      document.querySelector('[data-animate="hero-stage-certification"]'),
-      document.querySelector('[data-animate="hero-stage-logistics"]'),
-      document.querySelector('[data-animate="hero-stage-russia"]')
-    ].filter(Boolean);
+    var acts = gsap.utils.toArray('[data-animate="hero-act-inner"]');
+    var glyphs = gsap.utils.toArray('[data-animate="hero-glyph"]');
+    var railFills = gsap.utils.toArray('[data-animate="hero-rail-fill"]');
 
-    if (!hero || !scene) {
+    if (!hero) {
       return;
     }
 
     // Если видео не смогло загрузиться (сеть/формат/битый файл) — прячем
-    // элемент целиком: под ним остаётся собственный тёмный фон
-    // `.hero__stage-media` (тот же градиент, что и до добавления видео),
-    // сцена не ломается и не показывает «битую» иконку плеера.
+    // элемент целиком: под ним остаётся собственный градиент `.hero`
+    // (`--gradient-hero`) плюс scrim, сцена не ломается и не показывает
+    // «битую» иконку плеера.
     if (video) {
       video.addEventListener('error', function () {
         video.style.display = 'none';
       });
     }
 
-    // Вводный блок — появляется независимо от pin-сцены, сразу при загрузке.
-    if (intro) {
-      gsap.from(intro, { opacity: 0, y: 24, duration: 0.9, ease: 'power2.out' });
-    }
-
-    // Glass-бейджи — появление + лёгкий бесконечный дрейф (декоративный слой).
-    if (badges.length) {
-      gsap.from(badges, {
-        opacity: 0,
-        y: 14,
-        duration: 0.8,
-        ease: 'power2.out',
-        stagger: 0.15,
-        delay: 0.35
-      });
-      badges.forEach(function (badge, i) {
-        gsap.to(badge, {
-          y: '+=8',
-          duration: 2.6 + i * 0.4,
-          ease: 'sine.inOut',
-          repeat: -1,
-          yoyo: true,
-          delay: 1.2 + i * 0.3
-        });
-      });
-    }
-
     if (isMobile) {
-      // Мобильная ветка: без pin, короткий обычный reveal вместо scrub-сцены —
-      // длинная запиненная дистанция на узком экране ломает восприятие скролла.
-      // Видео туда же не скраббится (per-frame currentTime на слабом мобильном
-      // GPU/CPU даёт рывки) — вместо этого играет как обычный автоплей-луп,
-      // независимо от прогресса скролла.
+      // Мобильная ветка: pin'а нет вообще — CSS держит Hero в потоковой
+      // раскладке (блок 5.1 не применяется ниже 768px), поэтому здесь
+      // только обычный reveal шести этапов по мере их входа во вьюпорт.
+      // Видео не скраббится (per-frame currentTime на слабом мобильном
+      // GPU/CPU даёт рывки) — играет как обычный автоплей-луп.
       if (video) {
         video.loop = true;
         var mobilePlay = video.play();
@@ -151,52 +151,49 @@
           });
         }
       }
-      if (stageEls.length) {
-        gsap.set(stageEls, { opacity: 0, y: 10 });
-        gsap.to(stageEls, {
-          opacity: 1,
-          y: 0,
-          duration: 0.5,
-          ease: 'power2.out',
-          stagger: 0.12,
-          scrollTrigger: { trigger: stageWrap || scene, start: 'top 78%' }
-        });
+
+      if (overture) {
+        gsap.from(overture, { opacity: 0, y: 24, duration: 0.9, ease: 'power2.out' });
       }
-      if (routeLine) {
-        var mobileLen = routeLine.getTotalLength();
-        gsap.set(routeLine, { strokeDasharray: mobileLen, strokeDashoffset: mobileLen });
-        gsap.to(routeLine, {
-          strokeDashoffset: 0,
-          duration: 1.1,
-          ease: 'power2.out',
-          scrollTrigger: { trigger: stageWrap || scene, start: 'top 78%' }
-        });
+      if (actions) {
+        gsap.from(actions, { opacity: 0, y: 16, duration: 0.7, ease: 'power2.out', delay: 0.2 });
       }
-      gsap.from(scene, {
-        opacity: 0,
-        y: 24,
-        duration: 0.8,
-        ease: 'power2.out',
-        scrollTrigger: { trigger: stageWrap || scene, start: 'top 82%' }
+
+      acts.forEach(function (inner) {
+        gsap.from(inner, {
+          opacity: 0,
+          y: 18,
+          duration: 0.55,
+          ease: 'power2.out',
+          scrollTrigger: { trigger: inner.parentNode || inner, start: 'top 88%' }
+        });
       });
       return;
     }
 
-    // Десктоп/планшет: полноценная запиненная scrub-сцена.
-    var stagesTotal = stageEls.length || 6;
+    /* -- Десктоп/планшет: полноэкранная запиненная сцена ------------------ */
+
     var routeLen = routeLine ? routeLine.getTotalLength() : 0;
+    var pathProgress = { t: 0 };
 
     if (routeLine) {
       gsap.set(routeLine, { strokeDasharray: routeLen, strokeDashoffset: routeLen });
     }
-    if (stageEls.length) {
-      gsap.set(stageEls, { opacity: 0, y: 14 });
+    if (acts.length) {
+      gsap.set(acts, { opacity: 0 });
+    }
+    if (glyphs.length) {
+      gsap.set(glyphs, { opacity: 0 });
+    }
+    if (railFills.length) {
+      gsap.set(railFills, { scaleX: 0, transformOrigin: 'left center' });
+    }
+    if (actions) {
+      gsap.set(actions, { transformOrigin: 'left bottom' });
     }
     if (seam) {
       gsap.set(seam, { opacity: 0 });
     }
-
-    var pathProgress = { t: 0 };
 
     var tl = gsap.timeline({
       defaults: { ease: 'none' },
@@ -204,21 +201,21 @@
         trigger: hero,
         start: 'top top',
         end: function () {
-          return '+=' + Math.round(window.innerHeight * 3);
+          return '+=' + Math.round(window.innerHeight * HERO_PIN_SCREENS);
         },
         pin: true,
         scrub: 1,
-        anticipatePin: 1
+        anticipatePin: 1,
+        invalidateOnRefresh: true
       }
     });
 
-    // Видео сцены — не проигрывается "в реальном времени": currentTime жёстко
-    // привязан к прогрессу scrub-таймлайна (та же логика, что у дорисовки
-    // маршрута/движения транспорта выше, только источником служит video.duration
-    // вместо длины SVG-пути). video.duration доступен только после
+    // Видео — не проигрывается «в реальном времени»: currentTime жёстко
+    // привязан к прогрессу всего scrub-таймлайна, то есть ролик растянут
+    // ровно на все шесть этапов. video.duration доступен только после
     // loadedmetadata — если к моменту создания ScrollTrigger метаданные ещё
-    // не подгрузились, синхронизация подключается отложенно, а до этого сцена
-    // просто показывает poster/первый кадр видео.
+    // не подгрузились, синхронизация подключается отложенно, а до этого
+    // сцена показывает poster/первый кадр.
     if (video) {
       var syncVideoToTimeline = function () {
         var duration = video.duration;
@@ -235,42 +232,54 @@
       };
 
       if (video.readyState >= 1) {
-        // HAVE_METADATA уже есть (например, видео из кэша) — подключаем сразу.
         tl.eventCallback('onUpdate', syncVideoToTimeline);
       } else {
         video.addEventListener('loadedmetadata', function onHeroVideoMeta() {
           video.removeEventListener('loadedmetadata', onHeroVideoMeta);
           tl.eventCallback('onUpdate', syncVideoToTimeline);
-          syncVideoToTimeline(); // сразу подхватить уже накопленный прогресс скролла
+          syncVideoToTimeline(); // подхватить уже накопленный прогресс скролла
         });
       }
+
+      // Медленный наезд камеры на кадр — идёт через весь пин, ни разу не
+      // сбрасываясь: это главный «непрерывный» слой сцены.
+      tl.fromTo(video, { scale: 1.04 }, { scale: 1.18, duration: HERO_TOTAL }, 0);
     }
 
-    // Лёгкий "наезд" камеры на сцену — ощущение глубины на протяжении всего pin.
-    tl.to(scene, { scale: 1.045, duration: stagesTotal }, 0);
+    // Панорама слоя сцены: глифы едут не только сами по себе, но и вместе
+    // с «камерой» — отсюда ощущение, что кадр движется, а не объекты в нём.
+    if (field) {
+      tl.fromTo(
+        field,
+        { xPercent: 2.5, yPercent: 1.5, scale: 1.02 },
+        { xPercent: -2.5, yPercent: -1.5, scale: 1.1, duration: HERO_TOTAL },
+        0
+      );
+    }
 
-    // Параллакс-вуаль — декоративный слой, двигается медленнее переднего плана.
+    // Параллакс-вуаль — самый дальний слой, движется медленнее всех.
     if (veil) {
-      tl.fromTo(veil, { yPercent: 0, xPercent: 0 }, { yPercent: -6, xPercent: 3, duration: stagesTotal }, 0);
+      tl.fromTo(veil, { xPercent: 0, yPercent: 0 }, { xPercent: 6, yPercent: -8, duration: HERO_TOTAL }, 0);
     }
 
-    // Маршрут "дорисовывается" синхронно со scrub.
+    // Маршрут дорисовывается через всю сцену — визуальная «нить», которая
+    // связывает шесть этапов в один путь груза.
     if (routeLine) {
-      tl.to(routeLine, { strokeDashoffset: 0, duration: stagesTotal }, 0);
+      tl.to(routeLine, { strokeDashoffset: 0, duration: HERO_TOTAL }, 0);
     }
 
-    // Транспорт двигается вдоль маршрута (motion along path), жёстко по прогрессу.
+    // Транспорт идёт по этому маршруту (motion along path) от первого кадра
+    // сцены до последнего.
     if (transport && routeLine && routeLen) {
       tl.to(
         pathProgress,
         {
           t: 1,
-          duration: stagesTotal,
+          duration: HERO_TOTAL,
           onUpdate: function () {
             var dist = pathProgress.t * routeLen;
             var point = routeLine.getPointAtLength(dist);
-            var aheadDist = Math.min(dist + 1, routeLen);
-            var ahead = routeLine.getPointAtLength(aheadDist);
+            var ahead = routeLine.getPointAtLength(Math.min(dist + 1, routeLen));
             var angle = Math.atan2(ahead.y - point.y, ahead.x - point.x) * (180 / Math.PI);
             transport.setAttribute(
               'transform',
@@ -282,21 +291,140 @@
       );
     }
 
-    // Ровно 6 подписей этапов — последовательно, каждая в своём отрезке
-    // прогресса: появляется, держится, уходит (кроме последней — она остаётся
-    // видимой до конца, после неё pin отпускает секцию).
-    stageEls.forEach(function (el, i) {
-      var segStart = i;
-      tl.fromTo(el, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.3 }, segStart);
-      if (i < stageEls.length - 1) {
-        tl.to(el, { opacity: 0, y: -14, duration: 0.3 }, segStart + 0.7);
+    // Титульная карточка уходит «сквозь камеру» — увеличивается и растворяется,
+    // как будто зритель проезжает её насквозь, а не как fade между слайдами.
+    if (overture) {
+      tl.to(
+        overture,
+        { yPercent: -30, scale: 1.22, opacity: 0, duration: HERO_OVERTURE_SPAN, ease: 'power2.in' },
+        0
+      );
+    }
+    if (hint) {
+      tl.to(hint, { opacity: 0, duration: HERO_OVERTURE_SPAN * 0.6, ease: 'power1.in' }, 0);
+    }
+
+    // Шесть этапов: вход с одной стороны — выход за противоположный край.
+    acts.forEach(function (inner, i) {
+      var start = HERO_OVERTURE_SPAN + i * HERO_ACT_SPAN;
+      var from = heroPair(inner, 'data-from') || { x: 0, y: 26 };
+      var to = heroPair(inner, 'data-to');
+
+      tl.fromTo(
+        inner,
+        { xPercent: from.x, yPercent: from.y, opacity: 0, scale: 0.9 },
+        {
+          xPercent: 0,
+          yPercent: 0,
+          opacity: 1,
+          scale: 1,
+          duration: HERO_ACT_SPAN * 0.34,
+          ease: 'power2.out'
+        },
+        start
+      );
+
+      // У последнего этапа выхода нет (`data-to` в разметке не задан) — он
+      // остаётся в кадре до конца пина, чтобы сцена закрывалась результатом,
+      // а не пустым экраном.
+      if (to) {
+        tl.to(
+          inner,
+          {
+            xPercent: to.x,
+            yPercent: to.y,
+            opacity: 0,
+            scale: 1.12,
+            duration: HERO_ACT_SPAN * 0.3,
+            ease: 'power2.in'
+          },
+          start + HERO_ACT_SPAN * 0.7
+        );
       }
     });
 
-    // Переход тёмного фона Hero в светлый фон следующей секции — плавно,
+    // Глифы этапа приходят чуть раньше текста (объект въезжает в кадр —
+    // потом появляется подпись) и уходят раньше него же.
+    glyphs.forEach(function (el) {
+      var act = parseInt(el.getAttribute('data-act'), 10) || 1;
+      var depth = parseFloat(el.getAttribute('data-depth'));
+      if (!isFinite(depth) || depth <= 0) {
+        depth = 1;
+      }
+      var from = heroPair(el, 'data-from') || { x: 0, y: 0 };
+      var to = heroPair(el, 'data-to');
+      var start = HERO_OVERTURE_SPAN + (act - 1) * HERO_ACT_SPAN;
+      var enterAt = Math.max(start - HERO_ACT_SPAN * 0.22, 0);
+      var peakOpacity = 0.12 + depth * 0.1; // ближний план ярче дальнего
+
+      tl.fromTo(
+        el,
+        {
+          xPercent: from.x * depth,
+          yPercent: from.y * depth,
+          opacity: 0,
+          scale: 0.72 + depth * 0.22
+        },
+        {
+          xPercent: 0,
+          yPercent: 0,
+          opacity: peakOpacity,
+          scale: 1,
+          duration: HERO_ACT_SPAN * 0.5,
+          ease: 'power1.out'
+        },
+        enterAt
+      );
+
+      if (to) {
+        tl.to(
+          el,
+          {
+            xPercent: to.x * depth,
+            yPercent: to.y * depth,
+            opacity: 0,
+            scale: 1 + depth * 0.3,
+            duration: HERO_ACT_SPAN * 0.46,
+            ease: 'power1.in'
+          },
+          start + HERO_ACT_SPAN * 0.66
+        );
+      }
+
+      // Шестерёнка второго этапа ещё и проворачивается, пока пересекает кадр.
+      if (el.getAttribute('data-spin')) {
+        tl.fromTo(el, { rotation: -26 }, { rotation: 58, duration: HERO_ACT_SPAN * 1.3 }, enterAt);
+      }
+    });
+
+    // Полоса прогресса: шесть сегментов, каждый заполняется ровно за свой этап.
+    railFills.forEach(function (fill, i) {
+      tl.fromTo(
+        fill,
+        { scaleX: 0 },
+        { scaleX: 1, duration: HERO_ACT_SPAN },
+        HERO_OVERTURE_SPAN + i * HERO_ACT_SPAN
+      );
+    });
+
+    // CTA видны весь пин; на финальном этапе получают лёгкий акцент.
+    if (actions) {
+      gsap.from(actions, { opacity: 0, y: 18, duration: 0.8, ease: 'power2.out', delay: 0.3 });
+      tl.to(
+        actions,
+        { scale: 1.06, duration: HERO_ACT_SPAN * 0.4, ease: 'power2.out' },
+        HERO_OVERTURE_SPAN + (HERO_ACT_COUNT - 1) * HERO_ACT_SPAN
+      );
+    }
+
+    // Переход тёмной сцены в светлый фон следующей секции — плавно,
     // синхронно с финалом сцены, а не резким обрезом при отпускании pin.
     if (seam) {
-      tl.to(seam, { opacity: 1, duration: 1 }, Math.max(stagesTotal - 1, 0));
+      tl.to(
+        seam,
+        { opacity: 1, duration: HERO_ACT_SPAN * 0.8, ease: 'power1.in' },
+        HERO_TOTAL - HERO_ACT_SPAN * 0.8
+      );
     }
   }
 
@@ -537,13 +665,26 @@
 
   /* ==========================================================
      Reduced motion — весь scrub/pin и декоративное движение отключены,
-     контент виден в конечном состоянии сразу. Функциональный порядок
-     (6 этапов Hero, порядок пунктов в "что мы берём на себя" и т.д.)
-     уже задан порядком в DOM/CSS — здесь только снимается единственное
-     JS-скрытое состояние (подписи этапов Hero).
+     контент виден в конечном состоянии сразу. Кинематографическая
+     раскладка Hero выключается самим CSS (блок 5.1 стоит под
+     `@media (prefers-reduced-motion: no-preference)`), поэтому все 6
+     этапов уже лежат обычным списком и видны без скролла. Здесь только
+     снимаются инлайновые стили, которые мог оставить предыдущий контекст
+     gsap.matchMedia при переключении режима на лету (devtools, системная
+     настройка) — сам GSAP ревертит только то, что создал в этом контексте.
      ========================================================== */
+  var HERO_ANIMATED_SELECTOR = [
+    '[data-animate="hero-act-inner"]',
+    '[data-animate="hero-glyph"]',
+    '[data-animate="hero-overture"]',
+    '[data-animate="hero-actions"]',
+    '[data-animate="hero-field"]',
+    '[data-animate="hero-veil"]',
+    '[data-animate="hero-scrub-video"]'
+  ].join(', ');
+
   function applyReducedMotionState() {
-    gsap.set(HERO_STAGE_SELECTOR, { opacity: 1, y: 0, clearProps: 'transform' });
+    gsap.set(HERO_ANIMATED_SELECTOR, { clearProps: 'all' });
   }
 
   function init() {

@@ -132,6 +132,23 @@
     var(--color-bg-light-base) 100%
   );
 
+  /* Затемняющие слои поверх полноэкранного видео Hero-сцены: без них крупная
+     светлая типографика не держит контраст на светлых кадрах ролика.
+     Оба построены на blue-950/blue-900 — той же глубине, что и --gradient-hero. */
+  --gradient-scene-scrim: linear-gradient(
+    180deg,
+    rgba(6, 21, 41, 0.86) 0%,
+    rgba(6, 21, 41, 0.46) 30%,
+    rgba(6, 21, 41, 0.46) 62%,
+    rgba(10, 34, 64, 0.9) 100%
+  );
+
+  --gradient-scene-vignette: radial-gradient(
+    118% 96% at 50% 46%,
+    rgba(6, 21, 41, 0) 34%,
+    rgba(6, 21, 41, 0.58) 100%
+  );
+
   --glow-blue: 0 0 48px rgba(59, 143, 199, 0.45);
   --glow-teal: 0 0 40px rgba(53, 171, 171, 0.4);
   --glow-red: 0 0 28px rgba(225, 69, 69, 0.42);
@@ -151,7 +168,8 @@
   --font-weight-bold: 700;
   --font-weight-extrabold: 800;
 
-  /* Шкала размеров: display → caption, 8 уровней. */
+  /* Шкала размеров: cinema → caption. */
+  --font-size-cinema: clamp(2.75rem, 1.5rem + 4.2vw, 5.5rem);
   --font-size-display: clamp(2.75rem, 2.1rem + 3.2vw, 5rem);
   --font-size-h1: clamp(2.25rem, 1.85rem + 2vw, 3.5rem);
   --font-size-h2: clamp(1.875rem, 1.6rem + 1.4vw, 2.75rem);
@@ -228,6 +246,10 @@
 
   --shadow-glass-on-dark: 0 12px 40px rgba(4, 13, 26, 0.4);
   --shadow-glass-inset-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+
+  /* Тень текста, лежащего непосредственно на кадре видео (Hero-сцена):
+     не декоративная — она и есть то, что удерживает контраст на светлых кадрах. */
+  --shadow-text-on-scene: 0 2px 30px rgba(4, 13, 26, 0.75);
 
   --shadow-glow-primary: var(--glow-blue);
   --shadow-glow-accent: var(--glow-red);

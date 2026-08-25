@@ -63,68 +63,147 @@
 <main id="main-content">
 
 <!-- ==========================================================
-     1. HERO
+     1. HERO — полноэкранная scroll-driven сцена.
+     Один и тот же DOM обслуживает две раскладки (см. §5 в css/styles.css):
+     • кинематографическую — 100vw×100vh, видео на весь экран как фоновый
+       слой, поверх него 6 этапов-слоёв, показываемых по прогрессу скролла
+       (js/animations.js → initHero, один pin-таймлайн на 6 высот вьюпорта);
+     • потоковую (мобильный / prefers-reduced-motion / нет JS) — те же
+       6 этапов обычным списком, видео приглушённым фоном секции.
      ========================================================== -->
 <section class="hero" id="hero" aria-label="Главный экран">
+  <video
+    class="hero__video"
+    data-animate="hero-scrub-video"
+    poster="assets/video/hero-scene-poster.jpg"
+    muted
+    playsinline
+    preload="auto"
+    aria-hidden="true"
+  >
+    <source src="assets/video/hero-scene.mp4" type="video/mp4">
+  </video>
+  <div class="hero__scrim" aria-hidden="true"></div>
   <div class="hero__veil" data-animate="hero-veil" aria-hidden="true"></div>
 
-  <div class="hero__inner">
-    <div class="hero__intro" data-animate="hero-intro">
+  <!-- Слой сцены: сквозная линия маршрута с транспортом (тянется через все
+       6 этапов — это визуальная «нить» непрерывности) и крупные глифы
+       этапов, которые въезжают в кадр с разных сторон и уезжают за кадр. -->
+  <div class="hero__field" data-animate="hero-field" aria-hidden="true">
+    <svg class="hero__route" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+      <path class="hero__route-line" data-animate="hero-route-line" d="M-60 880 C 240 880, 300 660, 520 600 S 860 520, 1000 340 S 1180 180, 1520 60" fill="none" stroke="var(--color-accent-water)" stroke-width="2" stroke-linecap="round"/>
+      <g class="hero__transport" data-animate="hero-transport" transform="translate(-60,880)">
+        <use href="#icon-truck" x="-19" y="-19" width="38" height="38" color="var(--color-text-on-dark)"/>
+      </g>
+    </svg>
+
+    <div class="hero__glyph hero__glyph--g1" data-animate="hero-glyph" data-act="1" data-depth="0.4" data-from="-150,26" data-to="120,-34"><svg viewBox="0 0 24 24"><use href="#icon-factory"></use></svg></div>
+    <div class="hero__glyph hero__glyph--g2" data-animate="hero-glyph" data-act="1" data-depth="1" data-from="95,-70" data-to="-80,65"><svg viewBox="0 0 24 24"><use href="#icon-magnifier"></use></svg></div>
+
+    <div class="hero__glyph hero__glyph--g3" data-animate="hero-glyph" data-act="2" data-depth="0.45" data-from="140,-44" data-to="-115,55" data-spin="1"><svg viewBox="0 0 24 24"><use href="#icon-gear"></use></svg></div>
+    <div class="hero__glyph hero__glyph--g4" data-animate="hero-glyph" data-act="2" data-depth="1.05" data-from="-125,75" data-to="105,-65"><svg viewBox="0 0 24 24"><use href="#icon-components"></use></svg></div>
+
+    <div class="hero__glyph hero__glyph--g5" data-animate="hero-glyph" data-act="3" data-depth="0.5" data-from="10,-130" data-to="-10,125"><svg viewBox="0 0 24 24"><use href="#icon-document"></use></svg></div>
+    <div class="hero__glyph hero__glyph--g6" data-animate="hero-glyph" data-act="3" data-depth="0.85" data-from="-105,95" data-to="95,-85"><svg viewBox="0 0 24 24"><use href="#icon-document"></use></svg></div>
+    <div class="hero__glyph hero__glyph--g7" data-animate="hero-glyph" data-act="3" data-depth="1.2" data-from="115,85" data-to="-95,-75"><svg viewBox="0 0 24 24"><use href="#icon-document"></use></svg></div>
+
+    <div class="hero__glyph hero__glyph--g8" data-animate="hero-glyph" data-act="4" data-depth="0.5" data-from="125,65" data-to="-105,-55"><svg viewBox="0 0 24 24"><use href="#icon-certificate"></use></svg></div>
+    <div class="hero__glyph hero__glyph--g9" data-animate="hero-glyph" data-act="4" data-depth="1.1" data-from="-115,-75" data-to="100,70"><svg viewBox="0 0 24 24"><use href="#icon-shield-check"></use></svg></div>
+
+    <div class="hero__glyph hero__glyph--g10" data-animate="hero-glyph" data-act="5" data-depth="0.35" data-from="-160,6" data-to="145,-6"><svg viewBox="0 0 24 24"><use href="#icon-ship"></use></svg></div>
+    <div class="hero__glyph hero__glyph--g11" data-animate="hero-glyph" data-act="5" data-depth="0.8" data-from="155,-42" data-to="-140,34"><svg viewBox="0 0 24 24"><use href="#icon-plane"></use></svg></div>
+    <div class="hero__glyph hero__glyph--g12" data-animate="hero-glyph" data-act="5" data-depth="1.2" data-from="145,34" data-to="-135,-24"><svg viewBox="0 0 24 24"><use href="#icon-truck"></use></svg></div>
+
+    <div class="hero__glyph hero__glyph--g13" data-animate="hero-glyph" data-act="6" data-depth="0.45" data-from="-135,-62"><svg viewBox="0 0 24 24"><use href="#icon-flag"></use></svg></div>
+    <div class="hero__glyph hero__glyph--g14" data-animate="hero-glyph" data-act="6" data-depth="1.1" data-from="125,85"><svg viewBox="0 0 24 24"><use href="#icon-package"></use></svg></div>
+  </div>
+
+  <!-- Титульная карточка сцены: единственный текст, видимый на нулевом
+       прогрессе. Уезжает «сквозь камеру» в первые 0.6 условной единицы
+       таймлайна, дальше экран принадлежит этапам. -->
+  <div class="hero__overture">
+    <div class="hero__overture-inner" data-animate="hero-overture">
       <p class="eyebrow eyebrow--on-dark">Импорт из Китая в Россию «в белую»</p>
       <h1 class="hero__title">Один подрядчик — <span class="hero__title-accent">весь путь груза</span> от китайской фабрики до вашего склада</h1>
-      <p class="hero__lede">Corex-Trade берёт на себя полный цикл импорта: поиск и проверку фабрики, переговоры с производителем, сертификацию, документы, таможню и логистику. Вам не нужно самому разбираться в цепочке импорта — ни для пробной партии, ни для регулярных поставок на завод.</p>
-      <div class="hero__actions">
-        <a class="btn btn--cta btn--lg" href="#calculator">
-          Рассчитать доставку
-          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><use href="#icon-arrow-right"></use></svg>
-        </a>
-        <a class="btn btn--ghost-on-dark btn--lg" href="#route">Как это работает</a>
-      </div>
+      <p class="hero__lede">Поиск фабрики, переговоры, сертификация, документы, таможня и логистика — шесть этапов импорта под одним договором.</p>
+    </div>
+  </div>
+
+  <!-- HUD сцены: CTA живут здесь и видны на всём протяжении пина. -->
+  <div class="hero__hud">
+    <div class="hero__actions" data-animate="hero-actions">
+      <a class="btn btn--cta btn--lg" href="#calculator">
+        Рассчитать доставку
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><use href="#icon-arrow-right"></use></svg>
+      </a>
+      <a class="btn btn--ghost-on-dark btn--lg" href="#route">Как это работает</a>
     </div>
 
-    <!-- Сцена: фоновое видео (hero-scrub-video) + поверх него SVG-маршрут.
-         На десктопе currentTime видео синхронизирован со scrub-прогрессом
-         (js/animations.js → initHero), на мобильном — обычный autoplay-луп. -->
-    <div class="hero__stage">
-      <div class="hero__stage-media" data-animate="hero-scrub-scene">
-        <video
-          class="hero__stage-video"
-          data-animate="hero-scrub-video"
-          poster="assets/video/hero-scene-poster.jpg"
-          muted
-          playsinline
-          preload="auto"
-          aria-hidden="true"
-        >
-          <source src="assets/video/hero-scene.mp4" type="video/mp4">
-        </video>
-        <svg class="hero__scene-svg" viewBox="0 0 640 360" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-          <path class="hero__route-line" data-animate="hero-route-line" d="M40 300 C 160 300, 160 120, 280 120 S 480 60, 600 60" fill="none" stroke="var(--color-accent-water)" stroke-width="2" stroke-linecap="round"/>
-          <g class="hero__node" transform="translate(40,300)"><circle r="10" fill="var(--color-bg-dark-edge)" stroke="var(--color-accent-water)" stroke-width="2"/><use href="#icon-factory" x="-9" y="-9" width="18" height="18" color="var(--color-text-on-dark)"/></g>
-          <g class="hero__node" transform="translate(600,60)"><circle r="10" fill="var(--color-bg-dark-edge)" stroke="var(--color-accent-cta)" stroke-width="2"/><use href="#icon-map-pin" x="-9" y="-9" width="18" height="18" color="var(--color-text-on-dark)"/></g>
-          <g class="hero__transport" data-animate="hero-transport" transform="translate(40,300)">
-            <use href="#icon-truck" x="-14" y="-14" width="28" height="28" color="var(--color-text-on-dark)"/>
-          </g>
-        </svg>
-        <div class="hero__badge hero__badge--a glass-panel" data-animate="hero-badge">
-          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><use href="#icon-shield-check"></use></svg>
-          Один подрядчик на весь маршрут
-        </div>
-        <div class="hero__badge hero__badge--b glass-panel" data-animate="hero-badge">
-          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><use href="#icon-document"></use></svg>
-          Сертификация и таможня включены
-        </div>
-      </div>
+    <ol class="hero__rail" aria-hidden="true">
+      <li class="hero__rail-tick"><span class="hero__rail-fill" data-animate="hero-rail-fill"></span></li>
+      <li class="hero__rail-tick"><span class="hero__rail-fill" data-animate="hero-rail-fill"></span></li>
+      <li class="hero__rail-tick"><span class="hero__rail-fill" data-animate="hero-rail-fill"></span></li>
+      <li class="hero__rail-tick"><span class="hero__rail-fill" data-animate="hero-rail-fill"></span></li>
+      <li class="hero__rail-tick"><span class="hero__rail-fill" data-animate="hero-rail-fill"></span></li>
+      <li class="hero__rail-tick"><span class="hero__rail-fill" data-animate="hero-rail-fill"></span></li>
+    </ol>
 
-      <ol class="hero__stages" aria-label="Этапы импорта">
-        <li class="hero__stage-label" data-animate="hero-stage-factory"><span class="hero__stage-index">01</span>фабрика</li>
-        <li class="hero__stage-label" data-animate="hero-stage-production"><span class="hero__stage-index">02</span>производство</li>
-        <li class="hero__stage-label" data-animate="hero-stage-documents"><span class="hero__stage-index">03</span>документы</li>
-        <li class="hero__stage-label" data-animate="hero-stage-certification"><span class="hero__stage-index">04</span>сертификация</li>
-        <li class="hero__stage-label" data-animate="hero-stage-logistics"><span class="hero__stage-index">05</span>логистика</li>
-        <li class="hero__stage-label" data-animate="hero-stage-russia"><span class="hero__stage-index">06</span>Россия</li>
-      </ol>
-    </div>
+    <p class="hero__hint" data-animate="hero-hint" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="16" height="16"><use href="#icon-arrow-right"></use></svg>
+      Листайте — сцена движется вместе со скроллом
+    </p>
+  </div>
+
+  <!-- 6 этапов сцены. Каждый — свой полноэкранный слой со своим местом
+       текста на экране (см. .hero__act--0N в css/styles.css). -->
+  <div class="hero__acts">
+    <article class="hero__act hero__act--01" data-animate="hero-act" data-act="1">
+      <div class="hero__act-inner" data-animate="hero-act-inner" data-from="-80,22" data-to="70,-18">
+        <p class="hero__act-num">01</p>
+        <h2 class="hero__act-title">Фабрика</h2>
+        <p class="hero__act-text">Находим и проверяем производителя под вашу спецификацию — не по каталогу посредника.</p>
+      </div>
+    </article>
+
+    <article class="hero__act hero__act--02" data-animate="hero-act" data-act="2">
+      <div class="hero__act-inner" data-animate="hero-act-inner" data-from="85,-24" data-to="-65,20">
+        <p class="hero__act-num">02</p>
+        <h2 class="hero__act-title">Производство</h2>
+        <p class="hero__act-text">Согласуем образцы и держим контроль партии прямо на линии.</p>
+      </div>
+    </article>
+
+    <article class="hero__act hero__act--03" data-animate="hero-act" data-act="3">
+      <div class="hero__act-inner" data-animate="hero-act-inner" data-from="-90,0" data-to="75,-22">
+        <p class="hero__act-num">03</p>
+        <h2 class="hero__act-title">Документы</h2>
+        <p class="hero__act-text">Контракт, инвойс, упаковочный лист. Весь пакет собираем сами.</p>
+      </div>
+    </article>
+
+    <article class="hero__act hero__act--04" data-animate="hero-act" data-act="4">
+      <div class="hero__act-inner" data-animate="hero-act-inner" data-from="80,26" data-to="-60,-24">
+        <p class="hero__act-num">04</p>
+        <h2 class="hero__act-title">Сертификация</h2>
+        <p class="hero__act-text">Проводим груз через сертификацию и таможню «в белую», без серых схем.</p>
+      </div>
+    </article>
+
+    <article class="hero__act hero__act--05" data-animate="hero-act" data-act="5">
+      <div class="hero__act-inner" data-animate="hero-act-inner" data-from="-75,-26" data-to="80,18">
+        <p class="hero__act-num">05</p>
+        <h2 class="hero__act-title">Логистика</h2>
+        <p class="hero__act-text">Авто, железная дорога, море или авиа — маршрут подбираем под сроки и бюджет.</p>
+      </div>
+    </article>
+
+    <article class="hero__act hero__act--06" data-animate="hero-act" data-act="6">
+      <div class="hero__act-inner" data-animate="hero-act-inner" data-from="0,32">
+        <p class="hero__act-num">06</p>
+        <h2 class="hero__act-title">Россия</h2>
+        <p class="hero__act-text">Груз на вашем складе — с полным комплектом документов и одним ответственным за весь путь.</p>
+      </div>
+    </article>
   </div>
 
   <div class="section-seam section-seam--hero-out" data-animate="transition-hero-out" aria-hidden="true"></div>

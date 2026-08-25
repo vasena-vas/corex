@@ -298,33 +298,87 @@ h1, h2, h3, h4, h5 {
 }
 
 /* ==========================================================
-   5. HERO
+   5. HERO — полноэкранная scroll-driven сцена
+
+   Один и тот же DOM обслуживает две раскладки:
+
+   • ПОТОКОВАЯ (базовая, ниже) — мобильный, `prefers-reduced-motion`,
+     отсутствие JS/GSAP. Секция обычной высоты, 6 этапов идут списком,
+     видео — приглушённый фон. Это состояние по умолчанию: контент
+     читается даже если анимационный слой не поднялся.
+
+   • КИНЕМАТОГРАФИЧЕСКАЯ (блок @media в конце §5) — 100vw×100vh,
+     видео на весь экран, 6 этапов лежат абсолютными слоями поверх него
+     и показываются по прогрессу пина (js/animations.js → initHero).
+     Включается только когда она действительно может отработать:
+     `.js` (есть JS) + `:not(.no-anim)` (GSAP загрузился) + ширина ≥768px
+     + отсутствие reduced-motion. Условия зеркальны gsap.matchMedia()
+     в animations.js — обе стороны должны меняться вместе.
    ========================================================== */
 
 .hero {
+  /* Поля кинематографической раскладки: сверху — чтобы текст не уходил под
+     липкую шапку, снизу — чтобы не наезжал на HUD с CTA и полосой прогресса. */
+  --hero-inset-x: var(--space-10);
+  --hero-inset-top: var(--space-11);
+  /* Нижнее поле должно перекрыть всю высоту HUD (кнопки + полоса прогресса +
+     подсказка), иначе текст этапов 01 и 04, прижатых к низу кадра, наезжает
+     на CTA. */
+  --hero-inset-bottom: calc(var(--space-12) + var(--space-8));
+
   position: relative;
+  isolation: isolate;
   overflow: hidden;
   background: var(--gradient-hero);
   color: var(--color-text-on-dark);
-  padding-block: var(--space-section-y-lg) var(--space-12);
+  padding-block: var(--space-10);
+}
+
+/* -- Слои фона (общие для обеих раскладок) -------------------------------- */
+
+.hero__video {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.35; /* потоковая раскладка: видео уходит в фон, читается текст */
+}
+
+.hero__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: var(--gradient-scene-vignette), var(--gradient-scene-scrim);
 }
 
 .hero__veil {
   position: absolute;
   inset: 0;
-  background: var(--gradient-water-veil);
+  z-index: 2;
   pointer-events: none;
+  background: var(--gradient-water-veil);
 }
 
-.hero__inner {
+/* Слой сцены (маршрут + крупные глифы этапов) существует только в
+   кинематографической раскладке: в потоковой он не несёт информации,
+   а на узком экране крупные глифы только мешают тексту. */
+.hero__field {
+  display: none;
+}
+
+/* -- Контент (потоковая раскладка) ---------------------------------------- */
+
+.hero__overture,
+.hero__hud,
+.hero__acts {
   position: relative;
-  z-index: 1;
+  z-index: 5;
   max-width: var(--layout-max-width);
   margin-inline: auto;
   padding-inline: var(--layout-edge-padding);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-block-gap);
 }
 
 .hero__title {
@@ -333,6 +387,7 @@ h1, h2, h3, h4, h5 {
   letter-spacing: var(--letter-spacing-tight);
   font-weight: var(--font-weight-extrabold);
   margin-bottom: var(--space-5);
+  text-wrap: balance;
 }
 
 .hero__title-accent {
@@ -342,7 +397,7 @@ h1, h2, h3, h4, h5 {
 .hero__lede {
   font-size: var(--font-size-body-lg);
   color: var(--color-text-on-dark-muted);
-  max-width: 42ch;
+  max-width: 46ch;
   line-height: var(--line-height-body);
 }
 
@@ -353,102 +408,51 @@ h1, h2, h3, h4, h5 {
   margin-top: var(--space-7);
 }
 
-.hero__stage {
-  position: relative;
+/* Полоса прогресса и подсказка о скролле осмысленны только внутри пина. */
+.hero__rail,
+.hero__hint {
+  display: none;
 }
 
-.hero__stage-media {
-  position: relative;
-  border-radius: var(--radius-2xl);
-  border: 1px solid var(--color-border-on-dark);
-  background: linear-gradient(160deg, var(--color-bg-dark-edge), var(--color-bg-dark-mid));
-  box-shadow: var(--shadow-glass-on-dark);
-  aspect-ratio: 16 / 9;
+.hero__acts {
+  margin-top: var(--space-block-gap);
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-6);
-  overflow: hidden;
+  flex-direction: column;
+  gap: var(--space-4);
 }
 
-/* Видео — фоновый слой сцены, во всю область медиа-контейнера, под SVG-маршрутом.
-   currentTime управляется из js/animations.js (scrub на десктопе, autoplay-луп
-   на мобильном) — здесь только раскладка и то, что видно, пока JS не подключился. */
-.hero__stage-video {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.hero__scene-svg {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-
-.hero__badge {
-  position: absolute;
-  z-index: 2;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-4);
-  border-radius: var(--radius-full);
-  font-size: var(--font-size-caption);
-  font-weight: var(--font-weight-semibold);
-  backdrop-filter: var(--blur-glass-sm) var(--saturate-glass);
-  -webkit-backdrop-filter: var(--blur-glass-sm) var(--saturate-glass);
-}
-
-.hero__badge--a {
-  top: var(--space-5);
-  left: var(--space-5);
-}
-
-.hero__badge--b {
-  bottom: var(--space-5);
-  right: var(--space-5);
-}
-
-.hero__stages {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-  margin-top: var(--space-6);
-}
-
-.hero__stage-label {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-4);
-  border-radius: var(--radius-full);
+.hero__act {
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
   background: var(--color-glass-bg-on-dark);
   border: 1px solid var(--color-glass-border-on-dark);
   backdrop-filter: var(--blur-glass-sm) var(--saturate-glass);
   -webkit-backdrop-filter: var(--blur-glass-sm) var(--saturate-glass);
+}
+
+.hero__act-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.hero__act-num {
   font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-bold);
   letter-spacing: var(--letter-spacing-wide);
-  text-transform: uppercase;
-  color: var(--color-text-on-dark);
+  color: var(--color-accent-water);
 }
 
-.hero__stage-index {
-  color: var(--color-text-on-dark-faint);
-  font-weight: var(--font-weight-semibold);
+.hero__act-title {
+  font-size: var(--font-size-h3);
+  line-height: var(--line-height-heading);
+  letter-spacing: var(--letter-spacing-tight);
+  font-weight: var(--font-weight-extrabold);
 }
 
-/* Скрыты по умолчанию только когда JS доступен (класс .js на <html>) —
-   тикет 03 покажет их по прогрессу скролла. Без JS подписи остаются
-   видимыми статично: контент не должен зависеть от анимации. */
-.js .hero__stage-label {
-  opacity: 0;
-  transform: translateY(10px);
+.hero__act-text {
+  color: var(--color-text-on-dark-muted);
+  max-width: 44ch;
 }
 
 .section-seam {
@@ -457,7 +461,7 @@ h1, h2, h3, h4, h5 {
   right: 0;
   height: var(--space-12);
   pointer-events: none;
-  z-index: 1;
+  z-index: 6;
 }
 
 .section-seam--hero-out {
@@ -470,33 +474,275 @@ h1, h2, h3, h4, h5 {
   background: linear-gradient(180deg, var(--color-bg-light-base) 0%, transparent 100%);
 }
 
-@media (min-width: 768px) {
-  .hero__inner {
-    flex-direction: row;
+/* ==========================================================
+   5.1 HERO — кинематографическая раскладка
+   ========================================================== */
+
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+
+  .js:not(.no-anim) .hero {
+    display: block;
+    height: 100vh;
+    padding: 0;
+  }
+
+  /* Видео перестаёт быть «фоном под текстом» и становится самой сценой. */
+  .js:not(.no-anim) .hero__video {
+    opacity: 1;
+  }
+
+  /* -- Слой сцены -------------------------------------------------------- */
+
+  .js:not(.no-anim) .hero__field {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .js:not(.no-anim) .hero__route {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .js:not(.no-anim) .hero__glyph {
+    position: absolute;
+    opacity: 0; /* стартовое состояние — вход/выход рисует GSAP */
+    color: var(--color-accent-water);
+    will-change: transform, opacity;
+  }
+
+  .js:not(.no-anim) .hero__glyph svg {
+    width: 100%;
+    height: auto;
+  }
+
+  /* Позиция и масштаб каждого глифа — своя: этапы не должны выглядеть как
+     один и тот же блок, переставленный шесть раз. Значения — доли экрана,
+     а не фиксированные размеры: сцена full-bleed и тянется с вьюпортом. */
+  .js:not(.no-anim) .hero__glyph--g1  { left: 1%;   top: 26%; width: 30vw; }
+  .js:not(.no-anim) .hero__glyph--g2  { left: 58%;  top: 14%; width: 13vw; }
+  .js:not(.no-anim) .hero__glyph--g3  { left: 55%;  top: 10%; width: 31vw; }
+  .js:not(.no-anim) .hero__glyph--g4  { left: 9%;   top: 50%; width: 15vw; }
+  .js:not(.no-anim) .hero__glyph--g5  { left: 37%;  top: 10%; width: 21vw; }
+  .js:not(.no-anim) .hero__glyph--g6  { left: 17%;  top: 44%; width: 14vw; }
+  .js:not(.no-anim) .hero__glyph--g7  { left: 67%;  top: 52%; width: 11vw; }
+  .js:not(.no-anim) .hero__glyph--g8  { left: 44%;  top: 24%; width: 28vw; }
+  .js:not(.no-anim) .hero__glyph--g9  { left: 11%;  top: 14%; width: 15vw; }
+  .js:not(.no-anim) .hero__glyph--g10 { left: -3%;  top: 38%; width: 32vw; }
+  .js:not(.no-anim) .hero__glyph--g11 { left: 45%;  top: 8%;  width: 20vw; }
+  .js:not(.no-anim) .hero__glyph--g12 { left: 65%;  top: 56%; width: 16vw; }
+  .js:not(.no-anim) .hero__glyph--g13 { left: 5%;   top: 16%; width: 27vw; }
+  .js:not(.no-anim) .hero__glyph--g14 { left: 69%;  top: 46%; width: 16vw; }
+
+  /* -- Титульная карточка ------------------------------------------------- */
+
+  .js:not(.no-anim) .hero__overture {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    max-width: none;
+    margin: 0;
+    padding: var(--hero-inset-top) var(--hero-inset-x) var(--hero-inset-bottom);
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    pointer-events: none;
+  }
+
+  /* Ширины колонок сцены — в rem/vw, не в `ch`: `ch` считается от
+     собственного font-size блока (16px), а не от размера заголовка внутри,
+     и колонка получилась бы вчетверо уже задуманного. */
+  .js:not(.no-anim) .hero__overture-inner {
+    max-width: min(44rem, 52vw);
+    text-shadow: var(--shadow-text-on-scene);
+    will-change: transform, opacity;
+  }
+
+  /* На сцене крупный шрифт держат этапы — титульная карточка отдаёт им
+     масштаб и остаётся читаемым утверждением, а не стеной из букв. */
+  .js:not(.no-anim) .hero__title {
+    font-size: var(--font-size-h1);
+  }
+
+  /* -- HUD: CTA + полоса прогресса + подсказка ---------------------------- */
+
+  .js:not(.no-anim) .hero__hud {
+    position: absolute;
+    inset: auto 0 0 0;
+    z-index: 6;
+    max-width: none;
+    margin: 0;
+    padding: 0 var(--hero-inset-x) var(--space-7);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: var(--space-5);
+    pointer-events: none;
+  }
+
+  .js:not(.no-anim) .hero__actions {
+    grid-column: 1;
+    margin-top: 0;
+    pointer-events: auto;
+  }
+
+  .js:not(.no-anim) .hero__rail {
+    grid-column: 2;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+  }
+
+  .js:not(.no-anim) .hero__rail-tick {
+    position: relative;
+    width: var(--space-9);
+    height: var(--space-1);
+    border-radius: var(--radius-full);
+    background: var(--color-border-on-dark);
+    overflow: hidden;
+  }
+
+  .js:not(.no-anim) .hero__rail-fill {
+    position: absolute;
+    inset: 0;
+    display: block;
+    border-radius: var(--radius-full);
+    background: var(--color-accent-water);
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+
+  .js:not(.no-anim) .hero__hint {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: center;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-caption);
+    letter-spacing: var(--letter-spacing-wide);
+    text-transform: uppercase;
+    color: var(--color-text-on-dark-faint);
+  }
+
+  .js:not(.no-anim) .hero__hint svg {
+    transform: rotate(90deg);
+  }
+
+  /* -- Шесть этапов ------------------------------------------------------- */
+
+  .js:not(.no-anim) .hero__acts {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    display: block;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    pointer-events: none;
+  }
+
+  /* Каждый этап — полноэкранный слой; место текста задаётся выравниванием
+     внутри него, а не transform'ом: transform принадлежит GSAP, и CSS не
+     должен с ним конкурировать. */
+  .js:not(.no-anim) .hero__act {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    padding: var(--hero-inset-top) var(--hero-inset-x) var(--hero-inset-bottom);
+    background: none;
+    border: none;
+    border-radius: 0;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .js:not(.no-anim) .hero__act-inner {
+    max-width: min(40rem, 50vw);
+    gap: var(--space-3);
+    opacity: 0; /* стартовое состояние — вход/выход рисует GSAP */
+    text-shadow: var(--shadow-text-on-scene);
+    will-change: transform, opacity;
+  }
+
+  .js:not(.no-anim) .hero__act-num {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--font-size-h5);
+  }
+
+  .js:not(.no-anim) .hero__act-num::after {
+    content: '';
+    width: var(--space-9);
+    height: 1px;
+    background: currentColor;
+    opacity: 0.6;
+  }
+
+  .js:not(.no-anim) .hero__act-title {
+    font-size: var(--font-size-cinema);
+    line-height: var(--line-height-tight);
+  }
+
+  .js:not(.no-anim) .hero__act-text {
+    font-size: var(--font-size-body-lg);
+    color: var(--color-text-on-dark);
+  }
+
+  /* Композиция каждого этапа: текст приходит с разной стороны экрана —
+     иначе шесть кадров читаются как один слайд со сменой подписи. */
+  .js:not(.no-anim) .hero__act--01 { align-items: flex-end;   justify-content: flex-start; }
+  .js:not(.no-anim) .hero__act--02 { align-items: flex-start; justify-content: flex-end; }
+  .js:not(.no-anim) .hero__act--03 { align-items: center;     justify-content: flex-start; }
+  .js:not(.no-anim) .hero__act--04 { align-items: flex-end;   justify-content: flex-end; }
+  .js:not(.no-anim) .hero__act--05 { align-items: flex-start; justify-content: flex-start; }
+  .js:not(.no-anim) .hero__act--06 { align-items: center;     justify-content: center; }
+
+  .js:not(.no-anim) .hero__act--02 .hero__act-inner,
+  .js:not(.no-anim) .hero__act--04 .hero__act-inner {
+    text-align: right;
+    align-items: flex-end;
+  }
+
+  .js:not(.no-anim) .hero__act--02 .hero__act-num,
+  .js:not(.no-anim) .hero__act--04 .hero__act-num {
+    flex-direction: row-reverse;
+  }
+
+  .js:not(.no-anim) .hero__act--06 .hero__act-inner {
+    max-width: min(46rem, 66vw);
+    text-align: center;
     align-items: center;
   }
 
-  .hero__intro {
-    flex: 0 0 44%;
+  .js:not(.no-anim) .hero__act--06 .hero__act-num::before {
+    content: '';
+    width: var(--space-9);
+    height: 1px;
+    background: currentColor;
+    opacity: 0.6;
   }
 
-  .hero__stage {
-    flex: 1 1 56%;
+  /* Шов «тёмное → светлое» проявляется в самом конце пина. */
+  .js:not(.no-anim) .hero .section-seam--hero-out {
+    opacity: 0;
   }
 }
 
+/* Узкие экраны потоковой раскладки. */
 @media (max-width: 767px) {
   .hero {
-    padding-block: var(--space-10) var(--space-9);
+    padding-block: var(--space-9);
   }
 
-  .hero__stage-media {
-    aspect-ratio: 4 / 3;
-  }
-
-  .hero__badge {
-    font-size: 0.7rem;
-    padding: var(--space-2) var(--space-3);
+  .hero__act {
+    padding: var(--space-4);
   }
 }
 
