@@ -371,7 +371,21 @@ h1, h2, h3, h4, h5 {
   overflow: hidden;
 }
 
+/* Видео — фоновый слой сцены, во всю область медиа-контейнера, под SVG-маршрутом.
+   currentTime управляется из js/animations.js (scrub на десктопе, autoplay-луп
+   на мобильном) — здесь только раскладка и то, что видно, пока JS не подключился. */
+.hero__stage-video {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .hero__scene-svg {
+  position: relative;
+  z-index: 1;
   width: 100%;
   height: 100%;
   overflow: visible;
@@ -379,6 +393,7 @@ h1, h2, h3, h4, h5 {
 
 .hero__badge {
   position: absolute;
+  z-index: 2;
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);

@@ -42,7 +42,8 @@
 | `data-animate` | Где в разметке | Сколько элементов | Что имелось в виду |
 |---|---|---|---|
 | `hero-intro` | `.hero__intro` (заголовок, лид, CTA) | 1 | Вводный блок Hero, появляется до/независимо от pin-сцены |
-| `hero-scrub-scene` | `.hero__stage-media` (обёртка SVG-сцены) | 1 | Корневой узел, чей внутренний таймлайн привязывается к scrub; сама сцена — заглушка, спроектированная под замену на `<video>` одной правкой содержимого этого узла |
+| `hero-scrub-scene` | `.hero__stage-media` (обёртка видео + SVG-сцены) | 1 | Корневой узел, чей внутренний таймлайн привязывается к scrub; содержит фоновое видео (`hero-scrub-video`) и поверх него SVG-маршрут |
+| `hero-scrub-video` | `<video class="hero__stage-video">` внутри `.hero__stage-media`, до SVG | 1 | Фоновое видео сцены (`assets/video/hero-scene.mp4`) — на десктопе `currentTime` жёстко привязан к прогрессу scrub-таймлайна Hero (не проигрывается в реальном времени), на мобильном — обычный autoplay-луп без привязки к скроллу; в `prefers-reduced-motion` и при недоступном GSAP остаётся статичным на poster-кадре |
 | `hero-route-line` | `<path class="hero__route-line">` внутри SVG сцены | 1 | Линия маршрута сцены — кандидат на приём «дорисовки» (`stroke-dashoffset`) синхронно со scrub |
 | `hero-transport` | `<g class="hero__transport">` (иконка грузовика) внутри SVG сцены | 1 | Транспорт, который должен двигаться вдоль `hero-route-line` (motion along path) по прогрессу scrub |
 | `hero-veil` | `.hero__veil` (радиальная вуаль поверх `--gradient-hero`) | 1 | Параллакс-слой Hero — смещается медленнее переднего плана |

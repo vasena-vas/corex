@@ -78,6 +78,7 @@
     var hero = document.querySelector('.hero');
     var stageWrap = document.querySelector('.hero__stage');
     var scene = document.querySelector('[data-animate="hero-scrub-scene"]');
+    var video = document.querySelector('[data-animate="hero-scrub-video"]');
     var routeLine = document.querySelector('[data-animate="hero-route-line"]');
     var transport = document.querySelector('[data-animate="hero-transport"]');
     var veil = document.querySelector('[data-animate="hero-veil"]');
@@ -95,6 +96,16 @@
 
     if (!hero || !scene) {
       return;
+    }
+
+    // Если видео не смогло загрузиться (сеть/формат/битый файл) — прячем
+    // элемент целиком: под ним остаётся собственный тёмный фон
+    // `.hero__stage-media` (тот же градиент, что и до добавления видео),
+    // сцена не ломается и не показывает «битую» иконку плеера.
+    if (video) {
+      video.addEventListener('error', function () {
+        video.style.display = 'none';
+      });
     }
 
     // Вводный блок — появляется независимо от pin-сцены, сразу при загрузке.
@@ -127,6 +138,19 @@
     if (isMobile) {
       // Мобильная ветка: без pin, короткий обычный reveal вместо scrub-сцены —
       // длинная запиненная дистанция на узком экране ломает восприятие скролла.
+      // Видео туда же не скраббится (per-frame currentTime на слабом мобильном
+      // GPU/CPU даёт рывки) — вместо этого играет как обычный автоплей-луп,
+      // независимо от прогресса скролла.
+      if (video) {
+        video.loop = true;
+        var mobilePlay = video.play();
+        if (mobilePlay && typeof mobilePlay.catch === 'function') {
+          mobilePlay.catch(function () {
+            // Автоплей заблокирован браузером — не критично, сцена просто
+            // остаётся на poster-кадре, вёрстка не страдает.
+          });
+        }
+      }
       if (stageEls.length) {
         gsap.set(stageEls, { opacity: 0, y: 10 });
         gsap.to(stageEls, {
@@ -187,6 +211,40 @@
         anticipatePin: 1
       }
     });
+
+    // Видео сцены — не проигрывается "в реальном времени": currentTime жёстко
+    // привязан к прогрессу scrub-таймлайна (та же логика, что у дорисовки
+    // маршрута/движения транспорта выше, только источником служит video.duration
+    // вместо длины SVG-пути). video.duration доступен только после
+    // loadedmetadata — если к моменту создания ScrollTrigger метаданные ещё
+    // не подгрузились, синхронизация подключается отложенно, а до этого сцена
+    // просто показывает poster/первый кадр видео.
+    if (video) {
+      var syncVideoToTimeline = function () {
+        var duration = video.duration;
+        if (!isFinite(duration) || duration <= 0) {
+          return;
+        }
+        var target = tl.progress() * duration;
+        try {
+          video.currentTime = Math.min(Math.max(target, 0), duration);
+        } catch (e) {
+          // Некоторые браузеры бросают исключение при seek на ещё не готовый
+          // буфер — не критично, следующий кадр скролла попробует снова.
+        }
+      };
+
+      if (video.readyState >= 1) {
+        // HAVE_METADATA уже есть (например, видео из кэша) — подключаем сразу.
+        tl.eventCallback('onUpdate', syncVideoToTimeline);
+      } else {
+        video.addEventListener('loadedmetadata', function onHeroVideoMeta() {
+          video.removeEventListener('loadedmetadata', onHeroVideoMeta);
+          tl.eventCallback('onUpdate', syncVideoToTimeline);
+          syncVideoToTimeline(); // сразу подхватить уже накопленный прогресс скролла
+        });
+      }
+    }
 
     // Лёгкий "наезд" камеры на сцену — ощущение глубины на протяжении всего pin.
     tl.to(scene, { scale: 1.045, duration: stagesTotal }, 0);
