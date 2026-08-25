@@ -1,0 +1,261 @@
+/*
+  Corex-Trade — дизайн-токены.
+  Единственный источник правды для цвета, типографики, отступов, радиусов,
+  теней и анимационных таймингов. Остальные CSS-файлы читают только
+  переменные из этого файла — ни одного hex/px/cubic-bezier в обход токенов.
+  Подробное описание системы и обоснование решений — в DESIGN_SYSTEM.md.
+*/
+
+:root {
+
+  /* ==========================================================
+     1. ЦВЕТ — примитивы
+     ========================================================== */
+
+  /* Синий — главный цвет системы: от глубокого ночного до морского. */
+  --color-blue-950: #061529;
+  --color-blue-900: #0a2240;
+  --color-blue-800: #0f2e56;
+  --color-blue-700: #15406f;
+  --color-blue-600: #1b5490;
+  --color-blue-500: #2470b0;
+  --color-blue-400: #3b8fc7;
+  --color-blue-300: #6bb3dc;
+  --color-blue-200: #a9d3ea;
+  --color-blue-100: #dcedf7;
+
+  /* Морская вода / бирюза — второй полюс "синего" диапазона, ощущение глубины и течения. */
+  --color-teal-600: #10555a;
+  --color-teal-500: #1e8a8a;
+  --color-teal-400: #35abab;
+  --color-teal-300: #6fcfc9;
+
+  /* Нейтральная серо-синяя шкала — текст, границы, подложки. Не чистый серый: лёгкий синий подтон держит палитру цельной. */
+  --color-neutral-950: #0b121c;
+  --color-neutral-900: #101826;
+  --color-neutral-800: #1c2836;
+  --color-neutral-700: #34445a;
+  --color-neutral-600: #4c5d76;
+  --color-neutral-500: #6b7a8f;
+  --color-neutral-400: #8fa0b3;
+  --color-neutral-300: #aeb9c7;
+  --color-neutral-200: #d7dee6;
+  --color-neutral-100: #eef2f6;
+  --color-neutral-50: #f7f9fb;
+
+  --color-white: #ffffff;
+
+  /* Красный — единичный акцент, не второй основной цвет. Используется точечно. */
+  --color-red-600: #c6342f;
+  --color-red-500: #e14545;
+  --color-red-400: #ea6d68;
+  --color-red-100: #fbe4e2;
+
+  /* ==========================================================
+     2. ЦВЕТ — семантические роли
+     Разделены по типу фона секции: "dark" (Hero, финальный CTA —
+     насыщенный синий) и "light" (контентные секции — нейтральный).
+     ========================================================== */
+
+  /* -- Тёмный / насыщенный фон (Hero, финальная секция) -- */
+  --color-bg-dark-base: var(--color-blue-950);
+  --color-bg-dark-mid: var(--color-blue-900);
+  --color-bg-dark-edge: var(--color-blue-800);
+  --color-bg-dark-accent: var(--color-teal-600);
+
+  --color-text-on-dark: var(--color-white);
+  --color-text-on-dark-muted: rgba(255, 255, 255, 0.72);
+  --color-text-on-dark-faint: rgba(255, 255, 255, 0.48);
+  --color-border-on-dark: rgba(255, 255, 255, 0.16);
+  --color-border-on-dark-strong: rgba(255, 255, 255, 0.28);
+
+  /* Glass-поверхности — только на тёмном насыщенном фоне (см. §Glassmorphism в DESIGN_SYSTEM.md). */
+  --color-glass-bg-on-dark: rgba(255, 255, 255, 0.08);
+  --color-glass-bg-on-dark-strong: rgba(255, 255, 255, 0.13);
+  --color-glass-border-on-dark: rgba(255, 255, 255, 0.18);
+
+  /* -- Светлый / нейтральный фон (контентные секции) -- */
+  --color-bg-light-base: var(--color-white);
+  --color-bg-light-alt: var(--color-neutral-50);
+  --color-bg-light-edge: var(--color-neutral-100);
+
+  --color-text-on-light: var(--color-neutral-900);
+  --color-text-on-light-muted: var(--color-neutral-500);
+  --color-text-on-light-faint: var(--color-neutral-400);
+  --color-border-on-light: var(--color-neutral-200);
+  --color-border-on-light-strong: var(--color-neutral-300);
+
+  --color-surface-light: var(--color-white);
+  --color-surface-light-raised: var(--color-neutral-50);
+
+  /* -- Акценты (используются на обоих типах фона) -- */
+  --color-accent-primary: var(--color-blue-500);
+  --color-accent-primary-hover: var(--color-blue-600);
+  --color-accent-water: var(--color-teal-400);
+  --color-accent-water-strong: var(--color-teal-500);
+
+  --color-accent-cta: var(--color-red-500);
+  --color-accent-cta-hover: var(--color-red-600);
+  --color-accent-cta-tint: var(--color-red-100);
+
+  --color-focus-ring: var(--color-blue-400);
+
+  /* ==========================================================
+     3. ГРАДИЕНТЫ И СВЕЧЕНИЕ ФОНА
+     Источник ощущения "вода / движение / глубина" (см. DESIGN_SYSTEM.md §Фон).
+     ========================================================== */
+
+  --gradient-hero: linear-gradient(
+    165deg,
+    var(--color-bg-dark-base) 0%,
+    var(--color-bg-dark-mid) 42%,
+    var(--color-bg-dark-edge) 72%,
+    var(--color-teal-600) 100%
+  );
+
+  --gradient-final-cta: linear-gradient(
+    195deg,
+    var(--color-blue-900) 0%,
+    var(--color-bg-dark-base) 60%,
+    var(--color-teal-600) 100%
+  );
+
+  --gradient-water-veil: radial-gradient(
+    120% 90% at 15% 0%,
+    rgba(107, 179, 220, 0.28) 0%,
+    rgba(107, 179, 220, 0) 55%
+  );
+
+  --gradient-light-wash: linear-gradient(
+    180deg,
+    var(--color-bg-light-alt) 0%,
+    var(--color-bg-light-base) 100%
+  );
+
+  --glow-blue: 0 0 48px rgba(59, 143, 199, 0.45);
+  --glow-teal: 0 0 40px rgba(53, 171, 171, 0.4);
+  --glow-red: 0 0 28px rgba(225, 69, 69, 0.42);
+
+  /* ==========================================================
+     4. ТИПОГРАФИКА
+     Один гротеск, широкая шкала начертаний. См. DESIGN_SYSTEM.md §Типографика
+     для источника шрифта и обоснования самохостинга.
+     ========================================================== */
+
+  --font-family-base: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', system-ui, sans-serif;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* Шкала размеров: display → caption, 8 уровней. */
+  --font-size-display: clamp(2.75rem, 2.1rem + 3.2vw, 5rem);
+  --font-size-h1: clamp(2.25rem, 1.85rem + 2vw, 3.5rem);
+  --font-size-h2: clamp(1.875rem, 1.6rem + 1.4vw, 2.75rem);
+  --font-size-h3: clamp(1.5rem, 1.32rem + 0.9vw, 2rem);
+  --font-size-h4: 1.375rem;
+  --font-size-h5: 1.125rem;
+  --font-size-body-lg: 1.125rem;
+  --font-size-body: 1rem;
+  --font-size-small: 0.875rem;
+  --font-size-caption: 0.75rem;
+
+  --line-height-tight: 1.08;
+  --line-height-heading: 1.18;
+  --line-height-body: 1.6;
+  --line-height-loose: 1.75;
+
+  --letter-spacing-tight: -0.02em;
+  --letter-spacing-normal: 0em;
+  --letter-spacing-wide: 0.04em;
+
+  /* ==========================================================
+     5. СЕТКА / РАСКЛАДКА
+     ========================================================== */
+
+  --layout-max-width: 80rem; /* 1280px */
+  --layout-max-width-narrow: 46rem; /* 736px — под текстовые блоки/формы */
+  --layout-columns: 12;
+  --layout-gutter: var(--space-6);
+  --layout-edge-padding: var(--space-5);
+
+  /* ==========================================================
+     6. ОТСТУПЫ
+     Базовая сетка 4px. --space-section-* — специальные токены под
+     "воздух" между крупными блоками секций.
+     ========================================================== */
+
+  --space-1: 0.25rem;  /* 4px */
+  --space-2: 0.5rem;   /* 8px */
+  --space-3: 0.75rem;  /* 12px */
+  --space-4: 1rem;     /* 16px */
+  --space-5: 1.5rem;   /* 24px */
+  --space-6: 2rem;     /* 32px */
+  --space-7: 2.5rem;   /* 40px */
+  --space-8: 3rem;     /* 48px */
+  --space-9: 4rem;     /* 64px */
+  --space-10: 5rem;    /* 80px */
+  --space-11: 6.5rem;  /* 104px */
+  --space-12: 8rem;    /* 128px */
+
+  --space-section-y: var(--space-11);      /* вертикальный внутренний отступ обычной секции */
+  --space-section-y-lg: var(--space-12);   /* Hero / финальная секция — больше воздуха */
+  --space-block-gap: var(--space-9);       /* минимальный зазор между крупными блоками внутри секции */
+
+  /* ==========================================================
+     7. РАДИУСЫ
+     Единая мягкая шкала — без острых углов и без "таблеток".
+     ========================================================== */
+
+  --radius-sm: 0.5rem;    /* 8px  — теги, чипы, мелкие бейджи */
+  --radius-md: 0.875rem;  /* 14px — кнопки, поля ввода */
+  --radius-lg: 1.25rem;   /* 20px — карточки */
+  --radius-xl: 1.75rem;   /* 28px — крупные панели, glass-блоки */
+  --radius-2xl: 2.5rem;   /* 40px — контейнеры Hero-сцены, крупные медиа-рамки */
+  --radius-full: 999px;   /* только круглые иконки-бейджи/аватары, не для кнопок и карточек */
+
+  /* ==========================================================
+     8. ТЕНИ
+     Холодные, с синеватым подтоном — не нейтрально-серые.
+     ========================================================== */
+
+  --shadow-sm: 0 2px 8px rgba(10, 34, 64, 0.08);
+  --shadow-md: 0 8px 24px rgba(10, 34, 64, 0.12);
+  --shadow-lg: 0 20px 56px rgba(10, 34, 64, 0.18);
+
+  --shadow-glass-on-dark: 0 12px 40px rgba(4, 13, 26, 0.4);
+  --shadow-glass-inset-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+
+  --shadow-glow-primary: var(--glow-blue);
+  --shadow-glow-accent: var(--glow-red);
+
+  /* ==========================================================
+     9. GLASSMORPHISM
+     Только поверх насыщенного синего фона (Hero, финальный CTA).
+     Значения размытия/прозрачности — см. DESIGN_SYSTEM.md §Glassmorphism.
+     ========================================================== */
+
+  --blur-glass: blur(20px);
+  --blur-glass-sm: blur(12px);
+  --saturate-glass: saturate(140%);
+
+  /* ==========================================================
+     10. АНИМАЦИЯ — тайминги и easing
+     ========================================================== */
+
+  --duration-instant: 120ms;
+  --duration-fast: 200ms;
+  --duration-base: 350ms;
+  --duration-slow: 600ms;
+  --duration-hero-step: 900ms;   /* переход между этапами Hero-сцены */
+  --duration-scene: 1400ms;      /* крупные декоративные переходы сцен */
+
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-emphasized: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-scrub: linear; /* для scrub-таймлайнов, жёстко привязанных к прогрессу скролла */
+}
