@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "css/styles.css"
+        ],
+        "createdAt": "2026-08-25T13:15:58.961Z",
+        "reason": "single top accent gradient on .calculator__object, the one deliberately distinct 'visual object' per ticket 02 spec — not a repeated left-border card tell, only occurrence in file"
+      }
+    ]
+  }
+}
