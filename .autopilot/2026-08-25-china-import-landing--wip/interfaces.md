@@ -27,4 +27,47 @@
 
 ## Что построено (заполняется по мере сдачи тикетов)
 
-_(пусто — заполнится после тикета 01)_
+### Тикет 01 — дизайн-система
+
+`css/tokens.css` и `DESIGN_SYSTEM.md` — см. сами файлы, таблица токенов не дублируется здесь.
+
+### Тикет 02 — структура, контент, калькулятор, форма
+
+Собраны `index.html` (8 секций + `site-header`), `css/styles.css` (вёрстка и компоненты, читает только `css/tokens.css`), `js/calculator.js`, `js/contact-form.js`. Иконки — единый инлайн-SVG-спрайт (`<symbol>`) в начале `index.html`, не отдельные файлы в `assets/` (это дало анимационному слою прямой доступ к DOM-узлам иконок без кросс-документных ограничений `<use href="файл.svg#...">`).
+
+**Важный технический крючок для тикета 03**: `<html>` по умолчанию без класса; инлайн-скрипт в `<head>` синхронно добавляет класс `js` до отрисовки. Только под `.js` подписи этапов Hero скрыты (`opacity:0`) — без JS (или если скрипт анимаций не выполнился) они остаются видимыми статично. Тикет 03 ничего менять в этом механизме не должен, только анимировать переход `opacity:0 → 1` (и `transform`) для этих же элементов при инициализации ScrollTrigger.
+
+**Список `data-animate` и что каждый помечает:**
+
+| `data-animate` | Где в разметке | Сколько элементов | Что имелось в виду |
+|---|---|---|---|
+| `hero-intro` | `.hero__intro` (заголовок, лид, CTA) | 1 | Вводный блок Hero, появляется до/независимо от pin-сцены |
+| `hero-scrub-scene` | `.hero__stage-media` (обёртка SVG-сцены) | 1 | Корневой узел, чей внутренний таймлайн привязывается к scrub; сама сцена — заглушка, спроектированная под замену на `<video>` одной правкой содержимого этого узла |
+| `hero-route-line` | `<path class="hero__route-line">` внутри SVG сцены | 1 | Линия маршрута сцены — кандидат на приём «дорисовки» (`stroke-dashoffset`) синхронно со scrub |
+| `hero-transport` | `<g class="hero__transport">` (иконка грузовика) внутри SVG сцены | 1 | Транспорт, который должен двигаться вдоль `hero-route-line` (motion along path) по прогрессу scrub |
+| `hero-veil` | `.hero__veil` (радиальная вуаль поверх `--gradient-hero`) | 1 | Параллакс-слой Hero — смещается медленнее переднего плана |
+| `hero-badge` | `.hero__badge--a`, `.hero__badge--b` (плавающие glass-бейджи над сценой) | 2 (общее имя, группа) | Появление/лёгкий дрейф декоративных инфо-бейджей поверх сцены |
+| `hero-stage-factory` | `.hero__stage-label` (1-я подпись в `.hero__stages`) | 1 | Этап 1/6 «фабрика» — скрыт по умолчанию под `.js`, показывается по прогрессу scrub |
+| `hero-stage-production` | `.hero__stage-label` (2-я подпись) | 1 | Этап 2/6 «производство» |
+| `hero-stage-documents` | `.hero__stage-label` (3-я подпись) | 1 | Этап 3/6 «документы» |
+| `hero-stage-certification` | `.hero__stage-label` (4-я подпись) | 1 | Этап 4/6 «сертификация» |
+| `hero-stage-logistics` | `.hero__stage-label` (5-я подпись) | 1 | Этап 5/6 «логистика» |
+| `hero-stage-russia` | `.hero__stage-label` (6-я подпись) | 1 | Этап 6/6 «Россия» — последний, за ним pin отпускает секцию |
+| `transition-hero-out` | `.section-seam--hero-out` (низ `.hero`) | 1 | Переход тёмного фона Hero в светлый фон секции 2 — кандидат на анимацию непрозрачности/масштаба при выходе из pin |
+| `route-line` | `<path class="route__connector-line">` (только ≥1024px, `.route__connector` скрыт ниже) | 1 | Соединительная линия маршрута секции 2 — может «дорисовываться» по мере появления узлов |
+| `route-transport` | `<g class="route__transport">` внутри `.route__connector` | 1 | Иконка транспорта вдоль маршрута секции 2 (motion along path, отдельная от Hero) |
+| `route-node` | `.route__node` × 7 | 7 (общее имя, группа) | Узлы маршрута (Фабрика…Россия) — stagger-появление по порядку DOM при входе секции во вьюпорт |
+| `handoff-item` | `.handoff__item` × 8 | 8 (общее имя, группа) | 8 пунктов ответственности — stagger в порядке передачи процесса, с эффектом «схлопывания»/движения к `handoff-target` |
+| `handoff-target` | `.handoff__target` (кружок «Corex-Trade») | 1 | Точка назначения, к которой визуально «стекаются» `handoff-item` |
+| `calculator-panel` | `.calculator__object` | 1 | Единственный объект калькулятора — reveal/лёгкий scale при входе в вьюпорт |
+| `calculator-result` | `#calculator-result` | 1 | Блок результата — scale-in при появлении содержимого (наполняется `js/calculator.js`, animations.js не импортирует его, а просто анимирует изменение этого DOM-узла, например через `MutationObserver` или повторный scroll-триггер) |
+| `case-card` | `.card--case` × 4 | 4 (общее имя, группа) | Карточки кейсов — reveal + лёгкий scale («раскрытие карточек») |
+| `category-lane` | `.categories__lane` (флекс-лента) | 1 | Контейнер горизонтальной ленты — кандидат на horizontal-move синхронно со скроллом секции |
+| `category-item` | `.card--category` × 8 | 8 (общее имя, группа) | Отдельные карточки категорий внутри ленты |
+| `reason-item` | `.reason-item` × 4 | 4 (общее имя, группа) | Тезисы «Почему с нами» — простой reveal, самая лёгкая анимация страницы |
+| `final-veil` | `.final-cta__veil` | 1 | Параллакс-вуаль финального CTA (зеркальная версия `hero-veil`, `transform: scaleX(-1)` уже в CSS) |
+| `transition-final-in` | `.section-seam--final-in` (верх `.final-cta`) | 1 | Переход светлого фона секции 7 в тёмный фон финального CTA |
+| `final-panel` | `.final-cta__panel` (glass-форма) | 1 | Панель формы заявки — reveal при входе секции |
+| `final-contacts` | `.final-cta__contacts` | 1 | Блок контактов — reveal (можно с лёгким stagger по трём строкам контактов) |
+
+Итого 8 разных типов поведения из брифа покрываются подсказками разметки: pin+scrub (Hero), motion along path (`hero-transport`, `route-transport`), stagger (`hero-stage-*`, `route-node`, `handoff-item`, `category-item`, `reason-item`), parallax (`hero-veil`, `final-veil`), reveal (`calculator-panel`, `case-card`, `final-panel`, `final-contacts`), scale (`calculator-result`, `case-card`), horizontal move (`category-lane`), переходы между секциями (`transition-hero-out`, `transition-final-in`). Тикет 03 не обязан использовать каждый крючок, но все они размечены и готовы к использованию.

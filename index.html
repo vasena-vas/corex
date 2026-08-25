@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<script>document.documentElement.classList.add('js');</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Corex-Trade — импорт из Китая в Россию под ключ</title>
+<meta name="description" content="Corex-Trade — единый оператор импорта из Китая: поиск и проверка фабрик, переговоры, сертификация, документы, таможня и логистика. Один подрядчик вместо цепочки посредников.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%230a2240'/%3E%3Cpath d='M9.5 14.5l5-5M11 6.5l1.3-1.3a4 4 0 0 1 5.6 5.6L16.5 12M13 17.5l-1.3 1.3a4 4 0 0 1-5.6-5.6L7.5 12' fill='none' stroke='%2335abab' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main-content">Перейти к основному содержимому</a>
+
+<!-- ==========================================================
+     Спрайт иконок. Инлайн-SVG (а не внешний файл) — так currentColor
+     и последующая GSAP-анимация (тикет 03) могут адресовать отдельные
+     узлы иконок напрямую, без кросс-документных ограничений <use>.
+     ========================================================== -->
+<svg aria-hidden="true" style="display:none">
+  <defs>
+    <symbol id="icon-factory" viewBox="0 0 24 24"><path d="M3 21V10l5 3V10l5 3V6l7 4v11H3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 17h2M11 17h2M15 17h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="icon-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 3v2.4M12 18.6V21M21 12h-2.4M5.4 12H3M18.36 5.64l-1.7 1.7M7.34 16.66l-1.7 1.7M18.36 18.36l-1.7-1.7M7.34 7.34l-1.7-1.7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="icon-document" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M15 3v4h4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 12h6M9 15.5h6M9 8.5h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="icon-certificate" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="9" cy="20" r="0" /><path d="M7 8h10M7 11h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="17" cy="17.5" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M15.5 20l0.5 3 1-1 1 1 0.5-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+    <symbol id="icon-truck" viewBox="0 0 24 24"><path d="M2 7h11v9H2z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M13 10h4l4 3v3h-8z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="1.6" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="17.5" cy="18" r="1.6" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+    <symbol id="icon-flag" viewBox="0 0 24 24"><path d="M6 3v18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M6 4h13l-3 4 3 4H6z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+    <symbol id="icon-handshake" viewBox="0 0 24 24"><path d="M2 12l4-4 4 2 3-2 3 2 6 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/><path d="M8 12l3 3.5a2 2 0 0 0 3-2.6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M13 12.4l2 2.3a1.8 1.8 0 0 0 2.7-2.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="icon-magnifier" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M20 20l-5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M8 10.5h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="icon-shield-check" viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 12.2l2 2 4-4.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="icon-package" viewBox="0 0 24 24"><path d="M12 3l9 4.5v9L12 21l-9-4.5v-9z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M3.3 7.7L12 12l8.7-4.3M12 12v9" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+    <symbol id="icon-robot" viewBox="0 0 24 24"><rect x="5" y="8" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 8V4M9 4h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="9.5" cy="13" r="1.2" fill="currentColor"/><circle cx="14.5" cy="13" r="1.2" fill="currentColor"/><path d="M9 16.5h6M2.5 11v4M21.5 11v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="icon-chip" viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M7 10H3M7 14H3M21 10h-4M21 14h-4M10 7V3M14 7V3M10 21v-4M14 21v-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="icon-drop" viewBox="0 0 24 24"><path d="M12 3c3 4 6 7.5 6 11a6 6 0 0 1-12 0c0-3.5 3-7 6-11z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9.5 15.5a2.5 2.5 0 0 0 2.5 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="icon-cpu" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9 2v2.5M15 2v2.5M9 19.5V22M15 19.5V22M2 9h2.5M2 15h2.5M19.5 9H22M19.5 15H22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="icon-components" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+    <symbol id="icon-warehouse" viewBox="0 0 24 24"><path d="M3 11l9-6 9 6v9H3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 20v-6h6v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+    <symbol id="icon-link" viewBox="0 0 24 24"><path d="M9.5 14.5l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M11 6.5l1.3-1.3a4 4 0 0 1 5.6 5.6L16.5 12M13 17.5l-1.3 1.3a4 4 0 0 1-5.6-5.6L7.5 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="icon-eye" viewBox="0 0 24 24"><path d="M2 12s3.8-7 10-7 10 7 10 7-3.8 7-10 7-10-7-10-7z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+    <symbol id="icon-bolt" viewBox="0 0 24 24"><path d="M13 2L4 14h6l-1 8 9-12h-6z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+    <symbol id="icon-plane" viewBox="0 0 24 24"><path d="M2 14l8-2.3L15 3l2 1-3 8.5L21 11l1 2-7 3-1 6-2-1-.5-5-6.5 1.8z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+    <symbol id="icon-ship" viewBox="0 0 24 24"><path d="M4 15l1.5 4.5A2 2 0 0 0 7.4 21h9.2a2 2 0 0 0 1.9-1.5L20 15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M6 15V6h4V3h4v3h1l3 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 15h20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="icon-map-pin" viewBox="0 0 24 24"><path d="M12 21s7-6.6 7-11.5A7 7 0 0 0 5 9.5C5 14.4 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.4" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+    <symbol id="icon-phone" viewBox="0 0 24 24"><path d="M5 4h3.2l1.4 4.4-2 1.6a13 13 0 0 0 6.4 6.4l1.6-2 4.4 1.4V19a2 2 0 0 1-2.2 2A16 16 0 0 1 3 5.2 2 2 0 0 1 5 4z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+    <symbol id="icon-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M4 6.5l8 6.5 8-6.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+    <symbol id="icon-telegram" viewBox="0 0 24 24"><path d="M3 11.5L20.5 4 17.8 20 12 16.2 9.2 19l.4-4.6L17 8.4 7 13.3z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+    <symbol id="icon-arrow-right" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24"><path d="M4 12.5l5.5 5.5L20 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-header__logo" href="#hero" aria-label="Corex-Trade — на главную">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><use href="#icon-link"></use></svg>
+      Corex-Trade
+    </a>
+    <a class="btn btn--cta btn--sm site-header__cta" href="#calculator">Рассчитать доставку</a>
+  </div>
+</header>
+
+<main id="main-content">
+
+<!-- ==========================================================
+     1. HERO
+     ========================================================== -->
+<section class="hero" id="hero" aria-label="Главный экран">
+  <div class="hero__veil" data-animate="hero-veil" aria-hidden="true"></div>
+
+  <div class="hero__inner">
+    <div class="hero__intro" data-animate="hero-intro">
+      <p class="eyebrow eyebrow--on-dark">Импорт из Китая в Россию «в белую»</p>
+      <h1 class="hero__title">Один подрядчик — <span class="hero__title-accent">весь путь груза</span> от китайской фабрики до вашего склада</h1>
+      <p class="hero__lede">Corex-Trade берёт на себя полный цикл импорта: поиск и проверку фабрики, переговоры с производителем, сертификацию, документы, таможню и логистику. Вам не нужно самому разбираться в цепочке импорта — ни для пробной партии, ни для регулярных поставок на завод.</p>
+      <div class="hero__actions">
+        <a class="btn btn--cta btn--lg" href="#calculator">
+          Рассчитать доставку
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><use href="#icon-arrow-right"></use></svg>
+        </a>
+        <a class="btn btn--ghost-on-dark btn--lg" href="#route">Как это работает</a>
+      </div>
+    </div>
+
+    <!-- Заглушка сцены: контейнер спроектирован так, чтобы .hero__stage-media
+         можно было заменить на <video>/сгенерированное изображение одной
+         правкой, не трогая раскладку и анимационные крючки. -->
+    <div class="hero__stage">
+      <div class="hero__stage-media" data-animate="hero-scrub-scene">
+        <svg class="hero__scene-svg" viewBox="0 0 640 360" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <path class="hero__route-line" data-animate="hero-route-line" d="M40 300 C 160 300, 160 120, 280 120 S 480 60, 600 60" fill="none" stroke="var(--color-accent-water)" stroke-width="2" stroke-linecap="round"/>
+          <g class="hero__node" transform="translate(40,300)"><circle r="10" fill="var(--color-bg-dark-edge)" stroke="var(--color-accent-water)" stroke-width="2"/><use href="#icon-factory" x="-9" y="-9" width="18" height="18" color="var(--color-text-on-dark)"/></g>
+          <g class="hero__node" transform="translate(600,60)"><circle r="10" fill="var(--color-bg-dark-edge)" stroke="var(--color-accent-cta)" stroke-width="2"/><use href="#icon-map-pin" x="-9" y="-9" width="18" height="18" color="var(--color-text-on-dark)"/></g>
+          <g class="hero__transport" data-animate="hero-transport" transform="translate(40,300)">
+            <use href="#icon-truck" x="-14" y="-14" width="28" height="28" color="var(--color-text-on-dark)"/>
+          </g>
+        </svg>
+        <div class="hero__badge hero__badge--a glass-panel" data-animate="hero-badge">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><use href="#icon-shield-check"></use></svg>
+          Один подрядчик на весь маршрут
+        </div>
+        <div class="hero__badge hero__badge--b glass-panel" data-animate="hero-badge">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><use href="#icon-document"></use></svg>
+          Сертификация и таможня включены
+        </div>
+      </div>
+
+      <ol class="hero__stages" aria-label="Этапы импорта">
+        <li class="hero__stage-label" data-animate="hero-stage-factory"><span class="hero__stage-index">01</span>фабрика</li>
+        <li class="hero__stage-label" data-animate="hero-stage-production"><span class="hero__stage-index">02</span>производство</li>
+        <li class="hero__stage-label" data-animate="hero-stage-documents"><span class="hero__stage-index">03</span>документы</li>
+        <li class="hero__stage-label" data-animate="hero-stage-certification"><span class="hero__stage-index">04</span>сертификация</li>
+        <li class="hero__stage-label" data-animate="hero-stage-logistics"><span class="hero__stage-index">05</span>логистика</li>
+        <li class="hero__stage-label" data-animate="hero-stage-russia"><span class="hero__stage-index">06</span>Россия</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="section-seam section-seam--hero-out" data-animate="transition-hero-out" aria-hidden="true"></div>
+</section>
+
+<!-- ==========================================================
+     2. КАК РАБОТАЕТ ИМПОРТ — маршрут, 7 узлов
+     ========================================================== -->
+<section class="route" id="route" aria-labelledby="route-heading">
+  <div class="container">
+    <p class="eyebrow">Как работает импорт</p>
+    <h2 class="section-title" id="route-heading">Маршрут груза — от фабрики до вашего склада</h2>
+    <p class="section-lede">Семь этапов, которые обычно приходится собирать из разных подрядчиков. Мы проходим их как один процесс.</p>
+
+    <div class="route__path" role="list">
+      <svg class="route__connector" viewBox="0 0 1200 40" preserveAspectRatio="none" aria-hidden="true">
+        <path class="route__connector-line" data-animate="route-line" d="M20 20H1180" fill="none" stroke="var(--color-border-on-light-strong)" stroke-width="2"/>
+        <g class="route__transport" data-animate="route-transport" transform="translate(20,20)"><use href="#icon-truck" x="-11" y="-11" width="22" height="22" color="var(--color-accent-primary)"/></g>
+      </svg>
+
+      <div class="route__node" role="listitem" data-animate="route-node">
+        <span class="route__node-icon"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><use href="#icon-factory"></use></svg></span>
+        <span class="route__node-label">Фабрика</span>
+      </div>
+      <div class="route__node" role="listitem" data-animate="route-node">
+        <span class="route__node-icon"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><use href="#icon-handshake"></use></svg></span>
+        <span class="route__node-label">Переговоры</span>
+      </div>
+      <div class="route__node" role="listitem" data-animate="route-node">
+        <span class="route__node-icon"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><use href="#icon-magnifier"></use></svg></span>
+        <span class="route__node-label">Проверка</span>
+      </div>
+      <div class="route__node" role="listitem" data-animate="route-node">
+        <span class="route__node-icon"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><use href="#icon-certificate"></use></svg></span>
+        <span class="route__node-label">Сертификация</span>
+      </div>
+      <div class="route__node" role="listitem" data-animate="route-node">
+        <span class="route__node-icon"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><use href="#icon-document"></use></svg></span>
+        <span class="route__node-label">Документы</span>
+      </div>
+      <div class="route__node" role="listitem" data-animate="route-node">
+        <span class="route__node-icon"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><use href="#icon-truck"></use></svg></span>
+        <span class="route__node-label">Логистика</span>
+      </div>
+      <div class="route__node" role="listitem" data-animate="route-node">
+        <span class="route__node-icon"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><use href="#icon-flag"></use></svg></span>
+        <span class="route__node-label">Россия</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================
+     3. ЧТО МЫ БЕРЁМ НА СЕБЯ — 8 пунктов, схема передачи
+     ========================================================== -->
+<section class="handoff" id="handoff" aria-labelledby="handoff-heading">
+  <div class="container">
+    <p class="eyebrow">Что мы берём на себя</p>
+    <h2 class="section-title" id="handoff-heading">Вы формулируете задачу — дальше работаем мы</h2>
+    <p class="section-lede">Каждая из этих задач обычно требует своего подрядчика или недели самостоятельного разбирательства. Мы забираем весь список себе.</p>
+
+    <div class="handoff__scheme">
+      <ul class="handoff__list">
+        <li class="handoff__item" data-animate="handoff-item"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><use href="#icon-magnifier"></use></svg><span>Поиск фабрики</span></li>
+        <li class="handoff__item" data-animate="handoff-item"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><use href="#icon-handshake"></use></svg><span>Переговоры с производителем</span></li>
+        <li class="handoff__item" data-animate="handoff-item"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><use href="#icon-shield-check"></use></svg><span>Проверка фабрики</span></li>
+        <li class="handoff__item" data-animate="handoff-item"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><use href="#icon-certificate"></use></svg><span>Сертификация</span></li>
+        <li class="handoff__item" data-animate="handoff-item"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><use href="#icon-document"></use></svg><span>Документы</span></li>
+        <li class="handoff__item" data-animate="handoff-item"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><use href="#icon-shield-check"></use></svg><span>Таможенное оформление</span></li>
+        <li class="handoff__item" data-animate="handoff-item"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><use href="#icon-truck"></use></svg><span>Логистика</span></li>
+        <li class="handoff__item" data-animate="handoff-item"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><use href="#icon-package"></use></svg><span>Доставка</span></li>
+      </ul>
+      <div class="handoff__target" data-animate="handoff-target" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="30" height="30"><use href="#icon-link"></use></svg>
+        <span>Corex-Trade</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================
+     4. КАЛЬКУЛЯТОР
+     ========================================================== -->
+<section class="calculator" id="calculator" aria-labelledby="calculator-heading">
+  <div class="container container--narrow">
+    <p class="eyebrow">Предварительный расчёт</p>
+    <h2 class="section-title" id="calculator-heading">Калькулятор доставки</h2>
+    <p class="section-lede">Укажите параметры груза — получите ориентировочный диапазон стоимости без отправки заявки.</p>
+  </div>
+
+  <div class="calculator__object" data-animate="calculator-panel">
+    <form class="calculator__form" id="calculator-form" novalidate>
+      <div class="form-field">
+        <label for="calc-category">Категория груза</label>
+        <select id="calc-category" name="category" required>
+          <option value="">Выберите категорию</option>
+          <option value="electronics">Электроника / платы</option>
+          <option value="robotics">Робототехника</option>
+          <option value="industrial">Промышленное оборудование</option>
+          <option value="components">Комплектующие / компоненты</option>
+          <option value="other">Другое</option>
+        </select>
+        <span class="form-field__error" id="calc-category-error" aria-live="polite"></span>
+      </div>
+
+      <div class="form-field-row">
+        <div class="form-field">
+          <label for="calc-weight">Вес, кг</label>
+          <input type="number" id="calc-weight" name="weight" min="1" step="0.1" inputmode="decimal" placeholder="например, 120" required>
+          <span class="form-field__error" id="calc-weight-error" aria-live="polite"></span>
+        </div>
+        <div class="form-field">
+          <label for="calc-volume">Объём, м³ <span class="form-field__optional">(необязательно)</span></label>
+          <input type="number" id="calc-volume" name="volume" min="0" step="0.01" inputmode="decimal" placeholder="например, 0.8">
+          <span class="form-field__error" id="calc-volume-error" aria-live="polite"></span>
+        </div>
+      </div>
+
+      <div class="form-field-row">
+        <div class="form-field">
+          <label for="calc-method">Способ доставки</label>
+          <select id="calc-method" name="method" required>
+            <option value="">Выберите способ</option>
+            <option value="auto">Автотранспорт</option>
+            <option value="rail">Железная дорога</option>
+            <option value="sea">Море</option>
+            <option value="air">Авиа</option>
+          </select>
+          <span class="form-field__error" id="calc-method-error" aria-live="polite"></span>
+        </div>
+        <div class="form-field">
+          <label for="calc-city">Город назначения в России</label>
+          <input type="text" id="calc-city" name="city" placeholder="например, Москва" required>
+          <span class="form-field__error" id="calc-city-error" aria-live="polite"></span>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn--cta btn--lg calculator__submit">Рассчитать</button>
+    </form>
+
+    <div class="calculator__result" id="calculator-result" data-animate="calculator-result" aria-live="polite">
+      <p class="calculator__result-placeholder">Заполните форму — здесь появится предварительный расчёт.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================
+     5. КЕЙСЫ
+     ========================================================== -->
+<section class="cases" id="cases" aria-labelledby="cases-heading">
+  <div class="container">
+    <p class="eyebrow">Примеры проектов</p>
+    <h2 class="section-title" id="cases-heading">Как это выглядит на практике</h2>
+    <p class="section-lede">Реальных кейсов с цифрами пока не публикуем — ниже пример того, как устроена работа над задачей, на условных данных.</p>
+
+    <div class="cases__grid">
+      <article class="card card--case is-placeholder" data-animate="case-card">
+        <div class="card--case__media card--case__media--a" aria-hidden="true"><svg viewBox="0 0 24 24" width="34" height="34"><use href="#icon-drop"></use></svg></div>
+        <span class="badge badge--placeholder">пример</span>
+        <p class="card--case__type">Промышленные дозаторы</p>
+        <h3 class="card--case__title">Партия дозирующего оборудования</h3>
+        <p class="card--case__row"><strong>Задача:</strong> найти фабрику под нужную спецификацию и организовать поставку с сертификацией.</p>
+        <p class="card--case__row"><strong>Сделано:</strong> проверка производителя, согласование ТУ, сертификация, таможенное оформление, доставка до склада.</p>
+        <p class="card--case__row"><strong>Результат:</strong> груз прошёл таможню без задержек, поставка оформлена «в белую».</p>
+      </article>
+
+      <article class="card card--case is-placeholder" data-animate="case-card">
+        <div class="card--case__media card--case__media--b" aria-hidden="true"><svg viewBox="0 0 24 24" width="34" height="34"><use href="#icon-robot"></use></svg></div>
+        <span class="badge badge--placeholder">пример</span>
+        <p class="card--case__type">Робототехника</p>
+        <h3 class="card--case__title">Комплектующие для сборки роботов</h3>
+        <p class="card--case__row"><strong>Задача:</strong> регулярные небольшие поставки компонентов от нескольких фабрик.</p>
+        <p class="card--case__row"><strong>Сделано:</strong> объединение грузов от разных производителей в единую партию и маршрут.</p>
+        <p class="card--case__row"><strong>Результат:</strong> сокращено количество отдельных отправлений и точек контакта.</p>
+      </article>
+
+      <article class="card card--case is-placeholder" data-animate="case-card">
+        <div class="card--case__media card--case__media--c" aria-hidden="true"><svg viewBox="0 0 24 24" width="34" height="34"><use href="#icon-gear"></use></svg></div>
+        <span class="badge badge--placeholder">пример</span>
+        <p class="card--case__type">Промышленное оборудование</p>
+        <h3 class="card--case__title">Производственная линия под ключ</h3>
+        <p class="card--case__row"><strong>Задача:</strong> крупногабаритный груз, требующий отдельного согласования логистики.</p>
+        <p class="card--case__row"><strong>Сделано:</strong> подбор транспорта, документы, сертификация, сопровождение на таможне.</p>
+        <p class="card--case__row"><strong>Результат:</strong> оборудование доставлено и растаможено единым процессом.</p>
+      </article>
+
+      <article class="card card--case is-placeholder" data-animate="case-card">
+        <div class="card--case__media card--case__media--d" aria-hidden="true"><svg viewBox="0 0 24 24" width="34" height="34"><use href="#icon-chip"></use></svg></div>
+        <span class="badge badge--placeholder">пример</span>
+        <p class="card--case__type">Электронные компоненты</p>
+        <h3 class="card--case__title">Партия плат для маркетплейс-продавца</h3>
+        <p class="card--case__row"><strong>Задача:</strong> небольшая пробная партия перед регулярными закупками.</p>
+        <p class="card--case__row"><strong>Сделано:</strong> проверка фабрики, документы и сертификация под небольшой объём.</p>
+        <p class="card--case__row"><strong>Результат:</strong> клиент перешёл на регулярные поставки по тому же процессу.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================
+     6. КАТЕГОРИИ / ЧТО ПРИВОЗИМ
+     ========================================================== -->
+<section class="categories" id="categories" aria-labelledby="categories-heading">
+  <div class="container">
+    <p class="eyebrow">Что привозим</p>
+    <h2 class="section-title" id="categories-heading">Широкий спектр товаров и оборудования</h2>
+  </div>
+
+  <div class="categories__lane-viewport">
+    <div class="categories__lane" data-animate="category-lane">
+      <div class="card--category" data-animate="category-item"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><use href="#icon-robot"></use></svg><span>Робототехника</span></div>
+      <div class="card--category" data-animate="category-item"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><use href="#icon-chip"></use></svg><span>Платы и комплектующие</span></div>
+      <div class="card--category" data-animate="category-item"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><use href="#icon-gear"></use></svg><span>Промышленное оборудование</span></div>
+      <div class="card--category" data-animate="category-item"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><use href="#icon-drop"></use></svg><span>Дозаторы</span></div>
+      <div class="card--category" data-animate="category-item"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><use href="#icon-cpu"></use></svg><span>Электроника</span></div>
+      <div class="card--category" data-animate="category-item"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><use href="#icon-components"></use></svg><span>Производственные компоненты</span></div>
+      <div class="card--category" data-animate="category-item"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><use href="#icon-warehouse"></use></svg><span>Складское и упаковочное оборудование</span></div>
+      <div class="card--category" data-animate="category-item"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><use href="#icon-package"></use></svg><span>Другое оборудование</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================
+     7. ПОЧЕМУ С НАМИ
+     ========================================================== -->
+<section class="reasons" id="reasons" aria-labelledby="reasons-heading">
+  <div class="container">
+    <p class="eyebrow">Почему с нами</p>
+    <h2 class="section-title" id="reasons-heading">Коротко о главном</h2>
+
+    <div class="reasons__list">
+      <div class="reason-item" data-animate="reason-item">
+        <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><use href="#icon-link"></use></svg>
+        <p>Один подрядчик на весь процесс</p>
+      </div>
+      <div class="reason-item" data-animate="reason-item">
+        <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><use href="#icon-shield-check"></use></svg>
+        <p>Легальный импорт с документами</p>
+      </div>
+      <div class="reason-item" data-animate="reason-item">
+        <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><use href="#icon-bolt"></use></svg>
+        <p>Любой масштаб — от партии до контейнера</p>
+      </div>
+      <div class="reason-item" data-animate="reason-item">
+        <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><use href="#icon-eye"></use></svg>
+        <p>Прозрачность на каждом этапе</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================
+     8. ФИНАЛЬНЫЙ CTA / КОНТАКТЫ
+     ========================================================== -->
+<section class="final-cta" id="contacts" aria-labelledby="final-cta-heading">
+  <div class="final-cta__veil" data-animate="final-veil" aria-hidden="true"></div>
+  <div class="section-seam section-seam--final-in" data-animate="transition-final-in" aria-hidden="true"></div>
+
+  <div class="final-cta__inner">
+    <div class="final-cta__intro">
+      <p class="eyebrow eyebrow--on-dark">Готовы обсудить поставку</p>
+      <h2 class="final-cta__title" id="final-cta-heading">Опишите задачу — мы возьмём процесс на себя</h2>
+      <p class="final-cta__lede">Оставьте заявку — уточним детали груза и предложим маршрут импорта под вашу задачу.</p>
+
+      <div class="final-cta__contacts" data-animate="final-contacts">
+        <a class="final-cta__contact" href="tel:+70000000000">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><use href="#icon-phone"></use></svg>
+          +7 (000) 000-00-00 <span class="placeholder-note">— впишите реальный</span>
+        </a>
+        <a class="final-cta__contact" href="mailto:info@corex-trade.example">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><use href="#icon-mail"></use></svg>
+          info@corex-trade.example <span class="placeholder-note">— впишите реальный</span>
+        </a>
+        <a class="final-cta__contact" href="#">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><use href="#icon-telegram"></use></svg>
+          @corex_trade <span class="placeholder-note">— впишите реальный</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="final-cta__panel glass-panel" data-animate="final-panel">
+      <form class="final-cta__form" id="contact-form" novalidate>
+        <div class="form-field form-field--on-dark">
+          <label for="contact-name">Имя</label>
+          <input type="text" id="contact-name" name="name" placeholder="Как к вам обращаться" required>
+          <span class="form-field__error" id="contact-name-error" aria-live="polite"></span>
+        </div>
+        <div class="form-field form-field--on-dark">
+          <label for="contact-contact">Телефон, email или Telegram</label>
+          <input type="text" id="contact-contact" name="contact" placeholder="Куда вам ответить" required>
+          <span class="form-field__error" id="contact-contact-error" aria-live="polite"></span>
+        </div>
+        <div class="form-field form-field--on-dark">
+          <label for="contact-comment">Комментарий <span class="form-field__optional">(необязательно)</span></label>
+          <textarea id="contact-comment" name="comment" rows="3" placeholder="Что везём, откуда и куда"></textarea>
+        </div>
+        <button type="submit" class="btn btn--cta btn--lg final-cta__submit">Отправить заявку</button>
+        <p class="form-status" id="contact-form-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+
+  <p class="final-cta__footnote">Corex-Trade — импорт из Китая в Россию «в белую»</p>
+</section>
+
+</main>
+
+<script src="js/calculator.js"></script>
+<script src="js/contact-form.js"></script>
+</body>
+</html>
