@@ -260,11 +260,17 @@ h1, h2, h3, h4, h5 {
    ========================================================== */
 
 .site-header {
+  /* Безопасный дефолт: непрозрачная белая шапка. Без JS (или пока
+     IntersectionObserver из js/site-header.js ещё не подтвердил, что мы
+     наверху Hero) шапка остаётся в этом виде — так текст логотипа никогда
+     не окажется белым-по-белому или невидимым поверх непрогрываемого видео. */
   position: sticky;
   top: 0;
   z-index: 100;
   background: var(--color-surface-light);
   box-shadow: var(--shadow-sm);
+  transition: background-color var(--duration-base) var(--ease-standard),
+              box-shadow var(--duration-base) var(--ease-standard);
 }
 
 .site-header__inner {
@@ -285,10 +291,30 @@ h1, h2, h3, h4, h5 {
   font-weight: var(--font-weight-extrabold);
   font-size: var(--font-size-body-lg);
   color: var(--color-text-on-light);
+  transition: color var(--duration-base) var(--ease-standard);
 }
 
 .site-header__logo svg {
   color: var(--color-accent-primary);
+  transition: color var(--duration-base) var(--ease-standard);
+}
+
+/* Прозрачное состояние поверх видео Hero — только когда JS (js/site-header.js)
+   через IntersectionObserver подтвердил, что секция `#route` (первая после
+   Hero) ещё не показалась во вьюпорте, т.е. мы всё ещё наверху Hero.
+   `.site-header--solid` навешивается тем же скриптом, как только `#route`
+   появилась или осталась позади — тогда действует обычное непрозрачное
+   правило выше. Гейт `.js` — та же логика прогрессивного улучшения, что и у
+   `.js:not(.no-anim)` в §5.1: без JS класс никогда не применится, и шапка
+   остаётся в безопасном непрозрачном виде по умолчанию. */
+.js .site-header:not(.site-header--solid) {
+  background: transparent;
+  box-shadow: none;
+}
+
+.js .site-header:not(.site-header--solid) .site-header__logo,
+.js .site-header:not(.site-header--solid) .site-header__logo svg {
+  color: var(--color-text-on-dark);
 }
 
 @media (max-width: 479px) {
