@@ -24,6 +24,41 @@
  * `.js` на <html> всегда рисуется непрозрачным. Этот скрипт только
  * добавляет/снимает класс `.site-header--solid`, которым обычное
  * непрозрачное состояние однозначно фиксируется даже когда `.js` уже есть.
+ *
+ * ПОЧЕМУ СТАРТ ОТЛОЖЕН ДО `window.load` (+2 кадра), А НЕ СРАЗУ:
+ * На десктопе `#route` физически отодвигается вниз за счёт pin-spacer —
+ * служебного элемента, который вставляет GSAP ScrollTrigger (initHero,
+ * js/animations.js, pin: true). Эта вставка происходит не синхронно в
+ * момент разбора <script src="js/animations.js">, а отложенно (внутренний
+ * тик GSAP), и ScrollTrigger.refresh() по `window.load` в animations.js
+ * может её ещё раз пересчитать (invalidateOnRefresh: true). Если запустить
+ * IntersectionObserver сразу при разборе этого скрипта, его самая первая
+ * доставка результата (тоже асинхронная, на следующий кадр отрисовки)
+ * может — в зависимости от того, как браузер в конкретный момент
+ * планирует эти два независимых асинхронных события — застать `#route` ДО
+ * того, как pin-spacer встал на место. В обычной раскладке (без пина)
+ * `#route` в этот момент лежит намного выше своей финальной позиции и
+ * оказывается во вьюпорте или у самого его края — observer читает это как
+ * «Hero пройден» и ошибочно ставит `--solid` уже на первом кадре, до
+ * какого-либо скролла пользователя. Это воспроизводится нестабильно
+ * (зависит от скорости CPU/сети конкретного устройства) и было
+ * подтверждено инструментированным прогоном в браузере: наблюдалось
+ * расстояние всего в несколько миллисекунд между вставкой pin-spacer и
+ * первой доставкой результата observer'а. Как только пользователь
+ * скроллит, браузер пересчитывает пересечение по актуальной раскладке —
+ * шапка «самопочиняется» в прозрачную, что и создавало впечатление «белая
+ * полоска пропадает только после скролла».
+ *
+ * Чтобы первая же проверка observer'а опиралась на стабилизированную
+ * раскладку, старт откладывается до `window.load` (тот же сигнал, на
+ * который ориентируется ScrollTrigger.refresh() в animations.js — его
+ * обработчик load зарегистрирован раньше и потому отработает первым) плюс
+ * два кадра отрисовки поверх него, чтобы синхронные DOM-эффекты этого
+ * refresh успели попасть в layout до первого чтения geometry. До этого
+ * момента шапка остаётся в CSS-дефолте (прозрачная, см. правило
+ * `.js .site-header:not(.site-header--solid)` ниже в этом файле — класс
+ * `--solid` просто ещё не навешан) — то есть верное самое первое состояние
+ * гарантировано самим CSS, а не удачным первым срабатыванием observer'а.
  */
 (function () {
   var header = document.querySelector('.site-header');
@@ -35,16 +70,36 @@
     return;
   }
 
-  var observer = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      // #route виден во вьюпорте (Hero пройден) — либо уже полностью
-      // скрылся выше вьюпорта при дальнейшем скролле вниз — шапка
-      // непрозрачная. Иначе (#route всё ещё ниже вьюпорта, мы внутри Hero,
-      // включая скролл назад в Hero) — прозрачная.
-      var pastHero = entry.isIntersecting || entry.boundingClientRect.top < 0;
-      header.classList.toggle('site-header--solid', pastHero);
+  function startObserving() {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        // #route виден во вьюпорте (Hero пройден) — либо уже полностью
+        // скрылся выше вьюпорта при дальнейшем скролле вниз — шапка
+        // непрозрачная. Иначе (#route всё ещё ниже вьюпорта, мы внутри Hero,
+        // включая скролл назад в Hero) — прозрачная.
+        var pastHero = entry.isIntersecting || entry.boundingClientRect.top < 0;
+        header.classList.toggle('site-header--solid', pastHero);
+      });
     });
-  });
 
-  observer.observe(sentinel);
+    observer.observe(sentinel);
+  }
+
+  function onLayoutStable() {
+    // requestAnimationFrame может быть недоступен в очень старых браузерах —
+    // но раз мы уже внутри ветки с IntersectionObserver, современный
+    // браузер, поддерживающий rAF, гарантирован.
+    requestAnimationFrame(function () {
+      requestAnimationFrame(startObserving);
+    });
+  }
+
+  if (document.readyState === 'complete') {
+    // Скрипт выполнился уже после window.load (например, порядок событий
+    // на медленной сети) — раскладка и так стабилизирована, ждать
+    // отдельное событие load не нужно.
+    onLayoutStable();
+  } else {
+    window.addEventListener('load', onLayoutStable, { once: true });
+  }
 })();
