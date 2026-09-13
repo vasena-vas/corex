@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Corex-Trade — калькулятор</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --e-out:cubic-bezier(.16,1,.3,1);
+  --e-soft:cubic-bezier(.33,1,.68,1);
+  --ink:#141414; --muted:#6B747A; --bg:#F6F8FA; --paper:#fff;
+  --blue:#2F5FDE; --red:#E2483A; --dark:#1A232B;
+  --hair:rgba(20,20,20,.12);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1180px;margin:0 auto;padding:clamp(60px,8vw,120px) clamp(20px,4vw,48px)}
+
+.eyebrow{font-size:12px;letter-spacing:.14em;color:var(--blue);font-weight:500;margin-bottom:18px}
+h2{margin:0;font-size:clamp(32px,4.8vw,60px);line-height:1.03;letter-spacing:-.03em;font-weight:700;max-width:17ch}
+.lede{margin:20px 0 0;font-size:clamp(15px,1.3vw,17px);line-height:1.6;color:var(--muted);max-width:60ch}
+
+.calc{margin-top:clamp(34px,4.4vw,56px);display:grid;grid-template-columns:minmax(320px,44%) 1fr;
+  border:1px solid var(--hair);background:var(--paper)}
+
+/* ---------- поля ---------- */
+.ctrl{padding:clamp(22px,2.6vw,36px);min-width:0}
+.ctrl-h{font-size:11px;letter-spacing:.12em;color:var(--muted);padding-bottom:14px;
+  border-bottom:1px solid var(--ink);margin-bottom:26px}
+
+.g{display:grid;gap:0 22px}
+.g-a{grid-template-columns:1.55fr 1fr}
+.g-b{grid-template-columns:1fr 1fr}
+.fld{margin-bottom:22px;min-width:0}
+.fld label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:7px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.inp{position:relative;display:flex;align-items:baseline;gap:6px;padding-bottom:9px;min-width:0}
+.inp::before{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--hair)}
+.inp::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--ink);
+  transform:scaleX(0);transition:transform 360ms var(--e-out)}
+.inp:focus-within::after{transform:scaleX(1)}
+.inp input{flex:1;width:100%;min-width:0;border:0;background:none;padding:0;font:inherit;
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+  font-size:clamp(17px,1.8vw,21px);font-weight:500;color:var(--ink);letter-spacing:-.01em}
+.inp input:focus{outline:none}
+.inp input::placeholder{color:rgba(20,20,20,.2);font-weight:400}
+.inp .u{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--muted);flex:none}
+.hint{display:block;margin-top:6px;font-size:11px;color:rgba(20,20,20,.32);line-height:1.4}
+
+.chips{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.chip{font:inherit;font-size:12.5px;padding:9px 11px;background:none;cursor:pointer;text-align:left;
+  border:1px solid var(--hair);color:var(--muted);line-height:1.25;min-width:0;
+  transition:color 180ms var(--e-soft),border-color 180ms var(--e-soft),background 180ms var(--e-soft)}
+.chip:hover{color:var(--ink);border-color:rgba(20,20,20,.32)}
+.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+
+/* своя категория */
+.custom{display:grid;grid-template-rows:0fr;transition:grid-template-rows 360ms var(--e-out)}
+.custom.open{grid-template-rows:1fr}
+.custom-in{overflow:hidden}
+.custom-pad{padding-top:20px}
+
+.vat{display:flex;gap:11px;align-items:flex-start;padding-top:20px;margin-top:2px;
+  border-top:1px solid var(--hair);cursor:pointer}
+.vat input{margin:2px 0 0;accent-color:var(--blue);width:16px;height:16px;flex:none}
+.vat span{font-size:12.8px;line-height:1.5;color:var(--muted)}
+.vat b{color:var(--ink);font-weight:500;display:block;font-size:13px;margin-bottom:2px}
+
+/* ---------- результат ---------- */
+.res{background:var(--dark);color:#fff;padding:clamp(22px,2.6vw,36px);display:flex;flex-direction:column;min-width:0}
+.res-h{font-size:12px;letter-spacing:.12em;color:rgba(255,255,255,.55);
+  padding-bottom:15px;border-bottom:1px solid rgba(255,255,255,.28);margin-bottom:24px;
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.res-h .rate{color:rgba(255,255,255,.4)}
+
+.big{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.big-n{font-size:clamp(30px,4.2vw,54px);font-weight:500;letter-spacing:-.03em;line-height:1}
+.big-p{font-size:clamp(13px,1.4vw,17px);color:var(--blue);background:rgba(47,95,222,.16);
+  padding:5px 10px;white-space:nowrap}
+.big-sub{margin-top:12px;font-size:13.5px;color:rgba(255,255,255,.62);line-height:1.55;max-width:62ch}
+
+.bar{position:relative;height:10px;margin:24px 0 18px;background:rgba(255,255,255,.11);overflow:hidden}
+.seg{position:absolute;left:0;top:0;bottom:0;width:100%;transform-origin:left;
+  transition:transform 620ms var(--e-out)}
+
+.rows{list-style:none;margin:0;padding:0}
+.li{display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:14px;align-items:baseline;
+  padding:15px 0;border-bottom:1px solid rgba(255,255,255,.13);font-size:16px}
+.li .dot{width:11px;height:11px;align-self:center}
+.li .nm{color:rgba(255,255,255,.88)}
+.li .nm small{display:block;font-size:12.5px;color:rgba(255,255,255,.5);margin-top:5px;line-height:1.45}
+.li .vl{font-weight:500;white-space:nowrap}
+.li.off{opacity:.34}
+.li.off .vl{text-decoration:line-through}
+.li.head .nm{color:#fff}
+
+.sum{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:baseline;
+  padding:19px 0 0;margin-top:6px;border-top:1px solid rgba(255,255,255,.4);font-size:16.5px}
+.sum .nm{color:#fff;font-weight:500}
+.sum .nm small{display:block;font-size:12.5px;color:rgba(255,255,255,.5);margin-top:5px;font-weight:400;line-height:1.45}
+.sum .vl{font-size:25px;font-weight:500;white-space:nowrap;letter-spacing:-.02em}
+.unit-row{display:flex;justify-content:space-between;gap:12px;padding-top:14px;font-size:14.5px;
+  color:rgba(255,255,255,.62)}
+.unit-row b{color:#fff;font-weight:500}
+.unit-row.hide{display:none}
+
+/* выбор способа доставки */
+.modes-h{margin-top:24px;display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+  font-size:12px;letter-spacing:.1em;color:rgba(255,255,255,.5);margin-bottom:10px}
+.reset{background:none;border:0;padding:0;font:inherit;font-size:12px;letter-spacing:.06em;
+  color:var(--blue);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.reset.hide{visibility:hidden}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,.18)}
+.mode{background:var(--dark);padding:16px 17px;border:0;text-align:left;cursor:pointer;font:inherit;
+  color:#fff;position:relative;min-width:0;
+  transition:background 180ms var(--e-soft)}
+.mode:hover{background:#222D37}
+.mode:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}
+.mode .t{font-size:12px;letter-spacing:.1em;color:rgba(255,255,255,.55);margin-bottom:8px}
+.mode .v{font-size:20px;font-weight:500;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.mode .tag{position:absolute;top:11px;right:12px;font-size:9.5px;letter-spacing:.1em;
+  color:var(--blue);opacity:0;transition:opacity 180ms var(--e-soft)}
+.mode.rec .tag{opacity:1}
+.mode.on{background:#1D2C48}
+.mode.on::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--blue)}
+.mode.on .t{color:var(--blue)}
+.mode.on .tag{opacity:0}
+.modes-note{margin-top:12px;font-size:12.5px;color:rgba(255,255,255,.48);line-height:1.55}
+
+.res-foot{margin-top:auto;padding-top:22px}
+.res-foot p{margin:0 0 18px;font-size:13px;line-height:1.6;color:rgba(255,255,255,.55);max-width:56ch}
+.cta{display:inline-block;background:var(--red);color:#fff;text-decoration:none;
+  padding:16px 26px;font-size:15.5px;font-weight:500;position:relative;overflow:hidden}
+.cta span{position:relative;z-index:2}
+.cta::before{content:"";position:absolute;inset:0;background:#C93A2D;transform:scaleX(0);transform-origin:left;
+  transition:transform 260ms var(--e-soft)}
+.cta:hover::before{transform:scaleX(1);transition-duration:180ms}
+
+.note{margin-top:24px;font-size:12px;letter-spacing:.05em;color:var(--red);opacity:.9;line-height:1.6}
+
+@media (max-width:960px){ .calc{grid-template-columns:1fr} }
+@media (max-width:560px){
+  .g-a,.g-b{grid-template-columns:1fr}
+  .chips{grid-template-columns:1fr}
+  .modes{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition-duration:1ms!important}}
+</style>
+</head>
+<body>
+<section class="wrap">
+  <div class="eyebrow mono">Расчёт</div>
+  <h2>Во сколько обойдётся партия на складе</h2>
+  <p class="lede">Самая частая ошибка в самостоятельном расчёте — посчитать по цене завода и ставке перевозки. Здесь видно всё, что добавляется сверху: логистика, пошлина, НДС и оформление. Точный расчёт по вашему товару — через два дня после заявки.</p>
+
+  <div class="calc">
+    <div class="ctrl">
+      <div class="ctrl-h mono">Параметры партии</div>
+
+      <div class="g g-a">
+        <div class="fld">
+          <label for="value">Стоимость партии на фабрике</label>
+          <div class="inp"><input id="value" type="text" inputmode="decimal" value="18 000" placeholder="18 000"><span class="u">$</span></div>
+        </div>
+        <div class="fld">
+          <label for="qty">Количество</label>
+          <div class="inp"><input id="qty" type="text" inputmode="numeric" value="" placeholder="120"><span class="u">шт</span></div>
+          <span class="hint">необязательно</span>
+        </div>
+      </div>
+
+      <div class="g g-b">
+        <div class="fld">
+          <label for="weight">Вес брутто</label>
+          <div class="inp"><input id="weight" type="text" inputmode="decimal" value="480" placeholder="480"><span class="u">кг</span></div>
+        </div>
+        <div class="fld">
+          <label for="vol">Объём</label>
+          <div class="inp"><input id="vol" type="text" inputmode="decimal" value="2,4" placeholder="2,4"><span class="u">м³</span></div>
+          <span class="hint">необязательно</span>
+        </div>
+      </div>
+
+      <div class="fld">
+        <label>Категория товара</label>
+        <div class="chips" id="chips"></div>
+
+        <div class="custom" id="custom">
+          <div class="custom-in"><div class="custom-pad">
+            <div class="g g-b">
+              <div class="fld" style="margin-bottom:0">
+                <label for="cname">Что за товар</label>
+                <div class="inp"><input id="cname" type="text" placeholder="напишите словами"
+                  style="font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:400"></div>
+              </div>
+              <div class="fld" style="margin-bottom:0">
+                <label for="crate">Ставка пошлины</label>
+                <div class="inp"><input id="crate" type="text" inputmode="decimal" value="5" placeholder="5"><span class="u">%</span></div>
+                <span class="hint">не знаете — оставьте 5 %, точную определим по коду ТН ВЭД</span>
+              </div>
+            </div>
+          </div></div>
+        </div>
+      </div>
+
+      <label class="vat">
+        <input type="checkbox" id="vat" checked>
+        <span><b>Я работаю с НДС</b>Если вы на ОСНО, уплаченный на таможне НДС принимается к вычету и в итоговую нагрузку не входит. Снимите галочку, если работаете на УСН.</span>
+      </label>
+    </div>
+
+    <div class="res">
+      <div class="res-h mono"><span>Партия на складе</span><span class="rate">курс 95,00 ₽/$</span></div>
+
+      <div class="big">
+        <div class="big-n mono" data-num="grand">0 ₽</div>
+        <div class="big-p mono">+<span data-num="pct">0</span> % к цене фабрики</div>
+      </div>
+      <div class="big-sub" id="range">—</div>
+
+      <div class="bar" id="bar"></div>
+      <ul class="rows" id="rows"></ul>
+
+      <div class="sum">
+        <div class="nm">Итого на складе<small>без учёта сертификации и упаковки под маркетплейс</small></div>
+        <div class="vl mono" data-num="grand2">0 ₽</div>
+      </div>
+      <div class="unit-row hide" id="unitRow">
+        <span>Себестоимость единицы</span><b class="mono" data-num="unit">0 ₽</b>
+      </div>
+
+      <div class="modes-h mono">
+        <span>Способ доставки</span>
+        <button class="reset hide" id="reset" type="button">вернуть рекомендованный</button>
+      </div>
+      <div class="modes">
+        <button class="mode" id="mAuto" type="button">
+          <span class="tag mono">рекомендуем</span>
+          <div class="t mono">Авто · 22–25 дней</div>
+          <div class="v" data-num="auto">0 ₽</div>
+        </button>
+        <button class="mode" id="mAir" type="button">
+          <span class="tag mono">рекомендуем</span>
+          <div class="t mono">Авиа · 4–7 дней</div>
+          <div class="v" data-num="air">0 ₽</div>
+        </button>
+      </div>
+      <div class="modes-note">Железную дорогу и море считаем в точном расчёте: там ставка сильно зависит от направления и порта отправления.</div>
+
+      <div class="res-foot">
+        <p>Это порядок цифры, а не коммерческое предложение. Ставка пошлины зависит от кода ТН ВЭД, логистика — от плотности груза, направления и текущих ставок.</p>
+        <a class="cta" href="#"><span>Посчитать точно по моему товару</span></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="note mono">демо: курс подставляется заглушкой</div>
+</section>
+
+<script>
+const USD = 95;                 // ЗАГЛУШКА: подставлять курс ЦБ на дату
+const VAT = 0.22;               // с 01.01.2026
+const BROKER = 20500;           // оформление декларации, ₽
+const INS = 0.001;              // страховка от стоимости товара
+const BORDER = 0.60;            // доля фрахта «до границы» в таможенной стоимости
+
+const CATS = [
+  ["Промышленное оборудование", .05],
+  ["Робототехника",             .05],
+  ["Электроника и платы",       .05],
+  ["Комплектующие и запчасти",  .05],
+  ["Складское и упаковочное",   .05],
+  ["Товары для маркетплейсов",  .08],
+  ["Другое — впишу сам",        null]
+];
+
+const FEES = [[200000,1231],[450000,2462],[1200000,4924],[2700000,13541],
+              [4200000,18465],[5500000,21344],[10000000,49240],[Infinity,73860]];
+
+const SEGS = [
+  ["goods","Товар на фабрике","#2F5FDE",""],
+  ["log",  "Логистика до склада","#6E92EA","вес × ставка по весовому уровню"],
+  ["duty", "Таможенная пошлина","#A9BEF2",""],
+  ["vat",  "НДС 22 %","#D5DFF8","от таможенной стоимости вместе с пошлиной, а не от цены товара"],
+  ["fees", "Оформление","#59636B","таможенный сбор, брокер, страховка"]
+];
+
+const $ = s => document.querySelector(s);
+const cl = (v,a,b) => v<a?a:v>b?b:v;
+const fmt = n => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'\u2009');
+const parse = s => { const v = parseFloat(String(s).replace(/[^\d.,]/g,'').replace(',','.')); return isFinite(v)?v:0; };
+
+function rateAuto(w, dens){
+  let r = w<=50?400 : w<=150?320 : w<=300?280 : w<=600?220 : 100;
+  if(w>900 && dens>310) r = r * cl(1 - (dens-310)/250*0.40, .60, 1);
+  return r;
+}
+function rateAir(w){ return w<=50?427 : w<=150?379 : w<=300?395 : 350; }
+function fee(v){ for(const [lim,f] of FEES) if(v<=lim) return f; }
+
+let cat = 0;
+let pick = null;                 // выбранный вручную способ: 'auto' | 'air' | null
+
+const chips = $('#chips');
+CATS.forEach((c,i)=>{
+  const b=document.createElement('button');
+  b.className='chip'+(i===0?' on':''); b.type='button'; b.textContent=c[0];
+  b.onclick=()=>{
+    cat=i;
+    [...chips.children].forEach((x,j)=>x.classList.toggle('on',j===i));
+    $('#custom').classList.toggle('open', CATS[i][1]===null);
+    if(CATS[i][1]===null) setTimeout(()=>$('#cname').focus(),120);
+    update();
+  };
+  chips.appendChild(b);
+});
+
+const bar = $('#bar'), rowsEl = $('#rows');
+SEGS.forEach((s,i)=>{
+  const d=document.createElement('div');
+  d.className='seg'; d.style.background=s[2]; d.dataset.k=s[0];
+  d.style.transform='translateX(0) scaleX(0)';
+  bar.appendChild(d);
+
+  const li=document.createElement('li');
+  li.className='li'+(i===0?' head':''); li.dataset.k=s[0];
+  li.innerHTML='<span class="dot" style="background:'+s[2]+'"></span>'
+    +'<span class="nm">'+s[1]+(s[3]?'<small>'+s[3]+'</small>':'')+'</span>'
+    +'<span class="vl mono" data-num="'+s[0]+'">0 ₽</span>';
+  rowsEl.appendChild(li);
+});
+
+const nums = {}, targets = {}, cur = {};
+document.querySelectorAll('[data-num]').forEach(el=>{
+  nums[el.dataset.num]=el; targets[el.dataset.num]=0; cur[el.dataset.num]=0;
+});
+function tick(){
+  for(const k in nums){
+    const d = targets[k]-cur[k];
+    if(Math.abs(d)>.5) cur[k]+=d*0.18; else cur[k]=targets[k];
+    nums[k].textContent = fmt(cur[k]) + (k==='pct' ? '' : ' ₽');
+  }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+function dutyRate(){
+  const r = CATS[cat][1];
+  if(r !== null) return r;
+  return cl(parse($('#crate').value)/100, 0, .5);
+}
+
+function update(){
+  const goods = parse($('#value').value);
+  const w     = Math.max(1, parse($('#weight').value));
+  const volIn = parse($('#vol').value);
+  const qty   = parse($('#qty').value);
+  const noVat = $('#vat').checked;
+  const vol   = volIn > 0 ? volIn : w/250;
+  const dens  = w/vol;
+
+  const rA = rateAuto(w,dens), rR = rateAir(w);
+  const logA = w*rA, logR = w*rR;
+  const goodsR = goods*USD;
+  // методика: авиа берём, если переплата не больше ~10 ₽/шт; без количества — 1 % от цены партии
+  const thr = qty>0 ? qty*10 : goodsR*0.01;
+  const rec = (logR-logA) < thr ? 'air' : 'auto';
+  const use = pick || rec;
+  const log = use==='air' ? logR : logA;
+
+  const ins    = goodsR*INS;
+  const custVal= goodsR + ins + log*BORDER;
+  const duty   = custVal*dutyRate();
+  const vat    = noVat ? 0 : (custVal+duty)*VAT;
+  const fees   = fee(custVal) + BROKER + ins;
+  const addon  = log + duty + vat + fees;
+  const grand  = goodsR + addon;
+
+  targets.goods=goodsR; targets.log=log; targets.duty=duty; targets.vat=vat; targets.fees=fees;
+  targets.grand=grand; targets.grand2=grand;
+  targets.pct = goodsR>0 ? addon/goodsR*100 : 0;
+  targets.auto=logA; targets.air=logR;
+  targets.unit = qty>0 ? grand/qty : 0;
+
+  $('#unitRow').classList.toggle('hide', !(qty>0));
+  $('#range').textContent =
+    'Диапазон с учётом разброса ставок: ' + fmt(grand*.93) + ' — ' + fmt(grand*1.08) + ' ₽. '
+    + (noVat ? 'НДС исключён — принимается к вычету.' : 'НДС включён: на УСН он к вычету не принимается.');
+
+  rowsEl.querySelector('[data-k=vat]').classList.toggle('off', noVat);
+
+  $('#mAuto').classList.toggle('on',  use==='auto');
+  $('#mAir').classList.toggle('on',   use==='air');
+  $('#mAuto').classList.toggle('rec', rec==='auto' && use!=='auto');
+  $('#mAir').classList.toggle('rec',  rec==='air'  && use!=='air');
+  $('#reset').classList.toggle('hide', !pick || pick===rec);
+
+  let off=0;
+  const vals={goods:goodsR,log,duty,vat,fees};
+  bar.querySelectorAll('.seg').forEach(s=>{
+    const share = grand>0 ? vals[s.dataset.k]/grand : 0;
+    s.style.transform='translateX('+(off*100).toFixed(2)+'%) scaleX('+share.toFixed(4)+')';
+    off+=share;
+  });
+}
+
+['value','weight','vol','qty','crate'].forEach(id=>{
+  const el=$('#'+id);
+  el.addEventListener('input',update);
+  el.addEventListener('blur',()=>{
+    const v=parse(el.value);
+    if(!v){ if(id!=='crate') el.value=''; update(); return; }
+    el.value = (id==='vol'||id==='crate') ? String(v).replace('.',',') : fmt(v);
+    update();
+  });
+});
+$('#vat').addEventListener('change',update);
+$('#mAuto').addEventListener('click',()=>{pick='auto';update()});
+$('#mAir').addEventListener('click', ()=>{pick='air'; update()});
+$('#reset').addEventListener('click',()=>{pick=null;update()});
+update();
+</script>
+</body>
+</html>

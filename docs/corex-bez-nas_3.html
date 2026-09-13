@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Corex-Trade — блок «Без нас»</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --e-out:cubic-bezier(.16,1,.3,1);
+  --e-soft:cubic-bezier(.33,1,.68,1);
+  --ink:#141414; --muted:#6B747A; --bg:#F6F8FA; --paper:#fff;
+  --blue:#2F5FDE; --red:#E2483A;
+  --hair:rgba(20,20,20,.12);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1180px;margin:0 auto;padding:clamp(60px,8vw,120px) clamp(20px,4vw,48px)}
+
+.eyebrow{font-size:12px;letter-spacing:.14em;color:var(--red);font-weight:500;margin-bottom:18px}
+h2{margin:0;font-size:clamp(32px,4.8vw,60px);line-height:1.03;letter-spacing:-.03em;font-weight:700;max-width:15ch}
+.lede{margin:20px 0 0;font-size:clamp(15px,1.3vw,17px);line-height:1.6;color:var(--muted);max-width:58ch}
+
+.tally{margin-top:clamp(28px,3.4vw,42px);display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.tally .n{font-size:clamp(40px,5.2vw,68px);font-weight:500;line-height:1;letter-spacing:-.035em;color:var(--red);
+  transition:color 620ms var(--e-out)}
+.tally.b .n{color:var(--blue)}
+.tally .t{font-size:15.5px;color:var(--muted);max-width:36ch;line-height:1.45}
+
+.board{margin-top:clamp(22px,2.6vw,34px);display:grid;grid-template-columns:1fr minmax(300px,40%);
+  gap:clamp(24px,3vw,44px);align-items:start}
+
+/* ---- карточка схемы ---- */
+.scheme{background:var(--paper);border:1px solid var(--hair)}
+.sch-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding:14px 16px;border-bottom:1px solid var(--hair)}
+.sch-lbl{font-size:11px;letter-spacing:.12em;color:var(--muted)}
+.sch-lbl b{color:var(--ink);font-weight:500}
+
+.seg{position:relative;display:flex;padding:3px;border:1px solid var(--ink);background:var(--paper)}
+.seg-ind{position:absolute;top:3px;left:3px;bottom:3px;width:calc(50% - 3px);background:var(--ink);
+  transform:translateX(0);transition:transform 420ms var(--e-out)}
+.seg.b .seg-ind{transform:translateX(100%)}
+.sg{position:relative;z-index:2;flex:1;min-width:132px;font:inherit;font-size:12.5px;padding:9px 14px;
+  background:none;border:0;cursor:pointer;color:var(--muted);white-space:nowrap;
+  transition:color 300ms var(--e-soft)}
+.sg.on{color:#fff}
+.sg:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.seg::after{content:"";position:absolute;inset:-5px;border:1px solid var(--red);opacity:0;pointer-events:none}
+.seg.hint::after{animation:pulse 2.2s var(--e-soft) infinite}
+@keyframes pulse{0%,100%{opacity:0;transform:scale(1)}45%{opacity:.55;transform:scale(1.012)}}
+
+.scheme{overflow-x:auto}
+.scheme svg{display:block;width:100%;min-width:540px;height:auto}
+.chip rect{transition:fill 180ms var(--e-soft),stroke 180ms var(--e-soft)}
+.chip text{font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:500;fill:#232B30;
+  transition:fill 180ms var(--e-soft)}
+.chip.you text,.chip.corex text{fill:#fff;font-weight:500}
+.chip.you rect{fill:#141414;stroke:#141414}
+.chip.corex rect{fill:#2F5FDE;stroke:#2F5FDE}
+.chip.hot rect{fill:#FDF0EE;stroke:var(--red)}
+.chip.hot text{fill:var(--red)}
+.flow{stroke-dasharray:5 7;animation:flow 1.6s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-24}}
+
+/* ---- список ---- */
+.list{list-style:none;margin:0;padding:0;border-top:1px solid var(--ink)}
+.item{display:grid;grid-template-columns:26px minmax(0,1fr);gap:12px;padding:14px 0;
+  border-bottom:1px solid var(--hair);transition:background 180ms var(--e-soft)}
+.item:hover{background:rgba(20,20,20,.03)}
+.item .ix{font-size:11px;color:rgba(20,20,20,.3);padding-top:3px}
+.item .task{font-size:14.5px;line-height:1.35;font-weight:500}
+.item .who{margin-top:5px;font-size:12.5px;color:var(--muted);display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.item .old{transition:opacity 360ms var(--e-out)}
+.item .new{color:var(--blue);opacity:0;transform:translateX(-6px);
+  transition:opacity 360ms var(--e-out),transform 360ms var(--e-out);transition-delay:var(--d,0ms)}
+.b .item .old{opacity:.38;text-decoration:line-through;text-decoration-color:rgba(20,20,20,.35)}
+.b .item .new{opacity:1;transform:none}
+
+.foot{margin-top:26px;padding-top:20px;border-top:1px solid var(--hair);
+  font-size:14.5px;line-height:1.6;color:var(--muted);max-width:66ch}
+.foot b{color:var(--ink);font-weight:500}
+.note{margin-top:26px;font-size:12px;letter-spacing:.05em;color:var(--red);opacity:.9}
+
+@media (max-width:900px){ .board{grid-template-columns:1fr} .sg{min-width:0} }
+@media (prefers-reduced-motion:reduce){*{transition-duration:1ms!important;animation:none!important}}
+</style>
+</head>
+<body>
+<section class="wrap" id="sec">
+  <div class="eyebrow mono">Без нас</div>
+  <h2>Семь исполнителей или один договор</h2>
+  <p class="lede">Каждый участок импорта закрывает свой специалист. Обычно клиент ищет их по одному и сам сводит между собой: у каждого своя цена, свои сроки и своё представление о том, кто за что отвечает.</p>
+
+  <div class="tally" id="tally">
+    <div class="n mono" id="tn">7</div>
+    <div class="t" id="tt">связей, которые вы держите сами — и каждую надо найти, проверить и состыковать с остальными</div>
+  </div>
+
+  <div class="board">
+    <div class="scheme">
+      <div class="sch-head">
+        <div class="sch-lbl mono">Схема связей · <b id="mode">как обычно</b></div>
+        <div class="seg hint" id="seg">
+          <span class="seg-ind"></span>
+          <button class="sg on" id="swA" type="button">Как обычно</button>
+          <button class="sg" id="swB" type="button">С Corex-Trade</button>
+        </div>
+      </div>
+      <svg id="svg" viewBox="0 0 620 470" xmlns="http://www.w3.org/2000/svg" aria-label="Схема связей">
+        <defs>
+          <pattern id="dots" width="18" height="18" patternUnits="userSpaceOnUse">
+            <circle cx="1" cy="1" r="1" fill="rgba(20,20,20,.09)"/>
+          </pattern>
+        </defs>
+        <rect width="620" height="470" fill="url(#dots)"/>
+        <g id="lnA" fill="none"></g>
+        <g id="lnB" fill="none"></g>
+        <g id="nodes"></g>
+      </svg>
+    </div>
+
+    <ul class="list" id="list"></ul>
+  </div>
+
+  <p class="foot">Часть участков закрывают наши партнёры: сертификацией занимаются профильные специалисты, таможенным представителем выступает наша транспортная компания. Разница в том, что искать их, проверять и сводить между собой — не вам. <b>У вас один договор и один ответственный за результат.</b></p>
+
+  <div class="note mono">демо: распределение «мы / наш партнёр» по строкам стоит сверить с командой</div>
+</section>
+
+<script>
+/* [подпись, x/y «как обычно», x/y «с нами»] — координаты центра плашки */
+const NODES = [
+  ["Посредник",      300, 46,  438, 58 ],
+  ["Торговый агент", 505,108,  458,118 ],
+  ["Инспекция",      262,148,  438,178 ],
+  ["Сертификация",   480,214,  450,238 ],
+  ["Документы",      258,254,  438,298 ],
+  ["Таможня",        490,318,  430,358 ],
+  ["Перевозка",      290,392,  438,418 ]
+];
+const YOU=[54,228], COREX=[210,228];
+const LINKS_A=[['y',0],['y',1],['y',2],['y',3],['y',4],['y',5],['y',6],
+               [0,1],[2,1],[3,5],[4,5],[5,6]];
+const ROWS=[
+  ["Найти производителя под спецификацию","Посредник или байер в Китае","закрываем мы"],
+  ["Снять цены, договориться об условиях оплаты","Торговый агент","закрываем мы"],
+  ["Проверить фабрику, получить образцы","Инспекционная компания","наш человек в Китае"],
+  ["Понять, нужна ли сертификация, и получить документ","Сертификационный центр","наш партнёр"],
+  ["Контракт, инвойс, packing list","Юрист или сам клиент","закрываем мы"],
+  ["Таможенное оформление","Таможенный представитель","наш партнёр"],
+  ["Перевозка и доставка до склада","Транспортная компания, форвардер","наш партнёр"]
+];
+
+const NS="http://www.w3.org/2000/svg";
+const mk=(t,a={})=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e};
+const lerp=(a,b,t)=>a+(b-a)*t;
+const exp=t=>t>=1?1:1-Math.pow(2,-10*t);
+const wOf=s=>Math.round(s.length*7.9)+26;
+
+const gA=document.getElementById('lnA'),gB=document.getElementById('lnB'),gN=document.getElementById('nodes');
+const sec=document.getElementById('sec'),tally=document.getElementById('tally'),seg=document.getElementById('seg');
+
+function chip(label,kind){
+  const w=wOf(label),h=32;
+  const g=mk('g',{class:'chip '+kind});
+  const fill = kind==='you'?'#141414' : kind==='corex'?'#2F5FDE':'#fff';
+  const strk = kind==='you'?'#141414' : kind==='corex'?'#2F5FDE':'rgba(20,20,20,.44)';
+  g.appendChild(mk('rect',{x:-w/2,y:-h/2,width:w,height:h,fill:fill,stroke:strk,'stroke-width':1.2}));
+  const t=mk('text',{x:0,y:4.5,'text-anchor':'middle'});
+  t.textContent=label;
+  if(kind!=='n') t.setAttribute('fill','#fff');
+  g.appendChild(t); gN.appendChild(g);
+  g.__w=w; return g;
+}
+const youEl=chip('Вы','you'), corexEl=chip('Corex-Trade','corex');
+const nodeEls=NODES.map(n=>chip(n[0],'n'));
+
+const pathsA=LINKS_A.map((lk,i)=>{
+  const p=mk('path',{fill:'none',stroke:lk[0]==='y'?'#E2483A':'#B4BCC3',
+    'stroke-width':lk[0]==='y'?1.5:1.1,'stroke-linecap':'round',opacity:lk[0]==='y'?.9:.75});
+  if(lk[0]==='y') p.setAttribute('class','flow');
+  gA.appendChild(p); return p;
+});
+const pathYC=mk('path',{fill:'none',stroke:'#2F5FDE','stroke-width':2.4,'stroke-linecap':'round'});
+gB.appendChild(pathYC);
+const pathsB=NODES.map(()=>{const p=mk('path',{fill:'none',stroke:'#AFC0EA','stroke-width':1.2,'stroke-linecap':'round'});gB.appendChild(p);return p});
+
+let t=0,target=0,raf=null,from=0,start=0;
+const cur=i=>[lerp(NODES[i][1],NODES[i][3],t), lerp(NODES[i][2],NODES[i][4],t)];
+
+/* точка выхода на границе плашки со стороны цели */
+function edge(c,w,to){ return to[0]>=c[0] ? [c[0]+w/2,c[1]] : [c[0]-w/2,c[1]]; }
+function curve(a,b){
+  const dx=Math.max(46,Math.abs(b[0]-a[0])*0.46)*(b[0]>=a[0]?1:-1);
+  return 'M'+a[0]+' '+a[1]+' C'+(a[0]+dx)+' '+a[1]+','+(b[0]-dx)+' '+b[1]+','+b[0]+' '+b[1];
+}
+
+function draw(){
+  const P=NODES.map((_,i)=>cur(i));
+  nodeEls.forEach((el,i)=>el.setAttribute('transform','translate('+P[i][0]+','+P[i][1]+')'));
+  youEl.setAttribute('transform','translate('+YOU[0]+','+YOU[1]+')');
+  corexEl.setAttribute('transform','translate('+COREX[0]+','+COREX[1]+') scale('+lerp(.72,1,t).toFixed(3)+')');
+  corexEl.setAttribute('opacity',t.toFixed(3));
+
+  LINKS_A.forEach((lk,i)=>{
+    const fromC = lk[0]==='y'?YOU:P[lk[0]], fromW = lk[0]==='y'?youEl.__w:nodeEls[lk[0]].__w;
+    const toC   = P[lk[1]];
+    pathsA[i].setAttribute('d', curve(edge(fromC,fromW,toC), edge(toC,nodeEls[lk[1]].__w,fromC)));
+  });
+  gA.setAttribute('opacity',(1-t).toFixed(3));
+
+  pathYC.setAttribute('d', curve(edge(YOU,youEl.__w,COREX), edge(COREX,corexEl.__w,YOU)));
+  pathsB.forEach((p,i)=>p.setAttribute('d', curve(edge(COREX,corexEl.__w,P[i]), edge(P[i],nodeEls[i].__w,COREX))));
+  gB.setAttribute('opacity',t.toFixed(3));
+}
+
+function anim(ts){
+  if(!start) start=ts;
+  const k=exp(Math.min(1,(ts-start)/950));
+  t=from+(target-from)*k; draw();
+  if(k<1) raf=requestAnimationFrame(anim); else {t=target;draw();raf=null}
+}
+function go(to){
+  from=t; target=to; start=0;
+  if(raf) cancelAnimationFrame(raf);
+  raf=requestAnimationFrame(anim);
+  seg.classList.toggle('b',to===1); seg.classList.remove('hint');
+  document.getElementById('swA').classList.toggle('on',to===0);
+  document.getElementById('swB').classList.toggle('on',to===1);
+  document.getElementById('mode').textContent = to===1?'с Corex-Trade':'как обычно';
+  sec.classList.toggle('b',to===1); tally.classList.toggle('b',to===1);
+  document.getElementById('tn').textContent = to===1?'1':'7';
+  document.getElementById('tt').textContent = to===1
+    ? 'связь. Один договор, один ответственный за результат — остальных ищем, проверяем и сводим мы'
+    : 'связей, которые вы держите сами — и каждую надо найти, проверить и состыковать с остальными';
+}
+
+const list=document.getElementById('list');
+ROWS.forEach((r,i)=>{
+  const li=document.createElement('li');
+  li.className='item'; li.style.setProperty('--d',(i*45)+'ms');
+  li.innerHTML='<span class="ix mono">0'+(i+1)+'</span><span><span class="task">'+r[0]+'</span>'
+    +'<span class="who"><span class="old">'+r[1]+'</span><span class="new mono">→ '+r[2]+'</span></span></span>';
+  li.onmouseenter=()=>nodeEls[i].classList.add('hot');
+  li.onmouseleave=()=>nodeEls[i].classList.remove('hot');
+  list.appendChild(li);
+});
+nodeEls.forEach((el,i)=>{
+  el.onmouseenter=()=>{el.classList.add('hot');list.children[i].style.background='rgba(20,20,20,.03)'};
+  el.onmouseleave=()=>{el.classList.remove('hot');list.children[i].style.background=''};
+});
+
+document.getElementById('swA').onclick=()=>go(0);
+document.getElementById('swB').onclick=()=>go(1);
+draw();
+
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let shown=false;
+new IntersectionObserver((es,o)=>{
+  es.forEach(e=>{
+    if(!e.isIntersecting||shown) return;
+    shown=true; o.unobserve(e.target);
+    if(reduced){go(1);return}
+    setTimeout(()=>go(1),2400);
+  });
+},{threshold:.3}).observe(document.querySelector('.scheme'));
+</script>
+</body>
+</html>
