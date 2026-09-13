@@ -374,18 +374,49 @@ h1, h2, h3, h4, h5 {
    4. SITE HEADER
    ========================================================== */
 
+/* Шапка меняет тему по фактическому фону секции под собой. Каждая секция
+   объявляет свой фон атрибутом data-header="light|dark" в разметке,
+   js/site-header.js читает, какая из них сейчас под шапкой, и ставит
+   data-theme на саму шапку. Единственный источник цвета для логотипа,
+   ссылок и иконки Telegram — переменная --header-ink; иконки уже нарисованы
+   через currentColor (спрайт в начале index.html), поэтому отдельных правил
+   на них не нужно. Красная кнопка «Оставить заявку» (.btn--cta) из этой
+   схемы исключена сознательно — она одинаковая в обеих темах. */
 .site-header {
-  /* Безопасный дефолт: непрозрачная белая шапка. Без JS (или пока
-     IntersectionObserver из js/site-header.js ещё не подтвердил, что мы
-     наверху Hero) шапка остаётся в этом виде — так текст логотипа никогда
-     не окажется белым-по-белому или невидимым поверх непрогрываемого видео. */
+  /* Светлая тема — состояние по умолчанию, оно же безопасный дефолт без JS:
+     тёмный текст читается и на «бумаге» хиро, и на белых секциях. */
+  --header-ink: #141414;
+  --header-scrim: color-mix(in srgb, var(--color-surface-light) 88%, transparent);
+
   position: sticky;
   top: 0;
   z-index: 100;
   background: var(--color-surface-light);
   box-shadow: var(--shadow-sm);
-  transition: background-color var(--duration-base) var(--ease-soft),
-              box-shadow var(--duration-base) var(--ease-soft);
+  /* 260ms = --duration-hover-out, --ease-soft = --e-soft из docs/motion-spec.md.
+     Новых токенов под шапку не заводим. */
+  transition: background-color var(--duration-hover-out) var(--ease-soft);
+}
+
+.site-header[data-theme="dark"] {
+  --header-ink: var(--color-white);
+  --header-scrim: color-mix(in srgb, var(--color-neutral-950) 88%, transparent);
+}
+
+/* Прозрачная шапка — только когда JS действительно ведёт тему. Без него
+   остаётся непрозрачное белое правило выше: тёмный текст по белому читается
+   на любой секции, включая тёмные. */
+.js .site-header {
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Подложка появляется после 40px прокрутки (класс ставит js/site-header.js).
+   На самом первом экране её нет. Без backdrop-filter и без mix-blend-mode:
+   и то и другое заставляет браузер пересчитывать полноэкранный
+   закреплённый слой на каждом кадре скролла. */
+.js .site-header--scrim {
+  background: var(--header-scrim);
 }
 
 .site-header__inner {
@@ -405,13 +436,12 @@ h1, h2, h3, h4, h5 {
   gap: var(--space-2);
   font-weight: var(--font-weight-extrabold);
   font-size: var(--font-size-body-lg);
-  color: var(--color-text-on-light);
-  transition: color var(--duration-base) var(--ease-soft);
+  color: var(--header-ink);
+  transition: color var(--duration-hover-out) var(--ease-soft);
 }
 
 .site-header__logo svg {
-  color: var(--color-accent-primary);
-  transition: color var(--duration-base) var(--ease-soft);
+  color: inherit;
 }
 
 .site-header__nav {
@@ -423,13 +453,17 @@ h1, h2, h3, h4, h5 {
 .site-header__nav a {
   font-size: var(--font-size-small);
   font-weight: var(--font-weight-semibold);
-  color: var(--color-text-on-light-muted);
-  transition: color var(--duration-fast) var(--ease-soft);
+  color: var(--header-ink);
+  /* Ховер отдан opacity, а не второму цвету: цвет ссылки обязан оставаться
+     ровно цветом темы, а прозрачность анимируется так же дёшево. */
+  transition: color var(--duration-hover-out) var(--ease-soft),
+              opacity var(--duration-hover-out) var(--ease-soft);
 }
 
 .site-header__nav a:hover,
 .site-header__nav a:focus-visible {
-  color: var(--color-text-on-light);
+  opacity: 0.68;
+  transition-duration: var(--duration-hover-out), var(--duration-hover-in);
 }
 
 .site-header__actions {
@@ -440,40 +474,15 @@ h1, h2, h3, h4, h5 {
 
 .site-header__telegram {
   display: inline-flex;
-  color: var(--color-text-on-light-muted);
-  transition: color var(--duration-fast) var(--ease-soft);
+  color: var(--header-ink);
+  transition: color var(--duration-hover-out) var(--ease-soft),
+              opacity var(--duration-hover-out) var(--ease-soft);
 }
 
 .site-header__telegram:hover,
 .site-header__telegram:focus-visible {
-  color: var(--color-accent-primary);
-}
-
-/* Прозрачное состояние поверх сцены Hero — только когда JS (js/site-header.js)
-   через IntersectionObserver подтвердил, что секция `#coverage` (первая после
-   Hero и полосы плашек) ещё не показалась во вьюпорте, т.е. мы всё ещё
-   наверху Hero. `.site-header--solid` навешивается тем же скриптом, как
-   только `#coverage` появилась или осталась позади — тогда действует
-   обычное непрозрачное правило выше. Гейт `.js` — прогрессивное улучшение:
-   без JS класс никогда не применится, и шапка остаётся в безопасном
-   непрозрачном виде по умолчанию. */
-.js .site-header:not(.site-header--solid) {
-  background: transparent;
-  box-shadow: none;
-}
-
-.js .site-header:not(.site-header--solid) .site-header__logo,
-.js .site-header:not(.site-header--solid) .site-header__logo svg,
-.js .site-header:not(.site-header--solid) .site-header__nav a,
-.js .site-header:not(.site-header--solid) .site-header__telegram {
-  color: var(--color-text-on-dark);
-}
-
-.js .site-header:not(.site-header--solid) .site-header__nav a:hover,
-.js .site-header:not(.site-header--solid) .site-header__nav a:focus-visible,
-.js .site-header:not(.site-header--solid) .site-header__telegram:hover,
-.js .site-header:not(.site-header--solid) .site-header__telegram:focus-visible {
-  color: var(--color-text-on-dark-muted);
+  opacity: 0.68;
+  transition-duration: var(--duration-hover-out), var(--duration-hover-in);
 }
 
 @media (max-width: 479px) {

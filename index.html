@@ -81,7 +81,7 @@
      шагов идут обычными блоками в потоке (см. медиа-запрос в конце §5
      css/styles.css) — секция становится обычной высоты, sticky снят.
      ========================================================== -->
-<section class="hero" id="hero" aria-label="Главный экран">
+<section class="hero" id="hero" data-header="light" aria-label="Главный экран">
   <div class="hero__pin" id="hero-pin">
 
     <svg class="hero__defs" aria-hidden="true"><defs>
@@ -480,7 +480,7 @@
 <!-- ==========================================================
      Четыре плашки под первым экраном — вне пина, обычный поток.
      ========================================================== -->
-<section class="hero-stats" id="hero-stats" aria-label="Ключевые цифры">
+<section class="hero-stats" id="hero-stats" data-header="light" aria-label="Ключевые цифры">
   <div class="container">
     <span class="hero-stats__rule" data-animate="hero-stats-rule" aria-hidden="true"></span>
     <div class="hero-stats__row">
@@ -507,7 +507,7 @@
 <!-- ==========================================================
      2. ЧТО ЗАКРЫВАЕМ ВМЕСТО ВАС — схема связей «как обычно / с Corex-Trade»
      ========================================================== -->
-<section class="coverage" id="coverage" aria-labelledby="coverage-heading">
+<section class="coverage" id="coverage" data-header="light" aria-labelledby="coverage-heading">
   <div class="container">
     <div class="section-head reveal">
       <p class="eyebrow" data-edit-id="coverage-eyebrow">Без нас</p>
@@ -624,7 +624,7 @@
 <!-- ==========================================================
      3. СРОКИ — подготовка + доставка, две таблицы
      ========================================================== -->
-<section class="timelines" id="timelines" aria-labelledby="timelines-heading">
+<section class="timelines" id="timelines" data-header="light" aria-labelledby="timelines-heading">
   <div class="container">
     <div class="section-head reveal">
       <p class="eyebrow" data-edit-id="timelines-eyebrow">Сроки</p>
@@ -737,7 +737,7 @@
 <!-- ==========================================================
      4. КАЛЬКУЛЯТОР
      ========================================================== -->
-<section class="calculator" id="calculator" aria-labelledby="calculator-heading">
+<section class="calculator" id="calculator" data-header="light" aria-labelledby="calculator-heading">
   <div class="container">
     <div class="section-head reveal">
       <p class="eyebrow" data-edit-id="calculator-eyebrow">Расчёт</p>
@@ -856,7 +856,7 @@
      (единый массив CASES, см. комментарий в начале файла) — здесь только
      каркас разметки, который скрипт заполняет.
      ========================================================== -->
-<section class="cs-cases" id="cases" aria-labelledby="cs-heading">
+<section class="cs-cases" id="cases" data-header="dark" aria-labelledby="cs-heading">
   <div class="cs-intro reveal">
     <p class="eyebrow eyebrow--on-dark" data-edit-id="cases-eyebrow">Кейсы</p>
     <h2 class="cs-intro__title" id="cs-heading" data-edit-id="cases-title">Что уже провезли</h2>
@@ -890,7 +890,7 @@
 <!-- ==========================================================
      6. ЧТО ВОЗИМ
      ========================================================== -->
-<section class="categories" id="categories" aria-labelledby="categories-heading">
+<section class="categories" id="categories" data-header="light" aria-labelledby="categories-heading">
   <div class="container">
     <div class="section-head reveal">
       <p class="eyebrow" data-edit-id="categories-eyebrow">Что возим</p>
@@ -926,7 +926,7 @@
 <!-- ==========================================================
      7. ЧЕМ ЭТО ПОДТВЕРЖДАЕТСЯ
      ========================================================== -->
-<section class="proof" id="proof" aria-labelledby="proof-heading">
+<section class="proof" id="proof" data-header="light" aria-labelledby="proof-heading">
   <div class="container">
     <div class="section-head reveal">
       <p class="eyebrow" data-edit-id="proof-eyebrow">Фактами</p>
@@ -965,7 +965,7 @@
      доступность — от браузера; анимацию раскрытия ведёт js/faq-accordion.js,
      см. .faq-item__content в css/styles.css).
      ========================================================== -->
-<section class="faq" id="faq" aria-labelledby="faq-heading">
+<section class="faq" id="faq" data-header="light" aria-labelledby="faq-heading">
   <div class="container container--narrow">
     <div class="section-head reveal">
       <p class="eyebrow" data-edit-id="faq-eyebrow">Вопросы</p>
@@ -1034,7 +1034,7 @@
 <!-- ==========================================================
      9. ЗАЯВКА И КОНТАКТЫ
      ========================================================== -->
-<section class="final-cta" id="contacts" aria-labelledby="final-cta-heading">
+<section class="final-cta" id="contacts" data-header="dark" aria-labelledby="final-cta-heading">
   <div class="final-cta__veil" data-animate="final-veil" aria-hidden="true"></div>
   <div class="section-seam section-seam--final-in" data-animate="transition-final-in" aria-hidden="true"></div>
 
