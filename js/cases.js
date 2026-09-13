@@ -10,13 +10,18 @@
  * массива CASES ниже (фото — через assets/cases/0N.jpg, поле img).
  *
  * Движок прогресса — тот же приём, что у Hero (js/hero-panorama.js):
- * `target` читается из getBoundingClientRect секции и `p` детерминированно
- * едет к target — оба шага внутри одного кадра общего rAF-тикера
- * (js/scroll-ticker.js), а не в scroll-обработчике (чтение геометрии на
- * каждое scroll-событие форсит reflow и ощущается как подёргивание).
- * Без событийных переключений p — иначе сцена не отматывается назад при
- * скролле вверх. Не зависит от GSAP, сам колбэк — полностью в своей
- * области видимости (CLAUDE.md, п.4 правил переноса).
+ * весь кэш геометрии, лерп и сон rAF-цикла живут в js/scroll-engine.js,
+ * здесь остаётся только render(p) — чистая запись стилей, без чтения
+ * раскладки в кадре. Детерминированный p (а не событийные переключения)
+ * обязателен: иначе сцена не отматывается назад при скролле вверх. Не
+ * зависит от GSAP, сам колбэк — полностью в своей области видимости
+ * (CLAUDE.md, п.4 правил переноса).
+ *
+ * В кадре пишутся только transform и opacity. Расфокус стопки документов
+ * (filter: blur на .cs-doc__inner) убран: блюрить каждый кадр пять
+ * карточек с тенью в 90px — самая дорогая операция на странице, а
+ * глубина стопки уже читается по opacity, подъёму и масштабу. Заливка
+ * шкалы у вкладок — scaleX, а не width.
  *
  * При prefers-reduced-motion или ширине меньше 900px — статичная раскладка
  * (класс .is-static): sticky отключается, документы идут потоком, фото
@@ -178,7 +183,11 @@
       data: CASES[i]
     };
   });
-  var tabs = [].slice.call(tabsEl.querySelectorAll('.cs-tab'));
+  // Заливка вкладки кэшируется вместе с самой вкладкой: querySelector
+  // внутри кадра — пять лишних обходов DOM на каждый кадр скролла.
+  var tabs = [].slice.call(tabsEl.querySelectorAll('.cs-tab')).map(function (el) {
+    return { el: el, fill: el.querySelector('.cs-tab__fill') };
+  });
 
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var narrow = window.matchMedia('(max-width: 900px)').matches;
@@ -209,24 +218,25 @@
   }
 
   var LEAD = 0.05;
-  var target = 0;
-  var p = 0;
   var lastIdx = -1;
+  var lastNum = '';
+  var lastPct = '';
 
-  function measure() {
-    var r = track.getBoundingClientRect();
-    var total = track.offsetHeight - window.innerHeight;
-    target = total > 0 ? clamp(-r.top / total) : 0;
-  }
-
+  // Клик по вкладке — единственное место, где геометрия читается вне
+  // кадра анимации, и это нормально: чтение по клику, а не по кадру.
+  // offsetTop здесь брать нельзя — offsetParent у .cs-track это сама
+  // .cs-cases (position: relative), и переход промахивался мимо сцены на
+  // высоту вступления. Нужна позиция относительно документа.
   function jumpTo(i) {
     var total = track.offsetHeight - window.innerHeight;
+    var top = track.getBoundingClientRect().top + (window.pageYOffset || 0);
     var q = (i + 0.45) / N;
     var pp = LEAD + q * (1 - LEAD);
-    window.scrollTo({ top: track.offsetTop + pp * total, behavior: 'smooth' });
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: top + pp * total, behavior: reduce ? 'auto' : 'smooth' });
   }
 
-  function render() {
+  function render(p) {
     var q = clamp((p - LEAD) / (1 - LEAD));
     var f = q * N;
     var idx = Math.min(N - 1, Math.floor(f));
@@ -237,14 +247,12 @@
       if (i < idx) {
         d.inner.style.opacity = 0;
         d.inner.style.transform = 'translate(-50%,-50%) translateY(-190px) scale(1.03)';
-        d.inner.style.filter = 'blur(12px)';
         return;
       }
       if (i > idx) {
         var k = i - idx;
         d.inner.style.opacity = (0.34 * Math.pow(0.55, k - 1)).toFixed(3);
         d.inner.style.transform = 'translate(-50%,-50%) translateY(' + (38 + (k - 1) * 13) + 'px) scale(' + (0.965 - (k - 1) * 0.018).toFixed(3) + ')';
-        d.inner.style.filter = 'blur(' + (1.5 + (k - 1)) + 'px)';
         d.photo.style.transform = 'scale(1.09)';
         return;
       }
@@ -256,19 +264,25 @@
       var ty = (38 * (1 - tin)) + (-190 * tout);
       var sc = (0.965 + 0.035 * tin) + (0.03 * tout);
       var op = (0.34 + 0.66 * tin) * (1 - tout);
-      var bl = (1.5 * (1 - tin)) + (12 * tout);
 
       d.inner.style.opacity = op.toFixed(3);
       d.inner.style.transform = 'translate(-50%,-50%) translateY(' + ty.toFixed(1) + 'px) scale(' + sc.toFixed(4) + ')';
-      d.inner.style.filter = bl > 0.05 ? 'blur(' + bl.toFixed(2) + 'px)' : 'none';
       d.photo.style.transform = 'scale(' + (1.09 - 0.09 * local).toFixed(4) + ')';
 
       var tr = easeOutExpo(clamp((local - 0.12) / 0.3));
       d.fill.style.transform = 'scaleX(' + tr.toFixed(4) + ')';
 
       var tn = easeOutExpo(clamp((local - 0.14) / 0.32));
-      d.num.textContent = fmt(d.data.value * tn) + ' ₽';
-      d.pct.textContent = Math.round(d.data.pct * tn) + ' %';
+      var numText = fmt(d.data.value * tn) + ' ₽';
+      var pctText = Math.round(d.data.pct * tn) + ' %';
+      if (numText !== lastNum) {
+        lastNum = numText;
+        d.num.textContent = numText;
+      }
+      if (pctText !== lastPct) {
+        lastPct = pctText;
+        d.pct.textContent = pctText;
+      }
 
       d.lines.forEach(function (ln, j) {
         var tl = easeOutExpo(clamp((local - 0.1 - j * 0.045) / 0.28));
@@ -278,8 +292,9 @@
     });
 
     tabs.forEach(function (t, i) {
-      t.classList.toggle('is-active', i === idx);
-      t.querySelector('.cs-tab__fill').style.width = i === idx ? (local * 100).toFixed(1) + '%' : (i < idx ? '100%' : '0%');
+      t.el.classList.toggle('is-active', i === idx);
+      var fillScale = i === idx ? local : (i < idx ? 1 : 0);
+      t.fill.style.transform = 'scaleX(' + fillScale.toFixed(4) + ')';
     });
 
     if (idx !== lastIdx) {
@@ -289,13 +304,5 @@
     }
   }
 
-  measure();
-  p = target;
-  render();
-
-  window.corexScrollTicker.onFrame(function () {
-    measure();
-    p += (target - p) * 0.09;
-    render();
-  });
+  window.corexScrollEngine.register({ track: track, render: render });
 })();

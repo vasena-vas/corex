@@ -50,9 +50,11 @@
   box-sizing: border-box;
 }
 
-html {
-  scroll-behavior: smooth;
-}
+/* Плавность скролла делает только лерп в js/scroll-engine.js. Нативный
+   scroll-behavior: smooth здесь с ним конфликтовал: браузер вёл свою
+   анимацию позиции, а сцены хиро и кейсов доезжали к ней своим темпом —
+   на каждом якорном переходе это читалось как рывок. Плавная прокрутка к
+   якорям осталась, но только по клику и только из JS (js/scroll-engine.js). */
 
 body,
 h1, h2, h3, h4, p,
@@ -120,10 +122,6 @@ h1, h2, h3, h4, h5 {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
@@ -536,7 +534,9 @@ h1, h2, h3, h4, h5 {
   position: sticky;
   top: 0;
   height: 100vh;
-  height: 100dvh;
+  /* svh, а не dvh: dvh меняется при появлении и скрытии адресной строки
+     на мобильных, и закреплённая сцена скачет прямо во время скролла. */
+  height: 100svh;
   overflow: hidden;
 }
 
@@ -614,13 +614,20 @@ h1, h2, h3, h4, h5 {
   opacity: 0.5;
 }
 
+/* Пройденный участок маршрута заливается через transform: scaleX, а не
+   через width: ширина у --hero-cam меняется каждый кадр, а это layout на
+   каждый кадр. Полная длина 560vw = 100vw * 5 (максимум --hero-cam) + 60vw,
+   scaleX возвращает ровно прежнюю видимую длину. */
 .hero__road-done {
   position: absolute;
   left: 0;
   bottom: var(--hero-ground);
   height: 2px;
   background: var(--hero-red);
-  width: calc(100vw * var(--hero-cam) + 60vw);
+  width: 560vw;
+  transform-origin: left center;
+  transform: scaleX(calc((100 * var(--hero-cam) + 60) / 560));
+  will-change: transform;
 }
 
 /* -- Станция: чертёж на 100vw + узел на линии маршрута ---------------- */
@@ -2361,7 +2368,8 @@ h1, h2, h3, h4, h5 {
   position: sticky;
   top: 0;
   height: 100vh;
-  height: 100dvh;
+  /* svh — по той же причине, что и у .hero__pin выше. */
+  height: 100svh;
   overflow: hidden;
 }
 
@@ -2374,12 +2382,14 @@ h1, h2, h3, h4, h5 {
       color-mix(in srgb, var(--color-accent-primary) 16%, transparent), transparent 60%);
 }
 
+/* Без mix-blend-mode: наложение полноэкранного слоя шума поверх всей
+   закреплённой сцены пересчитывалось на каждом кадре скролла. Простая
+   opacity даёт почти ту же фактуру бесплатно. */
 .cs-grain {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.055;
-  mix-blend-mode: overlay;
+  opacity: 0.05;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>");
 }
 
@@ -2425,7 +2435,7 @@ h1, h2, h3, h4, h5 {
 
 .cs-doc__inner {
   transform: translate(-50%, -50%);
-  will-change: transform, opacity, filter;
+  will-change: transform, opacity;
   background: var(--color-surface-light);
   color: var(--color-text-on-light);
   height: clamp(400px, 60vh, 600px);
@@ -2485,9 +2495,10 @@ h1, h2, h3, h4, h5 {
   font-size: 10.5px;
   letter-spacing: var(--letter-spacing-wide);
   color: var(--color-text-on-dark);
+  /* Без backdrop-filter: штамп лежит внутри .cs-doc__inner, который
+     трансформируется каждый кадр, и размытие подложки пересчитывалось
+     вместе с ним — пять раз за кадр. Фон под ним и так плотный. */
   background: rgba(11, 18, 28, 0.6);
-  backdrop-filter: var(--blur-glass-sm);
-  -webkit-backdrop-filter: var(--blur-glass-sm);
   border: 1px solid var(--color-border-on-dark-strong);
   padding: 5px var(--space-2);
 }
@@ -2750,7 +2761,10 @@ h1, h2, h3, h4, h5 {
   bottom: 0;
   height: 2px;
   background: var(--color-accent-cta);
-  width: 0;
+  /* scaleX, а не width: js/cases.js пишет заливку каждый кадр. */
+  width: 100%;
+  transform-origin: left center;
+  transform: scaleX(0);
 }
 
 .cs-tab.is-active {

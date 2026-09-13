@@ -165,21 +165,61 @@
   });
 
   // Цифры не появляются мгновенно, а плавно доезжают до нового значения —
-  // экспоненциальное приближение к цели на каждый кадр, а не CSS-переход
-  // (текстовое содержимое). При reduced-motion — конечное состояние сразу.
-  function tick() {
-    for (var k in nums) {
+  // экспоненциальное приближение к цели, а не CSS-переход (анимируется
+  // текстовое содержимое). При reduced-motion — конечное состояние сразу.
+  //
+  // Цикл засыпает, как только все значения доехали, и заводится заново из
+  // update() при правке любого поля. Раньше он крутился от загрузки
+  // страницы и до её закрытия, переписывая textContent одиннадцати узлов
+  // каждый кадр — даже когда калькулятор был далеко за экраном и ни одно
+  // число не менялось.
+  var numsRunning = false;
+  var lastText = {};
+  var lastFrameTs = 0;
+
+  function tick(ts) {
+    var dt = lastFrameTs ? Math.min(ts - lastFrameTs, 100) : 16.67;
+    lastFrameTs = ts;
+    // Шаг приближения не зависит от частоты кадров: при 0.18 на кадр
+    // счётчик на 120 Гц доезжал вдвое быстрее, чем на 60 Гц.
+    var k = 1 - Math.pow(1 - 0.18, dt / 16.67);
+
+    var busy = false;
+    for (var key in nums) {
       if (REDUCE) {
-        cur[k] = targets[k];
+        cur[key] = targets[key];
       } else {
-        var d = targets[k] - cur[k];
-        cur[k] += Math.abs(d) > 0.5 ? d * 0.18 : d;
+        var d = targets[key] - cur[key];
+        if (Math.abs(d) > 0.5) {
+          cur[key] += d * k;
+          busy = true;
+        } else {
+          cur[key] = targets[key];
+        }
       }
-      nums[k].textContent = fmt(cur[k]) + (k === 'pct' ? '' : ' ₽');
+      var text = fmt(cur[key]) + (key === 'pct' ? '' : ' ₽');
+      if (text !== lastText[key]) {
+        lastText[key] = text;
+        nums[key].textContent = text;
+      }
     }
+
+    if (busy) {
+      requestAnimationFrame(tick);
+    } else {
+      numsRunning = false;
+      lastFrameTs = 0;
+    }
+  }
+
+  function runNums() {
+    if (numsRunning) {
+      return;
+    }
+    numsRunning = true;
+    lastFrameTs = 0;
     requestAnimationFrame(tick);
   }
-  requestAnimationFrame(tick);
 
   function dutyRate() {
     var r = CATS[cat][1];
@@ -258,6 +298,8 @@
       methodLabel: use === 'air' ? 'авиа' : 'авто',
       grand: grand
     };
+
+    runNums();
   }
 
   ['cc-value', 'cc-weight', 'cc-vol', 'cc-qty', 'cc-crate', 'cc-cname'].forEach(function (id) {

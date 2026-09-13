@@ -11,14 +11,18 @@
  * 1. Генератор реквизита вдоль дороги — ставится только в промежутках
  *    между станциями (центры станций 60/160/260/360/460/560vw, рисунок
  *    занимает ±22vw вокруг центра, см. docs/hero-panorama.md).
- * 2. Движок прогресса: `target` читается из getBoundingClientRect секции
- *    и `p` детерминированно едет к target — оба шага внутри одного кадра
- *    общего rAF-тикера (js/scroll-ticker.js), а не в scroll-обработчике
- *    (иначе чтение геометрии на каждое scroll-событие форсит reflow и
- *    сцена дёргается). Без событийных переключений p — иначе сцена не
- *    отматывается назад при скролле вверх. Из `p` выводятся позиция
- *    камеры (--hero-cam) и видимость вступления/этапов. Не зависит от
- *    GSAP.
+ * 2. Движок прогресса вынесен целиком в js/scroll-engine.js: там и кэш
+ *    геометрии секции, и лерп, и сон цикла. Здесь остаётся только
+ *    render(p) — чистая запись стилей из готового прогресса, без единого
+ *    чтения раскладки в кадре. Детерминированный p (а не событийные
+ *    переключения) обязателен: иначе сцена не отматывается назад при
+ *    скролле вверх. Из `p` выводятся позиция камеры (--hero-cam) и
+ *    видимость вступления/этапов. Не зависит от GSAP.
+ *
+ *    В кадре пишутся только transform/opacity и переменная --hero-cam.
+ *    Расфокус вступления (filter: blur) убран сознательно: blur каждый
+ *    кадр перерисовывает весь слой текста, а уход вступления и без него
+ *    полностью читается по opacity + подъёму + масштабу.
  */
 (function () {
   var SVG_ATTRS = 'fill="none" stroke="#141414" stroke-width="2.2" stroke-linejoin="round"';
@@ -115,9 +119,8 @@
 
   var LABELS = ['заявка', 'цены с фабрики', 'предварительный расчёт', 'проработка', 'договор', 'склад'];
   var N = 6;
-  var p = 0;
-  var target = 0;
   var lastIdx = -1;
+  var lastClickable = null;
 
   function clamp(v, a, b) {
     a = a || 0;
@@ -133,21 +136,15 @@
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   }
 
-  function readTarget() {
-    var total = track.offsetHeight - window.innerHeight;
-    if (total <= 0) {
-      target = 0;
-      return;
-    }
-    target = clamp(-track.getBoundingClientRect().top / total);
-  }
-
-  function render() {
+  function render(p) {
     var out = easeOutExpo(clamp((p - 0.06) / 0.07));
     intro.style.opacity = 1 - out;
     intro.style.transform = 'translateY(var(--hero-base-y)) translateY(' + -60 * out + 'px) scale(' + (1 - 0.03 * out) + ')';
-    intro.style.filter = 'blur(' + 12 * out + 'px)';
-    intro.style.pointerEvents = out > 0.5 ? 'none' : 'auto';
+    var clickable = out <= 0.5;
+    if (clickable !== lastClickable) {
+      lastClickable = clickable;
+      intro.style.pointerEvents = clickable ? 'auto' : 'none';
+    }
     wash.style.opacity = (0.5 * (1 - out)).toFixed(3);
     hint.style.opacity = (1 - clamp(p / 0.05)).toFixed(3);
 
@@ -178,13 +175,5 @@
     counter.style.opacity = clamp((p - 0.1) / 0.06).toFixed(3);
   }
 
-  readTarget();
-  p = target;
-  render();
-
-  window.corexScrollTicker.onFrame(function () {
-    readTarget();
-    p += (target - p) * 0.09;
-    render();
-  });
+  window.corexScrollEngine.register({ track: track, render: render });
 })();

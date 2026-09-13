@@ -97,11 +97,44 @@
     return;
   }
 
+  /* will-change ставится на время самого появления и снимается сразу
+     после него (docs/motion-spec.md, правило про разовость приёма):
+     .reveal анимирует в том числе filter: blur, и без подготовки слоя
+     браузер перерисовывает элемент на каждом кадре перехода. Держать
+     will-change постоянно нельзя — это удержанный слой на каждый
+     появившийся элемент страницы, что само по себе тормозит скролл. */
+  var REVEAL_MS = 1600; // запас над --duration-reveal + --d; страховка, если transitionend не придёт
+
+  function clearHint(el) {
+    el.style.willChange = '';
+  }
+
+  function playReveal(el) {
+    el.style.willChange = 'opacity, transform, filter';
+    el.classList.add('in');
+
+    var timer = setTimeout(function () {
+      el.removeEventListener('transitionend', onEnd);
+      clearHint(el);
+    }, REVEAL_MS);
+
+    function onEnd(event) {
+      if (event.target !== el && event.target.parentNode !== el) {
+        return;
+      }
+      clearTimeout(timer);
+      el.removeEventListener('transitionend', onEnd);
+      clearHint(el);
+    }
+
+    el.addEventListener('transitionend', onEnd);
+  }
+
   var io = new IntersectionObserver(
     function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
-          entry.target.classList.add('in');
+          playReveal(entry.target);
           io.unobserve(entry.target);
         }
       });
