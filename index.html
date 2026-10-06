@@ -4,19 +4,291 @@
 <meta charset="UTF-8">
 <script>document.documentElement.classList.add('js');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Corex-Trade — закупка и официальный импорт из Китая</title>
-<meta name="description" content="Corex-Trade — закупка и официальный импорт из Китая: цены с фабрики, расчёт дважды, сертификация, документы, таможня и доставка до склада. Стоимость известна до подписания договора.">
+<title>COREX — закупка и официальный импорт из Китая</title>
+<meta name="description" content="COREX — закупка и официальный импорт из Китая: цены с фабрики, расчёт дважды, сертификация, документы, таможня и доставка до склада. Стоимость известна до подписания договора.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%230a2240'/%3E%3Cpath d='M9.5 14.5l5-5M11 6.5l1.3-1.3a4 4 0 0 1 5.6 5.6L16.5 12M13 17.5l-1.3 1.3a4 4 0 0 1-5.6-5.6L7.5 12' fill='none' stroke='%2335abab' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preload" as="image" type="image/webp" href="assets/hero/station-01.webp"
+      imagesrcset="assets/hero/station-01-600.webp 600w, assets/hero/station-01.webp 1200w"
+      imagesizes="(max-width: 899.98px) 80vw, 44vw">
+<link rel="preload" as="image" type="image/webp" href="assets/hero/station-02.webp"
+      imagesrcset="assets/hero/station-02-600.webp 600w, assets/hero/station-02.webp 1200w"
+      imagesizes="(max-width: 899.98px) 80vw, 44vw">
+<link rel="preload" as="image" type="image/webp" href="assets/hero/station-03.webp"
+      imagesrcset="assets/hero/station-03-600.webp 600w, assets/hero/station-03.webp 1200w"
+      imagesizes="(max-width: 899.98px) 80vw, 44vw">
+<link rel="preload" as="image" type="image/webp" href="assets/hero/station-04.webp"
+      imagesrcset="assets/hero/station-04-600.webp 600w, assets/hero/station-04.webp 1200w"
+      imagesizes="(max-width: 899.98px) 80vw, 44vw">
+<link rel="preload" as="image" type="image/webp" href="assets/hero/station-05.webp"
+      imagesrcset="assets/hero/station-05-600.webp 600w, assets/hero/station-05.webp 1200w"
+      imagesizes="(max-width: 899.98px) 80vw, 44vw">
+<link rel="preload" as="image" type="image/webp" href="assets/hero/station-06.webp"
+      imagesrcset="assets/hero/station-06-600.webp 600w, assets/hero/station-06.webp 1200w"
+      imagesizes="(max-width: 899.98px) 80vw, 44vw">
 <link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/styles.css">
+<style id="corex-hero-refinement">
+.hero__panel--intro{grid-template-columns:minmax(0,1.04fr) minmax(360px,.96fr)!important;column-gap:clamp(28px,5vw,86px)!important;padding:clamp(76px,9vh,108px) clamp(20px,4vw,64px) clamp(78px,10vh,118px)!important;max-width:1440px!important;margin-inline:auto!important}
+.hero__panel--intro .hero__panel-text{max-width:700px!important;z-index:4}
+.hero-intro__topline{display:flex;align-items:center;gap:18px;margin-bottom:22px;font:500 11px/1.2 var(--font-mono,ui-monospace,monospace);letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.58)}
+.hero-intro__status{display:inline-flex;align-items:center;gap:8px;color:rgba(255,255,255,.82)}
+.hero-intro__status i{width:7px;height:7px;border-radius:50%;background:#35abab;box-shadow:0 0 0 5px rgba(53,171,171,.11),0 0 18px rgba(53,171,171,.55)}
+.hero-intro__location{padding-left:18px;border-left:1px solid rgba(255,255,255,.14)}
+.hero__panel--intro .hero__title{max-width:720px!important;font-size:clamp(43px,5.2vw,78px)!important;line-height:.99!important;letter-spacing:-.045em!important;margin-bottom:25px!important}
+.hero__panel--intro .hero__lede{max-width:610px!important;font-size:clamp(15px,1.25vw,18px)!important;line-height:1.62!important;color:rgba(255,255,255,.68)!important}
+.hero__actions{align-items:center!important;gap:12px!important}.hero-intro__primary{display:inline-flex;align-items:center;gap:17px}.hero-intro__primary span{font-size:19px;transition:transform .25s ease}.hero-intro__primary:hover span{transform:translateX(4px)}
+.hero-intro__trust{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:22px;color:rgba(255,255,255,.55);font-size:12px}.hero-intro__trust span{display:inline-flex;align-items:center;gap:6px}.hero-intro__trust svg{width:14px;height:14px;color:#35abab}
+.hero-intro__visual{position:relative;align-self:center;min-height:min(58vh,550px);border:1px solid rgba(255,255,255,.13);background:linear-gradient(145deg,rgba(14,43,66,.62),rgba(5,18,31,.25));overflow:hidden;border-radius:2px;box-shadow:0 30px 90px rgba(0,0,0,.22),inset 0 0 0 1px rgba(53,171,171,.035)}
+.hero-intro__visual-grid{position:absolute;inset:0;opacity:.24;background-image:linear-gradient(rgba(53,171,171,.18) 1px,transparent 1px),linear-gradient(90deg,rgba(53,171,171,.18) 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(to bottom,black,transparent 90%)}
+.hero-intro__visual:before,.hero-intro__visual:after{content:"";position:absolute;border:1px solid rgba(53,171,171,.22);border-radius:50%;width:280px;height:280px;right:-120px;top:-130px}.hero-intro__visual:after{width:430px;height:430px;right:-195px;top:-205px;border-color:rgba(53,171,171,.1)}
+.hero-intro__visual-label{position:absolute;top:22px;left:24px;font:500 9px/1.2 var(--font-mono,monospace);letter-spacing:.17em;color:rgba(255,255,255,.4)}
+.hero-intro__route{position:absolute;left:11%;right:9%;top:39%;height:105px}.hero-intro__route-line{position:absolute;left:9%;right:9%;top:25px;height:1px;background:linear-gradient(90deg,transparent,#35abab 15%,rgba(53,171,171,.65) 50%,#35abab 85%,transparent);box-shadow:0 0 16px rgba(53,171,171,.35)}
+.hero-intro__node{position:absolute;top:0;display:grid;gap:4px}.hero-intro__node span{width:50px;height:50px;border:1px solid rgba(53,171,171,.65);border-radius:50%;display:grid;place-items:center;background:#09243a;color:#72d2d0;font:500 11px var(--font-mono,monospace);box-shadow:0 0 0 7px rgba(53,171,171,.045)}.hero-intro__node b{font-size:13px;color:#fff;font-weight:500;margin-top:7px}.hero-intro__node small{font-size:10px;color:rgba(255,255,255,.42);white-space:nowrap}.hero-intro__node--start{left:0}.hero-intro__node--mid{left:50%;transform:translateX(-50%)}.hero-intro__node--end{right:0}
+.hero-intro__card{position:absolute;border:1px solid rgba(255,255,255,.13);background:rgba(7,25,41,.83);backdrop-filter:blur(10px);box-shadow:0 18px 40px rgba(0,0,0,.2)}.hero-intro__card--main{left:9%;bottom:12%;padding:18px 42px 18px 20px;min-width:205px}.hero-intro__card-kicker{display:block;color:#35abab;font:500 9px var(--font-mono,monospace);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}.hero-intro__card strong{display:block;color:#fff;font-size:17px;line-height:1.18;font-weight:500}.hero-intro__card-arrow{position:absolute;right:14px;top:17px;color:#35abab;font-size:20px}.hero-intro__card--price{right:9%;bottom:10%;padding:13px 17px;min-width:160px}.hero-intro__card--price span{display:block;font-size:9px;color:rgba(255,255,255,.45);margin-bottom:5px}.hero-intro__card--price strong{display:block;color:#fff;font-size:13px;font-weight:500}.hero-intro__card--price i{display:block;width:34px;height:1px;background:#35abab;margin-top:10px}
+.hero-intro__scan{position:absolute;left:10%;right:10%;top:50%;height:1px;background:linear-gradient(90deg,transparent,rgba(53,171,171,.55),transparent);opacity:.5;animation:corexScan 4s ease-in-out infinite}@keyframes corexScan{0%,100%{transform:translateY(-45px);opacity:0}35%,65%{opacity:.55}50%{transform:translateY(115px)}}
+.hero-intro__hint{position:absolute;left:clamp(20px,4vw,64px);bottom:26px;display:flex;align-items:center;gap:13px;color:rgba(255,255,255,.38);font:500 10px var(--font-mono,monospace);letter-spacing:.08em;text-transform:uppercase}.hero-intro__hint-line{display:block;width:48px;height:1px;background:rgba(53,171,171,.55);position:relative}.hero-intro__hint-line:after{content:"";position:absolute;right:0;top:-2px;width:5px;height:5px;border-right:1px solid #35abab;border-bottom:1px solid #35abab;transform:rotate(45deg)}
+@media (max-width:900px){.hero__panel--intro{grid-template-columns:1fr!important;padding-top:74px!important}.hero-intro__visual{min-height:310px;margin-top:8px}.hero__panel--intro .hero__title{font-size:clamp(38px,8.2vw,62px)!important}.hero-intro__hint{display:none}}
+@media (max-width:560px){.hero__panel--intro{padding:82px 20px 42px!important}.hero-intro__topline{font-size:9px;gap:10px}.hero-intro__location{display:none}.hero__panel--intro .hero__title{font-size:clamp(35px,10.7vw,52px)!important}.hero__panel--intro .hero__lede{font-size:14px!important}.hero__actions{flex-direction:column;align-items:stretch!important}.hero__actions .btn{width:100%;justify-content:center}.hero-intro__visual{min-height:275px}.hero-intro__route{left:7%;right:7%;top:35%;transform:scale(.88);transform-origin:center}.hero-intro__card--main{left:7%;bottom:8%;padding:13px 28px 13px 14px;min-width:0}.hero-intro__card--price{right:7%;bottom:8%;padding:11px 12px;min-width:0}.hero-intro__card--main strong{font-size:13px}.hero-intro__card--price strong{font-size:11px}.hero-intro__trust{gap:7px 14px;font-size:10px}}
+</style>
+
+
+<style id="corex-final-refinement-v2">
+/* 01 — визуальный воздух между FAQ и финальной заявкой */
+.faq + .final-cta{
+  margin-top:clamp(72px,8vw,132px)!important;
+}
+
+/* 02 — заголовок расчёта в единой левой сетке со всеми секциями */
+.calculator .section-head{
+  text-align:left!important;
+  align-items:flex-start!important;
+  margin-left:0!important;
+  margin-right:auto!important;
+}
+.calculator .section-head .eyebrow,
+.calculator .section-head .section-title,
+.calculator .section-head .section-lede{
+  text-align:left!important;
+  margin-left:0!important;
+  margin-right:auto!important;
+}
+.calculator .section-head .section-lede{
+  max-width:760px;
+}
+
+/* 03 — финальный блок: мягкая размытая световая граница сверху */
+.final-cta{
+  position:relative!important;
+  isolation:isolate;
+  overflow:clip;
+}
+.final-cta::before{
+  content:"";
+  position:absolute;
+  z-index:0;
+  left:-10%;
+  right:-10%;
+  top:-86px;
+  height:190px;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(53,171,171,.32) 0%, rgba(53,171,171,.15) 25%, rgba(53,171,171,.045) 48%, transparent 73%),
+    linear-gradient(180deg, transparent 0%, rgba(53,171,171,.08) 65%, rgba(53,171,171,.20) 100%);
+  filter:blur(20px);
+  opacity:.82;
+  transform:translate3d(0,-12px,0) scaleX(.96);
+  animation:corexCtaMist 6.5s ease-in-out infinite;
+}
+.final-cta::after{
+  content:"";
+  position:absolute;
+  z-index:0;
+  left:12%;
+  right:12%;
+  top:0;
+  height:1px;
+  pointer-events:none;
+  background:linear-gradient(90deg,transparent 0%,rgba(53,171,171,.10) 18%,rgba(53,171,171,.65) 50%,rgba(53,171,171,.10) 82%,transparent 100%);
+  filter:blur(.7px);
+  opacity:.7;
+  animation:corexCtaLine 5s ease-in-out infinite;
+}
+.final-cta__inner,.final-cta__footnote{
+  position:relative;
+  z-index:2;
+}
+@keyframes corexCtaMist{
+  0%,100%{opacity:.52;transform:translate3d(-1%, -12px,0) scaleX(.94) scaleY(.92)}
+  50%{opacity:.92;transform:translate3d(1%, 2px,0) scaleX(1.04) scaleY(1.08)}
+}
+@keyframes corexCtaLine{
+  0%,100%{opacity:.28;transform:scaleX(.82)}
+  50%{opacity:.85;transform:scaleX(1)}
+}
+@media (prefers-reduced-motion:reduce){
+  .final-cta::before,.final-cta::after{animation:none!important}
+}
+
+/* 04 — шапка не должна исчезать в самой верхней точке страницы */
+.site-header{
+  z-index:1000!important;
+}
+html.is-at-top .site-header{
+  transform:translate3d(0,0,0)!important;
+  opacity:1!important;
+  visibility:visible!important;
+}
+</style>
+
+<style id="corex-top-header-and-final-gradient-v3">
+/* =========================================================
+   COREX — верхняя точка страницы
+   Шапка остаётся видимой, но её цвет и фон продолжает
+   определять штатная логика site-header.js.
+   ========================================================= */
+.site-header{z-index:99999!important;}
+html.is-at-top .site-header,
+html.is-at-top body .site-header{
+  position:fixed!important;
+  top:0!important;
+  left:0!important;
+  right:0!important;
+  width:100%!important;
+  z-index:99999!important;
+  transform:translate3d(0,0,0)!important;
+  opacity:1!important;
+  visibility:visible!important;
+  display:block!important;
+  pointer-events:auto!important;
+}
+/* Не задаём background/color: штатный site-header.js
+   подстраивает шапку под светлый/тёмный фон. */
+/* =========================================================
+   ФИНАЛЬНЫЙ БЛОК — движение мягкого градиента по всей площади
+   ========================================================= */
+.final-cta{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  background:
+    radial-gradient(ellipse 75% 65% at 8% 15%, rgba(53,171,171,.16), transparent 65%),
+    radial-gradient(ellipse 70% 70% at 92% 78%, rgba(53,171,171,.13), transparent 68%),
+    radial-gradient(ellipse 55% 55% at 55% 45%, rgba(25,91,111,.14), transparent 70%)!important;
+  background-color:#071d35!important;
+}
+
+/* Полупрозрачное «поле» градиента, которое медленно перемещается
+   от края к краю всего блока */
+.final-cta::before{
+  content:""!important;
+  position:absolute!important;
+  z-index:0!important;
+  inset:-35%!important;
+  pointer-events:none!important;
+  background:
+    radial-gradient(ellipse 38% 30% at 18% 22%, rgba(53,171,171,.28) 0%, rgba(53,171,171,.11) 42%, transparent 72%),
+    radial-gradient(ellipse 42% 36% at 82% 32%, rgba(39,132,151,.20) 0%, rgba(39,132,151,.08) 43%, transparent 74%),
+    radial-gradient(ellipse 45% 38% at 70% 82%, rgba(53,171,171,.20) 0%, rgba(53,171,171,.07) 42%, transparent 75%),
+    radial-gradient(ellipse 38% 34% at 20% 78%, rgba(30,104,126,.18) 0%, rgba(30,104,126,.06) 45%, transparent 75%);
+  background-size:62% 58%,58% 62%,64% 58%,58% 62%;
+  background-repeat:no-repeat;
+  filter:blur(28px);
+  opacity:.72!important;
+  transform:translate3d(-3%, -2%, 0) scale(1.03);
+  animation:corexFullGradientMove 14s ease-in-out infinite alternate!important;
+}
+
+/* Дополнительная очень тонкая «дымка», чтобы движение было
+   заметно, но не превращалось в яркую подсветку */
+.final-cta::after{
+  content:""!important;
+  position:absolute!important;
+  z-index:1!important;
+  inset:-15%!important;
+  pointer-events:none!important;
+  background:
+    linear-gradient(118deg,
+      transparent 10%,
+      rgba(53,171,171,.025) 28%,
+      rgba(53,171,171,.10) 46%,
+      rgba(53,171,171,.035) 62%,
+      transparent 82%);
+  background-size:220% 220%;
+  filter:blur(18px);
+  opacity:.9!important;
+  transform:translate3d(-5%,0,0);
+  animation:corexGradientSweep 9s ease-in-out infinite!important;
+}
+
+/* Контент поверх анимированного фона */
+.final-cta__inner,
+.final-cta__footnote{
+  position:relative!important;
+  z-index:3!important;
+}
+
+@keyframes corexFullGradientMove{
+  0%{
+    transform:translate3d(-4%,-2%,0) scale(1.02) rotate(-1deg);
+    opacity:.55;
+  }
+  35%{
+    transform:translate3d(2%,3%,0) scale(1.06) rotate(.5deg);
+    opacity:.74;
+  }
+  70%{
+    transform:translate3d(5%,-2%,0) scale(1.03) rotate(1deg);
+    opacity:.68;
+  }
+  100%{
+    transform:translate3d(-1%,5%,0) scale(1.07) rotate(-.5deg);
+    opacity:.78;
+  }
+}
+
+@keyframes corexGradientSweep{
+  0%{
+    background-position:0% 45%;
+    opacity:.35;
+  }
+  50%{
+    background-position:100% 55%;
+    opacity:.8;
+  }
+  100%{
+    background-position:15% 40%;
+    opacity:.45;
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  .final-cta::before,
+  .final-cta::after{
+    animation:none!important;
+  }
+}
+
+@media (max-width:760px){
+  html.is-at-top .site-header{
+    box-shadow:0 1px 0 rgba(10,34,64,.08),0 5px 18px rgba(4,18,36,.07)!important;
+  }
+  .final-cta::before{
+    filter:blur(22px);
+    opacity:.58!important;
+  }
+  .final-cta::after{
+    filter:blur(14px);
+    opacity:.62!important;
+  }
+}
+</style>
+
 </head>
 <body>
 <a class="skip-link" href="#main-content">Перейти к основному содержимому</a>
 
 <!-- ==========================================================
-     Спрайт иконок. Инлайн-SVG (а не внешний файл) — так currentColor
-     и последующая GSAP-анимация (тикет 03) могут адресовать отдельные
-     узлы иконок напрямую, без кросс-документных ограничений <use>.
+     Спрайт иконок.
      ========================================================== -->
 <svg aria-hidden="true" style="display:none">
   <defs>
@@ -46,21 +318,22 @@
 
 <header class="site-header">
   <div class="site-header__inner">
-    <a class="site-header__logo" href="#hero" aria-label="Corex-Trade — на главную">
+    <a class="site-header__logo" href="#hero" aria-label="COREX — на главную">
       <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><use href="#icon-link"></use></svg>
-      Corex-Trade
+      COREX
     </a>
     <nav class="site-header__nav" aria-label="Разделы страницы">
       <a href="#coverage">Как работаем</a>
+      <a href="#services">Услуги</a>
       <a href="#timelines">Сроки</a>
       <a href="#calculator">Расчёт</a>
       <a href="#faq">Вопросы</a>
     </nav>
     <div class="site-header__actions">
-      <a class="site-header__telegram" href="#" aria-label="Telegram Corex-Trade">
+      <a class="site-header__telegram" href="#" aria-label="Telegram COREX">
         <svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><use href="#icon-telegram"></use></svg>
       </a>
-      <a class="btn btn--cta btn--sm site-header__cta" href="#contacts">Оставить заявку</a>
+      <a class="btn btn--cta btn--sm site-header__cta" href="#contacts"><span class="site-header__cta-full">Оставить заявку</span><span class="site-header__cta-short">Заявка</span></a>
     </div>
   </div>
 </header>
@@ -68,412 +341,181 @@
 <main id="main-content">
 
 <!-- ==========================================================
-     1. HERO — горизонтальная панорама (js/hero-panorama.js).
-     Принцип, обоснование и правила доработки — docs/hero-panorama.md,
-     рабочий образец — docs/hero-panorama-reference.html. Разметка ниже
-     перенесена оттуда: три слоя параллакса (.hero__layer--far/mid/near),
-     линия маршрута с шестью станциями и реквизитом между ними (реквизит
-     генерирует js/hero-panorama.js), вступление и шесть блоков текста —
-     все absolute-слои внутри .hero__pin (sticky, 100dvh) на секции
-     высотой 700vh. Швов между шагами нет: переход — это проезд камеры
-     вдоль панорамы, ничего не переключается и не кросс-фейдится.
-     При prefers-reduced-motion сцена скрывается, вступление и шесть
-     шагов идут обычными блоками в потоке (см. медиа-запрос в конце §5
-     css/styles.css) — секция становится обычной высоты, sticky снят.
+     1. HERO — тёмная сцена с шестью шагами процесса.
+
+     Один пик на всю секцию: .hero высотой 350vh; первый экран усилен самостоятельной визуальной картой предложения,
+     .hero__pin внутри — sticky на 100svh. Внутри пина семь панелей:
+     вступление и шесть шагов. Каждая панель — единый <article>:
+     слева текст (номер, заголовок, абзац), справа иллюстрация.
+     Появляются и уходят они вместе, потому что живут в одном
+     элементе и анимируются как одно целое — именно этого не хватало
+     прежней панораме, где сначала подъезжала станция, и только
+     потом проявлялся текст.
+
+     Высота 350vh — вдвое короче прежних 700vh: на каждый шаг
+     приходится 50vh прокрутки, пролистывается вдвое быстрее.
+
+     Стилистика — та же тёмная сцена, что у секций «Кейсы» и
+     «Заявка»: --color-bg-dark-base, teal-подсвет, белый текст,
+     .btn--cta и .btn--ghost-on-dark.
+
+     Круглая кнопка-круглешок внизу (акцентный коралловый круг со
+     стрелкой) плавно «прыгает» и ведёт на #hero-stats — следующий
+     блок страницы. Клик перехватывает js/scroll-engine.js тем же
+     делегированным обработчиком якорей, что и все внутренние ссылки.
+
+     prefers-reduced-motion (и ширина меньше 340px): sticky
+     отключается, панели встают обычным вертикальным списком —
+     см. styles.css §5.2.
      ========================================================== -->
-<section class="hero" id="hero" data-header="light" aria-label="Главный экран">
+<section class="hero" id="hero" data-header="dark" aria-label="Главный экран">
   <div class="hero__pin" id="hero-pin">
+    <div class="hero__glow" aria-hidden="true"></div>
 
-    <svg class="hero__defs" aria-hidden="true"><defs>
-      <pattern id="hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-        <line x1="0" y1="0" x2="0" y2="9" stroke="#141414" stroke-width="1.1" stroke-opacity=".15"/>
-      </pattern>
-      <pattern id="hatchD" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-        <line x1="0" y1="0" x2="0" y2="6" stroke="#141414" stroke-width="1.1" stroke-opacity=".3"/>
-      </pattern>
-    </defs></svg>
+    <div class="hero__stage" id="hero-stage">
 
-    <div class="hero__scene">
-      <div class="hero__layer hero__layer--far">
-        <svg viewBox="0 0 2800 200" preserveAspectRatio="none" aria-hidden="true">
-          <g fill="#141414">
-            <rect x="40" y="120" width="90" height="80"/><rect x="150" y="86" width="54" height="114"/>
-            <rect x="230" y="140" width="130" height="60"/><rect x="386" y="60" width="30" height="140"/>
-            <rect x="416" y="96" width="120" height="104"/><rect x="560" y="132" width="76" height="68"/>
-            <rect x="660" y="104" width="44" height="96"/><rect x="722" y="146" width="150" height="54"/>
-            <rect x="900" y="70" width="26" height="130"/><rect x="926" y="112" width="96" height="88"/>
-            <rect x="1050" y="150" width="180" height="50"/><rect x="1256" y="92" width="60" height="108"/>
-            <rect x="1340" y="128" width="110" height="72"/><rect x="1476" y="56" width="24" height="144"/>
-            <rect x="1500" y="104" width="130" height="96"/><rect x="1660" y="144" width="90" height="56"/>
-            <rect x="1780" y="98" width="48" height="102"/><rect x="1850" y="134" width="164" height="66"/>
-            <rect x="2040" y="76" width="28" height="124"/><rect x="2068" y="118" width="104" height="82"/>
-            <rect x="2200" y="152" width="150" height="48"/><rect x="2376" y="90" width="58" height="110"/>
-            <rect x="2460" y="130" width="120" height="70"/><rect x="2606" y="64" width="26" height="136"/>
-            <rect x="2632" y="108" width="140" height="92"/>
-          </g>
-        </svg>
-      </div>
-
-      <div class="hero__layer hero__layer--mid">
-        <svg viewBox="0 0 4600 260" preserveAspectRatio="none" aria-hidden="true">
-          <g fill="none" stroke="#141414" stroke-width="4">
-            <path d="M0 250h4600" stroke-opacity=".35"/>
-            <g stroke-opacity=".8">
-              <path d="M124 250V30M90 34h68"/><path d="M700 250V60M672 64h56"/>
-              <path d="M984 250V30M950 34h68"/><path d="M1560 250V60M1532 64h56"/>
-              <path d="M1844 250V30M1810 34h68"/><path d="M2420 250V60M2392 64h56"/>
-              <path d="M2704 250V30M2670 34h68"/><path d="M3280 250V60M3252 64h56"/>
-              <path d="M3564 250V30M3530 34h68"/><path d="M4140 250V60M4112 64h56"/>
-              <path d="M4424 250V30M4390 34h68"/>
-            </g>
-            <g stroke-opacity=".45">
-              <path d="M420 250v-70h180v70M470 180v-46h90v46"/>
-              <path d="M1280 250v-58h150v58"/>
-              <path d="M2120 250v-74h170v74M2160 176v-40h100v40"/>
-              <path d="M3020 250v-62h140v62"/>
-              <path d="M3860 250v-70h180v70M3910 180v-44h90v44"/>
-            </g>
-          </g>
-        </svg>
-      </div>
-
-      <div class="hero__layer hero__layer--near">
-        <div class="hero__road-ticks"></div>
-        <div class="hero__road"></div>
-        <div class="hero__road-done" id="hero-road-done"></div>
-        <div class="hero__props" id="hero-props"></div>
-
-        <!-- 01 ЗАЯВКА -->
-        <div class="hero__station" style="left:0">
-          <div class="hero__station-art">
-            <svg viewBox="0 0 900 640" fill="none" stroke="#141414" stroke-width="2.4" stroke-linejoin="round">
-              <path d="M110 618h680" stroke-width="2" stroke-opacity=".25"/>
-              <g transform="rotate(-3.5 450 330)">
-                <rect x="212" y="80" width="452" height="548" fill="#F5F5F3" stroke-width="1.8" stroke-opacity=".3"/>
-                <rect x="222" y="70" width="452" height="548" fill="#F5F5F3" stroke-width="1.8" stroke-opacity=".45"/>
-                <rect x="232" y="60" width="452" height="548" fill="#fff"/>
-
-                <path d="M276 152h250" stroke-width="3.6"/>
-                <path d="M276 182h150" stroke-width="1.8" stroke-opacity=".4"/>
-                <path d="M232 216h452" stroke-width="1.6" stroke-opacity=".28"/>
-
-                <g stroke-width="1.8">
-                  <path d="M276 272h68" stroke-opacity=".45"/><path d="M374 272h250" stroke-opacity=".22"/>
-                  <path d="M276 318h56" stroke-opacity=".45"/><path d="M374 318h196" stroke-opacity=".22"/>
-                  <path d="M276 364h74" stroke-opacity=".45"/><path d="M374 364h250" stroke="#E2483A" stroke-opacity="1"/>
-                  <path d="M276 410h50" stroke-opacity=".45"/><path d="M374 410h150" stroke-opacity=".22"/>
-                  <path d="M276 456h64" stroke-opacity=".45"/><path d="M374 456h224" stroke-opacity=".22"/>
-                </g>
-
-                <rect x="276" y="512" width="150" height="56" stroke-width="1.8" stroke-opacity=".45"/>
-                <text x="298" y="549" font-family="IBM Plex Mono, monospace" font-size="24" fill="#141414" fill-opacity=".55" stroke="none">2 дня</text>
-                <path d="M456 542h168" stroke-width="1.8" stroke-opacity=".22"/>
-              </g>
-
-              <path d="M700 486l124-124 34 34-124 124z" fill="#fff"/>
-              <path d="M700 486l34 34-58 24z" fill="#fff"/>
-              <path d="M824 362l34 34" stroke-width="2" stroke-opacity=".5"/>
-              <path d="M786 400l34 34" stroke-width="1.8" stroke-opacity=".3"/>
-            </svg>
+      <!-- Панель 00: вступление / главный экран -->
+      <article class="hero__panel hero__panel--intro">
+        <div class="hero__panel-text">
+          <div class="hero-intro__topline">
+            <span class="hero-intro__status"><i aria-hidden="true"></i> Импорт под ключ</span>
+            <span class="hero-intro__location">Китай → ваш склад</span>
           </div>
-          <div class="hero__node" data-node="0"></div>
+          <p class="hero__eyebrow" data-edit-id="hero-eyebrow">Закупка и официальный импорт из Китая</p>
+          <h1 class="hero__title"><span data-edit-id="hero-title-main">Импорт из Китая, </span><em data-edit-id="hero-title-accent">где стоимость известна </em><span data-edit-id="hero-title-tail">до подписания договора</span></h1>
+          <p class="hero__lede" data-edit-id="hero-lede">Находим производителя, проверяем условия, считаем логистику и таможню. Вы заранее видите итоговую стоимость и понимаете, за что платите.</p>
+          <div class="hero__actions">
+            <a class="btn btn--cta btn--lg hero-intro__primary" href="#contacts">Получить расчёт <span aria-hidden="true">→</span></a>
+            <a class="btn btn--ghost-on-dark btn--lg" href="#timelines">Посмотреть сроки</a>
+          </div>
+          <div class="hero-intro__trust" aria-label="Преимущества">
+            <span><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-check"></use></svg> Без обязательств</span>
+            <span><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-check"></use></svg> Расчёт за 2 дня</span>
+            <span><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-check"></use></svg> До склада</span>
+          </div>
         </div>
-
-        <!-- 02 ЦЕНЫ С ФАБРИКИ -->
-        <div class="hero__station" style="left:100vw">
-          <div class="hero__station-art">
-            <svg viewBox="0 0 900 640" fill="none" stroke="#141414" stroke-width="2.4" stroke-linejoin="round">
-              <path d="M30 606h840" stroke-width="2" stroke-opacity=".28"/>
-
-              <path d="M700 248v-98h34v78" stroke-width="2.2"/>
-              <path d="M698 150h38" stroke-width="2.4"/>
-              <path d="M706 248v-92M726 248v-92" stroke-width="1.4" stroke-opacity=".25"/>
-
-              <path d="M660 322l104-74v274l-104 74z" fill="url(#hatch)"/>
-              <path d="M180 322l104-74h480l-104 74z" fill="#F5F5F3"/>
-              <path d="M180 322h480v284H180z" fill="#fff"/>
-
-              <path d="M300 294l30-22h96l-30 22z" fill="#fff" stroke-width="1.9"/>
-              <path d="M300 294v-18l30-22v18" stroke-width="1.9"/>
-              <path d="M470 294l30-22h96l-30 22z" fill="#fff" stroke-width="1.9"/>
-              <path d="M470 294v-18l30-22v18" stroke-width="1.9"/>
-
-              <g stroke-width="1.9">
-                <rect x="210" y="358" width="86" height="66"/>
-                <rect x="318" y="358" width="86" height="66"/>
-                <rect x="426" y="358" width="86" height="66"/>
-                <rect x="534" y="358" width="86" height="66"/>
-                <g stroke-opacity=".3">
-                  <path d="M253 358v66M210 391h86M361 358v66M318 391h86"/>
-                  <path d="M469 358v66M426 391h86M577 358v66M534 391h86"/>
-                </g>
-              </g>
-
-              <path d="M330 462h200v144H330z" fill="url(#hatchD)"/>
-              <path d="M330 462h200" stroke-width="2.8"/>
-              <path d="M330 462v144M530 462v144" stroke-width="2.2"/>
-              <g stroke-width="1.4" stroke-opacity=".3"><path d="M330 488h200M330 514h200M330 540h200M330 566h200"/></g>
-
-              <rect x="212" y="498" width="62" height="108" stroke-width="2.1"/>
-              <path d="M262 554h8" stroke-width="2.2" stroke-opacity=".55"/>
-              <path d="M180 588h480" stroke-width="1.6" stroke-opacity=".28"/>
-
-              <path d="M572 606v-66h76v66" stroke-width="2.2"/>
-              <path d="M572 540l24-18h76l-24 18" stroke-width="2.2"/>
-              <path d="M648 540l24-18v66l-24 18" stroke-width="2.2"/>
-              <path d="M572 572h76" stroke-width="1.5" stroke-opacity=".3"/>
-
-              <path d="M84 606v-14h104v14" stroke-width="2.2" stroke-opacity=".7"/>
-              <path d="M96 592v-38h80v38M96 573h80" stroke-width="2" stroke-opacity=".55"/>
-            </svg>
+        <div class="hero-intro__visual" aria-label="Что входит в работу COREX">
+          <div class="hero-intro__visual-grid" aria-hidden="true"></div>
+          <div class="hero-intro__visual-label">COREX / IMPORT CONTROL</div>
+          <div class="hero-intro__route">
+            <div class="hero-intro__route-line"></div>
+            <div class="hero-intro__node hero-intro__node--start"><span>01</span><b>Фабрика</b><small>поиск / проверка</small></div>
+            <div class="hero-intro__node hero-intro__node--mid"><span>02</span><b>COREX</b><small>расчёт / документы</small></div>
+            <div class="hero-intro__node hero-intro__node--end"><span>03</span><b>Ваш склад</b><small>доставка / контроль</small></div>
           </div>
-          <!-- ФОТО 1: заменить .hero__photo-slot на <img class="hero__photo-img" src="assets/hero/factory.jpg" alt=""> -->
-          <div class="hero__photo" style="--x:88vw;--rot:-3.5deg;bottom:calc(var(--hero-ground) + 30vh)">
-            <div class="hero__photo-inner"><div class="hero__photo-slot">фото: цех фабрики</div></div>
-            <svg class="hero__photo-clip" viewBox="0 0 40 70" fill="none" stroke="#141414" stroke-width="2.4" stroke-opacity=".55">
-              <path d="M12 66V16a8 8 0 0116 0v40a14 14 0 01-28 0V20"/>
-            </svg>
+          <div class="hero-intro__card hero-intro__card--main">
+            <span class="hero-intro__card-kicker">Что вы получаете</span>
+            <strong>Один подрядчик<br>на весь импорт</strong>
+            <span class="hero-intro__card-arrow">↗</span>
           </div>
-          <div class="hero__node" data-node="1"></div>
+          <div class="hero-intro__card hero-intro__card--price">
+            <span>Итоговая стоимость</span><strong>до договора</strong><i></i>
+          </div>
+          <div class="hero-intro__scan" aria-hidden="true"></div>
         </div>
+        <div class="hero-intro__hint"><span>Листайте, чтобы увидеть процесс</span><span class="hero-intro__hint-line"></span></div>
+      </article>
 
-        <!-- 03 ПРЕДВАРИТЕЛЬНЫЙ РАСЧЁТ -->
-        <div class="hero__station" style="left:200vw">
-          <div class="hero__station-art">
-            <svg viewBox="0 0 900 640" fill="none" stroke="#141414" stroke-width="2.2">
-              <path d="M110 616h680" stroke-opacity=".25"/>
-              <rect x="212" y="72" width="500" height="524" fill="#F5F5F3" stroke-width="1.6" stroke-opacity=".28"/>
-              <rect x="200" y="62" width="500" height="524" fill="#F5F5F3" stroke-width="1.6" stroke-opacity=".4"/>
-              <rect x="188" y="52" width="500" height="524" fill="#fff"/>
-
-              <path d="M188 130h500" stroke-width="2.6"/>
-              <text x="218" y="106" font-family="IBM Plex Mono, monospace" font-size="20" fill="#141414" fill-opacity=".6" stroke="none">предварительный расчёт</text>
-              <rect x="618" y="72" width="44" height="40" stroke-width="1.6" stroke-opacity=".35"/>
-              <path d="M626 92h28M626 100h20" stroke-width="1.4" stroke-opacity=".3"/>
-
-              <path d="M520 130v300" stroke-width="1.4" stroke-opacity=".18"/>
-              <g stroke-width="1.4" stroke-opacity=".22">
-                <path d="M188 190h500M188 238h500M188 286h500M188 334h500M188 382h500"/>
-              </g>
-              <g font-family="IBM Plex Mono, monospace" font-size="20" stroke="none">
-                <text x="218" y="172" fill="#141414" fill-opacity=".5">товар, FOB</text>
-                <text x="218" y="220" fill="#141414" fill-opacity=".5">перевозка</text>
-                <text x="218" y="268" fill="#141414" fill-opacity=".5">пошлина</text>
-                <text x="218" y="316" fill="#141414" fill-opacity=".5">НДС</text>
-                <text x="218" y="364" fill="#141414" fill-opacity=".5">оформление</text>
-                <text x="658" y="172" text-anchor="end" fill="#2F5FDE">14 200</text>
-                <text x="658" y="220" text-anchor="end" fill="#2F5FDE">3 480</text>
-                <text x="658" y="268" text-anchor="end" fill="#2F5FDE">1 704</text>
-                <text x="658" y="316" text-anchor="end" fill="#2F5FDE">3 206</text>
-                <text x="658" y="364" text-anchor="end" fill="#2F5FDE">1 060</text>
-                <text x="218" y="446" fill="#141414" font-size="21">итого, ориентир</text>
-                <text x="658" y="450" text-anchor="end" fill="#E2483A" font-size="30">≈ 23 650</text>
-              </g>
-              <path d="M188 470h500" stroke="#E2483A" stroke-width="2.4"/>
-              <g stroke-width="1.4" stroke-opacity=".22"><path d="M218 512h280M218 540h200"/></g>
-              <rect x="560" y="496" width="98" height="56" stroke-width="1.5" stroke-opacity=".3"/>
-              <path d="M576 528h66" stroke-width="1.4" stroke-opacity=".25"/>
-            </svg>
-          </div>
-          <div class="hero__node" data-node="2"></div>
+      <!-- Панель 01: Заявка -->
+      <article class="hero__panel">
+        <div class="hero__panel-text">
+          <p class="hero__panel-num"><span class="hero__panel-num-rule" aria-hidden="true"></span>Шаг 01 / 06</p>
+          <h2 class="hero__panel-title" data-edit-id="hero-act-1-title">Заявка</h2>
+          <p class="hero__panel-desc" data-edit-id="hero-act-1-text">Вы называете товар и объём. Если фабрика уже есть — работаем с ней. Если нет — ищем производителя под вашу спецификацию, обычно за 2–3 дня.</p>
         </div>
+        <figure class="hero__panel-media">
+          <img src="assets/hero/station-01.webp"
+               srcset="assets/hero/station-01-600.webp 600w, assets/hero/station-01.webp 1200w"
+               sizes="(max-width: 899.98px) 80vw, 44vw"
+               width="1200" height="857" alt="" decoding="async" fetchpriority="high">
+        </figure>
+      </article>
 
-        <!-- 04 ПРОРАБОТКА -->
-        <div class="hero__station" style="left:300vw">
-          <div class="hero__station-art">
-            <svg viewBox="0 0 900 640" fill="none" stroke="#141414" stroke-width="2.4" stroke-linejoin="round">
-              <path d="M70 610h760" stroke-width="2" stroke-opacity=".25"/>
-
-              <path d="M360 322V214M462 322V162M556 322V246" stroke-width="1.5" stroke-opacity=".5"/>
-              <path d="M262 116h176l26 24-26 24H262z" fill="#fff" stroke-width="2"/>
-              <path d="M366 164h176l26 24-26 24H366z" fill="#fff" stroke-width="2"/>
-              <path d="M470 214h150l26 24-26 24H470z" fill="#fff" stroke-width="2"/>
-              <g font-family="IBM Plex Mono, monospace" font-size="19" stroke="none" fill="#141414" fill-opacity=".62">
-                <text x="284" y="147">сертификация</text>
-                <text x="388" y="195">перевозка</text>
-                <text x="492" y="245">таможня</text>
-              </g>
-              <circle cx="274" cy="140" r="4.5" fill="#E2483A" stroke="none"/>
-              <circle cx="378" cy="188" r="4.5" fill="#E2483A" stroke="none"/>
-              <circle cx="482" cy="238" r="4.5" fill="#E2483A" stroke="none"/>
-
-              <path d="M286 584v-24h330v24" stroke-width="2.2"/>
-              <path d="M286 560h330" stroke-width="1.6" stroke-opacity=".35"/>
-              <path d="M616 560l66-48v24l-66 48z" fill="#F5F5F3" stroke-width="2.2"/>
-              <path d="M304 584v20M420 584v20M596 584v20" stroke-width="2" stroke-opacity=".6"/>
-
-              <path d="M300 560V322h316v238z" fill="#fff"/>
-              <path d="M300 322l66-48h316l-66 48z" fill="#F5F5F3"/>
-              <path d="M616 322l66-48v238l-66 48z" fill="url(#hatch)"/>
-
-              <g stroke-width="1.6" stroke-opacity=".28"><path d="M300 380h316M300 438h316M300 496h316"/></g>
-              <path d="M320 322v238M596 322v238" stroke-width="2"/>
-              <path d="M300 322l316 238M616 322L300 560" stroke-width="1.4" stroke-opacity=".14"/>
-
-              <rect x="342" y="398" width="132" height="76" fill="#fff" stroke-width="1.8" stroke-opacity=".55"/>
-              <text x="356" y="428" font-family="IBM Plex Mono, monospace" font-size="18" fill="#141414" fill-opacity=".5" stroke="none">CX-0428</text>
-              <path d="M356 446h104M356 460h72" stroke-width="1.4" stroke-opacity=".3"/>
-            </svg>
-          </div>
-          <!-- ФОТО 2: заменить .hero__photo-slot на <img class="hero__photo-img" src="assets/hero/marking.jpg" alt=""> -->
-          <div class="hero__photo" style="--x:86vw;--rot:2.5deg;bottom:calc(var(--hero-ground) + 26vh)">
-            <div class="hero__photo-inner"><div class="hero__photo-slot">фото: маркировка<br>на коробке, крупно</div></div>
-            <svg class="hero__photo-clip" viewBox="0 0 40 70" fill="none" stroke="#141414" stroke-width="2.4" stroke-opacity=".55">
-              <path d="M12 66V16a8 8 0 0116 0v40a14 14 0 01-28 0V20"/>
-            </svg>
-          </div>
-          <div class="hero__node" data-node="3"></div>
+      <!-- Панель 02: Цены с фабрики -->
+      <article class="hero__panel">
+        <div class="hero__panel-text">
+          <p class="hero__panel-num"><span class="hero__panel-num-rule" aria-hidden="true"></span>Шаг 02 / 06</p>
+          <h2 class="hero__panel-title" data-edit-id="hero-act-2-title">Цены с фабрики</h2>
+          <p class="hero__panel-desc" data-edit-id="hero-act-2-text">Связываемся с производителем, снимаем реальные цены и запрашиваем документы фабрики. Если решим, что нужно, — организуем инспекцию и образцы: в Китае у нас своя команда.</p>
         </div>
+        <figure class="hero__panel-media">
+          <img src="assets/hero/station-02.webp"
+               srcset="assets/hero/station-02-600.webp 600w, assets/hero/station-02.webp 1200w"
+               sizes="(max-width: 899.98px) 80vw, 44vw"
+               width="1200" height="857" alt="" decoding="async">
+        </figure>
+      </article>
 
-        <!-- 05 ФИНАЛЬНЫЙ РАСЧЁТ И ДОГОВОР -->
-        <div class="hero__station" style="left:400vw">
-          <div class="hero__station-art">
-            <svg viewBox="0 0 900 640" fill="none" stroke="#141414" stroke-width="2.2" stroke-linejoin="round">
-              <path d="M110 616h680" stroke-opacity=".25"/>
-              <rect x="158" y="96" width="404" height="490" fill="#F5F5F3" stroke-width="1.7" stroke-opacity=".32"/>
-              <rect x="176" y="108" width="404" height="490" fill="#F5F5F3" stroke-width="1.7" stroke-opacity=".22"/>
-              <rect x="248" y="82" width="420" height="504" fill="#fff"/>
-
-              <path d="M248 152h420" stroke-width="2.6"/>
-              <text x="278" y="130" font-family="IBM Plex Mono, monospace" font-size="20" fill="#141414" fill-opacity=".6" stroke="none">договор поставки</text>
-              <g stroke-width="1.4" stroke-opacity=".22">
-                <path d="M278 200h360M278 228h360M278 256h300M278 284h360M278 312h240"/>
-              </g>
-              <g font-family="IBM Plex Mono, monospace" font-size="20" stroke="none">
-                <text x="278" y="378" fill="#141414" fill-opacity=".55">итого по договору</text>
-                <text x="638" y="380" text-anchor="end" fill="#2F5FDE" font-size="24">23 610</text>
-              </g>
-              <path d="M278 402h360" stroke-width="1.6" stroke-opacity=".3"/>
-
-              <path d="M278 520h190" stroke-width="1.8" stroke-opacity=".45"/>
-              <text x="278" y="546" font-family="IBM Plex Mono, monospace" font-size="15" fill="#141414" fill-opacity=".4" stroke="none">подпись</text>
-              <path d="M288 512c14-30 26 18 40-6s22 20 38-6 26 16 42-4" stroke-width="2.8"/>
-
-              <circle cx="576" cy="486" r="56" stroke="#E2483A" stroke-width="2.4" stroke-opacity=".85"/>
-              <circle cx="576" cy="486" r="44" stroke="#E2483A" stroke-width="1.6" stroke-opacity=".45"/>
-              <path d="M540 480h72M540 496h56" stroke="#E2483A" stroke-width="1.8" stroke-opacity=".5"/>
-
-              <path d="M690 566l104-84 24 18-104 84z" fill="#fff" stroke-width="2.2"/>
-              <path d="M690 566l24 18-54 12z" fill="#fff" stroke-width="2.2"/>
-              <path d="M794 482l24 18" stroke-width="1.8" stroke-opacity=".5"/>
-            </svg>
-          </div>
-          <div class="hero__node" data-node="4"></div>
+      <!-- Панель 03: Предварительный расчёт -->
+      <article class="hero__panel">
+        <div class="hero__panel-text">
+          <p class="hero__panel-num"><span class="hero__panel-num-rule" aria-hidden="true"></span>Шаг 03 / 06</p>
+          <h2 class="hero__panel-title" data-edit-id="hero-act-3-title">Предварительный расчёт</h2>
+          <p class="hero__panel-desc" data-edit-id="hero-act-3-text">Собираем характеристики товара, требования к перевозке и выясняем, нужна ли сертификация. Через два дня после заявки у вас на руках ориентир по итоговой стоимости — до любых обязательств.</p>
         </div>
+        <figure class="hero__panel-media">
+          <img src="assets/hero/station-03.webp"
+               srcset="assets/hero/station-03-600.webp 600w, assets/hero/station-03.webp 1200w"
+               sizes="(max-width: 899.98px) 80vw, 44vw"
+               width="1200" height="857" alt="" decoding="async">
+        </figure>
+      </article>
 
-        <!-- 06 ОТПРАВКА И СКЛАД -->
-        <div class="hero__station" style="left:500vw">
-          <div class="hero__station-art">
-            <svg viewBox="0 0 900 640" fill="none" stroke="#141414" stroke-width="2.4" stroke-linejoin="round">
-              <path d="M20 604h860" stroke-width="2" stroke-opacity=".28"/>
-
-              <path d="M830 286l60-46v306l-60 46z" fill="url(#hatch)"/>
-              <path d="M470 286l60-46h360l-60 46z" fill="#F5F5F3"/>
-              <path d="M470 286h360v306H470z" fill="#fff"/>
-              <path d="M470 286h360" stroke-width="2.6"/>
-
-              <path d="M540 592V380h170v212z" fill="url(#hatchD)"/>
-              <path d="M540 380h170" stroke-width="2.6"/>
-              <path d="M540 380v212M710 380v212" stroke-width="2.2"/>
-              <g stroke-width="1.4" stroke-opacity=".35"><path d="M540 404h170M540 428h170"/></g>
-              <path d="M540 556h170" stroke-width="2"/>
-
-              <g stroke-width="1.8">
-                <rect x="740" y="336" width="60" height="46" stroke-opacity=".7"/>
-                <path d="M770 336v46M740 359h60" stroke-opacity=".28"/>
-              </g>
-              <path d="M470 576h70" stroke-width="1.6" stroke-opacity=".3"/>
-              <path d="M470 320h360" stroke-width="1.4" stroke-opacity=".18"/>
-
-              <g stroke-width="2" stroke-opacity=".55">
-                <path d="M566 556v-44h56v44M566 534h56"/>
-                <path d="M634 556v-44h56v44M634 534h56"/>
-                <path d="M600 512v-44h56v44M600 490h56"/>
-              </g>
-
-              <path d="M148 542V368h298v174z" fill="#fff"/>
-              <path d="M148 368h298" stroke-width="2.6"/>
-              <g stroke-width="1.4" stroke-opacity=".22">
-                <path d="M186 368v174M224 368v174M262 368v174M300 368v174M338 368v174M376 368v174M414 368v174"/>
-              </g>
-              <path d="M148 396h298M148 514h298" stroke-width="1.6" stroke-opacity=".3"/>
-              <path d="M148 542V368" stroke-width="2.6"/>
-              <path d="M160 452h10" stroke-width="2.2" stroke-opacity=".5"/>
-
-              <path d="M446 542V430h48l38 48v64z" fill="#fff"/>
-              <path d="M494 430l38 48h-38z" fill="#F5F5F3" stroke-width="2"/>
-              <path d="M446 542h86" stroke-width="2.2"/>
-              <path d="M446 496h48" stroke-width="1.6" stroke-opacity=".3"/>
-
-              <path d="M148 542h384" stroke-width="2.2"/>
-              <circle cx="212" cy="566" r="34"/><circle cx="212" cy="566" r="13" stroke-width="2"/>
-              <circle cx="366" cy="566" r="34"/><circle cx="366" cy="566" r="13" stroke-width="2"/>
-              <circle cx="494" cy="566" r="34"/><circle cx="494" cy="566" r="13" stroke-width="2"/>
-              <path d="M170 542a42 42 0 0184 0M324 542a42 42 0 0184 0" stroke-width="1.6" stroke-opacity=".3"/>
-
-              <path d="M60 592v-14h72v14M70 578v-40h52v40M70 560h52" stroke-width="2" stroke-opacity=".55"/>
-            </svg>
-          </div>
-          <!-- ФОТО 3: заменить .hero__photo-slot на <img class="hero__photo-img" src="assets/hero/loading.jpg" alt=""> -->
-          <div class="hero__photo" style="--x:88vw;--rot:-2deg;bottom:calc(var(--hero-ground) + 32vh)">
-            <div class="hero__photo-inner"><div class="hero__photo-slot">фото: загрузка<br>машины или контейнера</div></div>
-            <svg class="hero__photo-clip" viewBox="0 0 40 70" fill="none" stroke="#141414" stroke-width="2.4" stroke-opacity=".55">
-              <path d="M12 66V16a8 8 0 0116 0v40a14 14 0 01-28 0V20"/>
-            </svg>
-          </div>
-          <div class="hero__node" data-node="5"></div>
+      <!-- Панель 04: Проработка -->
+      <article class="hero__panel">
+        <div class="hero__panel-text">
+          <p class="hero__panel-num"><span class="hero__panel-num-rule" aria-hidden="true"></span>Шаг 04 / 06</p>
+          <h2 class="hero__panel-title" data-edit-id="hero-act-4-title">Проработка</h2>
+          <p class="hero__panel-desc" data-edit-id="hero-act-4-text">Запрашиваем фактические ставки: сертификация со сроками и образцами, перевозка, таможенное оформление. Здесь цифры перестают быть приблизительными.</p>
         </div>
-      </div>
+        <figure class="hero__panel-media">
+          <img src="assets/hero/station-04.webp"
+               srcset="assets/hero/station-04-600.webp 600w, assets/hero/station-04.webp 1200w"
+               sizes="(max-width: 899.98px) 80vw, 44vw"
+               width="1200" height="857" alt="" decoding="async">
+        </figure>
+      </article>
+
+      <!-- Панель 05: Финальный расчёт и договор -->
+      <article class="hero__panel">
+        <div class="hero__panel-text">
+          <p class="hero__panel-num"><span class="hero__panel-num-rule" aria-hidden="true"></span>Шаг 05 / 06</p>
+          <h2 class="hero__panel-title" data-edit-id="hero-act-5-title">Финальный расчёт и договор</h2>
+          <p class="hero__panel-desc" data-edit-id="hero-act-5-text">Финальную калькуляцию собираем за один день после согласования себестоимости. Если всё сходится — заключаем договор, и только после этого начинается отгрузка.</p>
+        </div>
+        <figure class="hero__panel-media">
+          <img src="assets/hero/station-05.webp"
+               srcset="assets/hero/station-05-600.webp 600w, assets/hero/station-05.webp 1200w"
+               sizes="(max-width: 899.98px) 80vw, 44vw"
+               width="1200" height="857" alt="" decoding="async">
+        </figure>
+      </article>
+
+      <!-- Панель 06: Отправка и склад -->
+      <article class="hero__panel">
+        <div class="hero__panel-text">
+          <p class="hero__panel-num"><span class="hero__panel-num-rule" aria-hidden="true"></span>Шаг 06 / 06</p>
+          <h2 class="hero__panel-title" data-edit-id="hero-act-6-title">Отправка и склад</h2>
+          <p class="hero__panel-desc" data-edit-id="hero-act-6-text">Согласуем с фабрикой маркировку и упаковку, организуем забор партии, проводим груз через таможню и доводим до вашего склада.</p>
+        </div>
+        <figure class="hero__panel-media">
+          <img src="assets/hero/station-06.webp"
+               srcset="assets/hero/station-06-600.webp 600w, assets/hero/station-06.webp 1200w"
+               sizes="(max-width: 899.98px) 80vw, 44vw"
+               width="1200" height="857" alt="" decoding="async">
+        </figure>
+      </article>
+
     </div>
 
-    <div class="hero__veil"></div>
-    <div class="hero__wash" id="hero-wash"></div>
-
-    <div class="hero__intro" id="hero-intro">
-      <p class="hero__eyebrow" data-edit-id="hero-eyebrow">Закупка и официальный импорт из Китая</p>
-      <h1 class="hero__title"><span data-edit-id="hero-title-main">Импорт из Китая, </span><span data-edit-id="hero-title-accent">где стоимость известна </span><span data-edit-id="hero-title-tail">до подписания договора</span></h1>
-      <p class="hero__lede" data-edit-id="hero-lede">Работаем с вашей фабрикой или находим производителя сами. Считаем поставку дважды — сначала ориентир, потом по фактическим ставкам — и ведём груз до склада: сертификация, документы, таможня, доставка.</p>
-      <div class="hero__actions">
-        <a class="hero__btn" href="#contacts">Оставить заявку</a>
-        <a class="hero__btn hero__btn--ghost" href="#timelines">Посмотреть сроки</a>
-      </div>
-    </div>
-
-    <div class="hero__acts" id="hero-acts">
-      <article class="hero__act">
-        <p class="hero__act-num"><span class="hero__act-num-rule" aria-hidden="true"></span>Шаг 01 / 06</p>
-        <h2 class="hero__act-title" data-edit-id="hero-act-1-title">Заявка</h2>
-        <p class="hero__act-text" data-edit-id="hero-act-1-text">Вы называете товар и объём. Если фабрика уже есть — работаем с ней. Если нет — ищем производителя под вашу спецификацию, обычно за 2–3 дня.</p>
-      </article>
-      <article class="hero__act">
-        <p class="hero__act-num"><span class="hero__act-num-rule" aria-hidden="true"></span>Шаг 02 / 06</p>
-        <h2 class="hero__act-title" data-edit-id="hero-act-2-title">Цены с фабрики</h2>
-        <p class="hero__act-text" data-edit-id="hero-act-2-text">Связываемся с производителем, снимаем реальные цены и запрашиваем документы фабрики. Если решим, что нужно, — организуем инспекцию и образцы: в Китае у нас своя команда.</p>
-      </article>
-      <article class="hero__act">
-        <p class="hero__act-num"><span class="hero__act-num-rule" aria-hidden="true"></span>Шаг 03 / 06</p>
-        <h2 class="hero__act-title" data-edit-id="hero-act-3-title">Предварительный расчёт</h2>
-        <p class="hero__act-text" data-edit-id="hero-act-3-text">Собираем характеристики товара, требования к перевозке и выясняем, нужна ли сертификация. Через два дня после заявки у вас на руках ориентир по итоговой стоимости — до любых обязательств.</p>
-      </article>
-      <article class="hero__act">
-        <p class="hero__act-num"><span class="hero__act-num-rule" aria-hidden="true"></span>Шаг 04 / 06</p>
-        <h2 class="hero__act-title" data-edit-id="hero-act-4-title">Проработка</h2>
-        <p class="hero__act-text" data-edit-id="hero-act-4-text">Запрашиваем фактические ставки: сертификация со сроками и образцами, перевозка, таможенное оформление. Здесь цифры перестают быть приблизительными.</p>
-      </article>
-      <article class="hero__act">
-        <p class="hero__act-num"><span class="hero__act-num-rule" aria-hidden="true"></span>Шаг 05 / 06</p>
-        <h2 class="hero__act-title" data-edit-id="hero-act-5-title">Финальный расчёт и договор</h2>
-        <p class="hero__act-text" data-edit-id="hero-act-5-text">Финальную калькуляцию собираем за один день после согласования себестоимости. Если всё сходится — заключаем договор, и только после этого начинается отгрузка.</p>
-      </article>
-      <article class="hero__act">
-        <p class="hero__act-num"><span class="hero__act-num-rule" aria-hidden="true"></span>Шаг 06 / 06</p>
-        <h2 class="hero__act-title" data-edit-id="hero-act-6-title">Отправка и склад</h2>
-        <p class="hero__act-text" data-edit-id="hero-act-6-text">Согласуем с фабрикой маркировку и упаковку, организуем забор партии, проводим груз через таможню и доводим до вашего склада.</p>
-      </article>
-    </div>
-
-    <p class="hero__hint" id="hero-hint" aria-hidden="true"><span class="hero__hint-rule"></span>Шесть шагов — от заявки до вашего склада</p>
-    <div class="hero__counter" id="hero-counter" aria-hidden="true"><b>01</b> / 06<br>заявка</div>
+    <!-- Круглая кнопка-круглешок: акцентный коралловый круг со стрелкой
+         вниз, плавный bounce, ведёт к следующему блоку страницы
+         (#hero-stats). -->
+    <a class="hero__scroll-cue" id="hero-scroll-cue" href="#hero-stats" aria-label="К следующему блоку">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <path d="M12 5v14M5 13l7 7 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
   </div>
 </section>
 
@@ -505,7 +547,7 @@
 </section>
 
 <!-- ==========================================================
-     2. ЧТО ЗАКРЫВАЕМ ВМЕСТО ВАС — схема связей «как обычно / с Corex-Trade»
+     2. ЧТО ЗАКРЫВАЕМ ВМЕСТО ВАС — схема связей «как обычно / с COREX»
      ========================================================== -->
 <section class="coverage" id="coverage" data-header="light" aria-labelledby="coverage-heading">
   <div class="container">
@@ -527,16 +569,16 @@
           <div class="bn-seg bn-seg--hint" id="bnSeg">
             <span class="bn-seg__ind"></span>
             <button class="bn-seg__btn is-on" id="bnSwitchUsual" type="button">Как обычно</button>
-            <button class="bn-seg__btn" id="bnSwitchCorex" type="button">С Corex-Trade</button>
+            <button class="bn-seg__btn" id="bnSwitchCorex" type="button">С COREX</button>
           </div>
         </div>
-        <svg class="bn-svg" viewBox="0 0 620 470" xmlns="http://www.w3.org/2000/svg" aria-label="Схема связей: семь исполнителей по отдельности и через Corex-Trade">
+        <svg class="bn-svg" viewBox="0 0 620 470" xmlns="http://www.w3.org/2000/svg" aria-label="Схема связей: семь исполнителей по отдельности и через COREX">
           <defs>
             <pattern id="bnDots" width="18" height="18" patternUnits="userSpaceOnUse">
               <circle cx="1" cy="1" r="1" fill="var(--color-border-on-light)"></circle>
             </pattern>
           </defs>
-          <rect width="620" height="470" fill="url(#bnDots)"></rect>
+          <rect width="100%" height="100%" fill="url(#bnDots)"></rect>
           <g id="bnLinksA" fill="none"></g>
           <g id="bnLinksB" fill="none"></g>
           <g id="bnNodes"></g>
@@ -570,7 +612,7 @@
             <span class="bn-item__task" data-edit-id="coverage-row-3-task">Проверить фабрику, получить образцы</span>
             <span class="bn-item__who">
               <span class="bn-item__old" data-edit-id="coverage-row-3-who">Инспекционная компания</span>
-              <span class="bn-item__new" data-edit-id="coverage-row-3-new">→ наша команда в Китае</span>
+              <span class="bn-item__new" data-edit-id="coverage-row-3-new">→ закрываем мы</span>
             </span>
           </span>
         </li>
@@ -580,7 +622,7 @@
             <span class="bn-item__task" data-edit-id="coverage-row-4-task">Понять, нужна ли сертификация, и получить документ</span>
             <span class="bn-item__who">
               <span class="bn-item__old" data-edit-id="coverage-row-4-who">Сертификационный центр</span>
-              <span class="bn-item__new" data-edit-id="coverage-row-4-new">→ наш партнёр</span>
+              <span class="bn-item__new" data-edit-id="coverage-row-4-new">→ закрываем мы</span>
             </span>
           </span>
         </li>
@@ -600,7 +642,7 @@
             <span class="bn-item__task" data-edit-id="coverage-row-6-task">Таможенное оформление</span>
             <span class="bn-item__who">
               <span class="bn-item__old" data-edit-id="coverage-row-6-who">Таможенный представитель</span>
-              <span class="bn-item__new" data-edit-id="coverage-row-6-new">→ наш партнёр</span>
+              <span class="bn-item__new bn-item__new--partner" data-edit-id="coverage-row-6-new">→ наш партнёр</span>
             </span>
           </span>
         </li>
@@ -610,14 +652,186 @@
             <span class="bn-item__task" data-edit-id="coverage-row-7-task">Перевозка и доставка до склада</span>
             <span class="bn-item__who">
               <span class="bn-item__old" data-edit-id="coverage-row-7-who">Транспортная компания, форвардер</span>
-              <span class="bn-item__new" data-edit-id="coverage-row-7-new">→ наш партнёр</span>
+              <span class="bn-item__new bn-item__new--partner" data-edit-id="coverage-row-7-new">→ наш партнёр</span>
             </span>
           </span>
         </li>
       </ul>
     </div>
 
-    <p class="coverage__note" data-edit-id="coverage-note">Часть этих участков закрывают наши партнёры: сертификацией занимаются профильные специалисты, таможенным представителем выступает наша транспортная компания. Разница в том, что искать их, проверять и сводить между собой — не вам. У вас один договор и один ответственный за результат.</p>
+    <p class="coverage__note" data-edit-id="coverage-note">Пять участков из семи мы закрываем сами. Перевозку и таможенное оформление ведёт наш постоянный партнёр — транспортная компания, которая выступает таможенным представителем. Искать исполнителей, проверять и сводить их между собой — не вам. У вас один договор и один ответственный за результат.</p>
+  </div>
+</section>
+
+<!-- ==========================================================
+     3. УСЛУГИ — карточки-документы
+     ========================================================== -->
+<section class="services" id="services" data-header="light" aria-labelledby="services-heading">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow" data-edit-id="services-eyebrow">Услуги</p>
+      <h2 class="section-title" id="services-heading" data-edit-id="services-title">Весь путь или только нужный участок</h2>
+      <p class="section-lede" data-edit-id="services-lede">Можно отдать нам импорт целиком, а можно только то, что не получается закрыть своими силами. Любая работа начинается с бесплатного расчёта.</p>
+    </div>
+
+    <ul class="sv-grid">
+      <li class="sv-cell sv-cell--lead reveal" style="--d:0ms">
+        <article class="sv-card sv-card--lead">
+          <div class="sv-card__col">
+            <p class="sv-tag" data-edit-id="services-lead-tag">Бесплатно</p>
+            <h3 class="sv-card__title" data-edit-id="services-lead-title">Расчёт импорта</h3>
+            <p class="sv-card__for" data-edit-id="services-lead-for">Везёте через карго или от текущего поставщика и хотите понять, сколько стоит официальный ввоз.</p>
+
+            <p class="sv-label" data-edit-id="services-lead-do-label">Что получите</p>
+            <ul class="sv-do">
+              <li data-edit-id="services-lead-do-1">Код ТН ВЭД и ставки таможенных платежей</li>
+              <li data-edit-id="services-lead-do-2">Способ доставки под ваш срок</li>
+              <li data-edit-id="services-lead-do-3">Какие документы нужны на товар</li>
+              <li data-edit-id="services-lead-do-4">Себестоимость «в белую» — диапазон от и до</li>
+              <li data-edit-id="services-lead-do-5">Сравнение с тем, как вы везёте сейчас</li>
+            </ul>
+          </div>
+
+          <div class="sv-card__col sv-card__col--side">
+            <p class="sv-term"><span class="sv-term__l">Срок</span><b class="sv-term__v" data-edit-id="services-lead-term">1–3 дня</b></p>
+
+            <p class="sv-label" data-edit-id="services-lead-start-label">Чтобы начать</p>
+            <p class="sv-card__start" data-edit-id="services-lead-start">название товара, фото или ссылка, количество, цена закупки и город доставки</p>
+
+            <p class="sv-card__cta">
+              <a class="btn btn--cta btn--lg sv-btn" href="#contacts" data-product="Бесплатный расчёт импорта" data-edit-id="services-lead-btn">Рассчитать бесплатно</a>
+              <span class="sv-card__undercta" data-edit-id="services-lead-undercta">Без предоплаты и обязательств</span>
+            </p>
+          </div>
+        </article>
+      </li>
+
+      <li class="sv-cell reveal" style="--d:70ms">
+        <article class="sv-card">
+          <p class="sv-card__ix">01</p>
+          <h3 class="sv-card__title" data-edit-id="services-1-title">Подбор и проверка фабрики</h3>
+          <p class="sv-card__for" data-edit-id="services-1-for">Есть товар или техзадание, но нет проверенного поставщика.</p>
+
+          <p class="sv-label" data-edit-id="services-1-do-label">Что делаем</p>
+          <ul class="sv-do">
+            <li data-edit-id="services-1-do-1">Находим фабрики под вашу спецификацию</li>
+            <li data-edit-id="services-1-do-2">Ведём переговоры, сравниваем цены, минимальный заказ и сроки</li>
+            <li data-edit-id="services-1-do-3">Проверяем благонадёжность финалиста</li>
+            <li data-edit-id="services-1-do-4">Отдаём отчёт с рекомендацией</li>
+          </ul>
+
+          <p class="sv-term"><span class="sv-term__l">Срок</span><b class="sv-term__v" data-edit-id="services-1-term">первые фабрики через 2–3 дня, отчёт до трёх недель</b></p>
+
+          <p class="sv-card__cta">
+            <a class="btn btn--outline btn--sm sv-btn" href="#contacts" data-product="Подбор и проверка фабрики" data-edit-id="services-1-btn">Рассчитать</a>
+          </p>
+        </article>
+      </li>
+
+      <li class="sv-cell reveal" style="--d:140ms">
+        <article class="sv-card">
+          <p class="sv-card__ix">02</p>
+          <h3 class="sv-card__title" data-edit-id="services-2-title">Импорт под ключ</h3>
+          <p class="sv-card__for" data-edit-id="services-2-for">Первый импорт, своего отдела ВЭД нет, нужен товар на складе.</p>
+
+          <p class="sv-label" data-edit-id="services-2-do-label">Что делаем</p>
+          <ul class="sv-do">
+            <li data-edit-id="services-2-do-1">Находим фабрику и организуем образцы</li>
+            <li data-edit-id="services-2-do-2">Контракт готовят наши юристы</li>
+            <li data-edit-id="services-2-do-3">Проводим сертификацию, доставку и таможню</li>
+            <li data-edit-id="services-2-do-4">Доводим до вашего склада или склада маркетплейса</li>
+          </ul>
+
+          <p class="sv-term"><span class="sv-term__l">Срок</span><b class="sv-term__v" data-edit-id="services-2-term">60–120 дней от старта до склада, включая производство</b></p>
+
+          <p class="sv-card__cta">
+            <a class="btn btn--outline btn--sm sv-btn" href="#contacts" data-product="Импорт под ключ" data-edit-id="services-2-btn">Рассчитать</a>
+          </p>
+        </article>
+      </li>
+
+      <li class="sv-cell reveal" style="--d:210ms">
+        <article class="sv-card">
+          <p class="sv-card__ix">03</p>
+          <h3 class="sv-card__title" data-edit-id="services-3-title">Импорт на вашу компанию</h3>
+          <p class="sv-card__for" data-edit-id="services-3-for">Регулярно закупаете оборудование, комплектующие или сырьё и ввозите на своё юрлицо.</p>
+
+          <p class="sv-label" data-edit-id="services-3-do-label">Что делаем</p>
+          <ul class="sv-do">
+            <li data-edit-id="services-3-do-1">Работаем как ваш внешний отдел ВЭД</li>
+            <li data-edit-id="services-3-do-2">Договариваемся о цене, отсрочке или рассрочке и гарантии</li>
+            <li data-edit-id="services-3-do-3">Контролируем производство и отгрузку</li>
+            <li data-edit-id="services-3-do-4">Ведём логистику, таможню и документы</li>
+          </ul>
+
+          <p class="sv-note" data-edit-id="services-3-note">Платите напрямую: поставщику, перевозчику и нам — три отдельных счёта.</p>
+
+          <p class="sv-term"><span class="sv-term__l">Срок</span><b class="sv-term__v" data-edit-id="services-3-term">45–150 дней, зависит от производства</b></p>
+
+          <p class="sv-card__cta">
+            <a class="btn btn--outline btn--sm sv-btn" href="#contacts" data-product="Импорт на мою компанию" data-edit-id="services-3-btn">Рассчитать</a>
+          </p>
+        </article>
+      </li>
+
+      <li class="sv-cell reveal" style="--d:280ms">
+        <article class="sv-card">
+          <p class="sv-card__ix">04</p>
+          <h3 class="sv-card__title" data-edit-id="services-4-title">Доставка и таможня по готовому контракту</h3>
+          <p class="sv-card__for" data-edit-id="services-4-for">Контракт с фабрикой уже есть, нужно официально ввезти партию.</p>
+
+          <p class="sv-label" data-edit-id="services-4-do-label">Что делаем</p>
+          <ul class="sv-do">
+            <li data-edit-id="services-4-do-1">Подбираем маршрут: авиа, фура, ж/д или море</li>
+            <li data-edit-id="services-4-do-2">До отгрузки проверяем документы, код ТН ВЭД и контрагента</li>
+            <li data-edit-id="services-4-do-3">Оформляем декларацию на товары</li>
+            <li data-edit-id="services-4-do-4">Доставляем до склада, в страны СНГ — по запросу</li>
+          </ul>
+
+          <p class="sv-note" data-edit-id="services-4-note">Всё проверяем до отгрузки, а не на границе.</p>
+
+          <p class="sv-term"><span class="sv-term__l">Срок</span><b class="sv-term__v" data-edit-id="services-4-term">от 10 дней, зависит от способа доставки</b></p>
+
+          <p class="sv-card__cta">
+            <a class="btn btn--outline btn--sm sv-btn" href="#contacts" data-product="Доставка и таможня" data-edit-id="services-4-btn">Рассчитать</a>
+          </p>
+        </article>
+      </li>
+
+      <li class="sv-cell reveal" style="--d:350ms">
+        <article class="sv-card">
+          <p class="sv-card__ix">05</p>
+          <h3 class="sv-card__title" data-edit-id="services-5-title">Сертификация и документы</h3>
+          <p class="sv-card__for" data-edit-id="services-5-for">Не знаете, какие документы нужны на товар, или их требует маркетплейс.</p>
+
+          <p class="sv-label" data-edit-id="services-5-do-label">Что делаем</p>
+          <ul class="sv-do">
+            <li data-edit-id="services-5-do-1">Определяем применимые техрегламенты ЕАЭС и нужна ли маркировка «Честный знак»</li>
+            <li data-edit-id="services-5-do-2">Выбираем схему: декларация или сертификат, на партию или на серию</li>
+            <li data-edit-id="services-5-do-3">Оформляем через аккредитованный орган</li>
+            <li data-edit-id="services-5-do-4">Если документы не нужны — оформляем письмо-отказ</li>
+          </ul>
+
+          <p class="sv-note" data-edit-id="services-5-note">Сопровождение бесплатно — платите только за сам документ.</p>
+
+          <p class="sv-term"><span class="sv-term__l">Срок</span><b class="sv-term__v" data-edit-id="services-5-term">от недели до полутора месяцев, зависит от схемы</b></p>
+
+          <p class="sv-card__cta">
+            <a class="btn btn--outline btn--sm sv-btn" href="#contacts" data-product="Сертификация и документы" data-edit-id="services-5-btn">Рассчитать</a>
+          </p>
+        </article>
+      </li>
+
+      <li class="sv-cell sv-cell--ask reveal" style="--d:420ms">
+        <div class="sv-ask">
+          <p class="sv-ask__t" data-edit-id="services-ask-title">Не знаете, что из этого подходит?</p>
+          <p class="sv-ask__s" data-edit-id="services-ask-sub">Опишите задачу — подберём сами.</p>
+          <p class="sv-card__cta">
+            <a class="btn btn--outline btn--sm sv-btn" href="#contacts" data-product="Пока не знаю" data-edit-id="services-ask-btn">Описать задачу</a>
+          </p>
+        </div>
+      </li>
+    </ul>
   </div>
 </section>
 
@@ -704,8 +918,6 @@
 
     <p class="timelines__note" data-edit-id="timelines-note">Месяц на сертификацию — это не месяц простоя. Примерно две недели уходит на определение товара, изготовление образцов, маркировку и их доставку в Россию, ещё около двух — на саму декларацию соответствия. Всё это время партию уже можно производить: к моменту, когда документ готов, товар готов к отгрузке.</p>
 
-    <!-- Ключевая мысль блока (сейчас — только в абзаце выше): сертификация
-         не добавляется к сроку производства, а идёт внутри него. -->
     <div class="timelines__overlap">
       <p class="timelines__overlap-caption">Сертификация идёт параллельно производству, а не после него</p>
 
@@ -774,8 +986,9 @@
         </div>
 
         <div class="cc-calc__field">
-          <label id="cc-cat-label">Категория товара</label>
+          <label id="cc-cat-label" for="cc-cat-select">Категория товара</label>
           <div class="cc-calc__chips" id="cc-chips" role="group" aria-labelledby="cc-cat-label"></div>
+          <select class="cc-calc__cat-select" id="cc-cat-select"></select>
 
           <div class="cc-calc__custom" id="cc-custom">
             <div class="cc-calc__custom-in"><div class="cc-calc__custom-pad">
@@ -848,41 +1061,32 @@
 </section>
 
 <!-- ==========================================================
-     5. С ЧЕМ К НАМ ПРИХОДЯТ — кейсы, папка с документами
-     Перенесено из docs/corex-cases-folder_1.html (CLAUDE.md, «Перенос
-     блоков из docs/ref-*.html»), классы с префиксом cs-. Пять документов —
-     абсолютно спозиционированные слои внутри .cs-pin, папка снизу лежит
-     поверх по z-index. Механику и контент кейсов ведёт js/cases.js
-     (единый массив CASES, см. комментарий в начале файла) — здесь только
-     каркас разметки, который скрипт заполняет.
+     5. КЕЙСЫ — три закрытые поставки
      ========================================================== -->
-<section class="cs-cases" id="cases" data-header="dark" aria-labelledby="cs-heading">
-  <div class="cs-intro reveal">
-    <p class="eyebrow eyebrow--on-dark" data-edit-id="cases-eyebrow">Кейсы</p>
-    <h2 class="cs-intro__title" id="cs-heading" data-edit-id="cases-title">Что уже провезли</h2>
-    <p class="cs-intro__lede" data-edit-id="cases-lede">Пять закрытых поставок. По каждой — что было до нас, что оказалось нетривиальным и сколько клиент сохранил.</p>
-  </div>
+<section class="cases" id="cases" data-header="dark" aria-labelledby="cases-heading">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow eyebrow--on-dark" data-edit-id="cases-eyebrow">Кейсы</p>
+      <h2 class="cases__title" id="cases-heading" data-edit-id="cases-title">Поставки, которые уже закрыли</h2>
+      <p class="cases__lede" data-edit-id="cases-lede">В каждой у клиента уже была цена — от другого поставщика или российского производителя. Показываем, сколько вышло у нас.</p>
+    </div>
 
-  <div class="cs-track">
-    <div class="cs-pin">
-      <div class="cs-lamp" aria-hidden="true"></div>
-
-      <div class="cs-head">
-        <div class="cs-counter" aria-hidden="true"><span class="cs-counter__cur" id="csCur">01</span> / 05</div>
+    <div class="cases__board" id="casesBoard">
+      <div class="cases__tabs reveal" id="casesTabs" role="tablist" aria-label="Кейсы" aria-orientation="vertical" style="--d:70ms">
+        <span class="cases__mark" aria-hidden="true"></span>
       </div>
 
-      <div class="cs-stage" id="csStage"><!-- документы вставляются js/cases.js --></div>
+      <div class="cases__stage" id="casesStage"></div>
+    </div>
 
-      <div class="cs-folder">
-        <div class="cs-tabs" id="csTabs"></div>
-        <div class="cs-folder__body"></div>
-        <div class="cs-folder__inner">
-          <span>Corex-Trade · закрытые поставки 2025–2026</span>
-          <span class="cs-folder__rest">осталось в папке: <b id="csRest">04</b></span>
-        </div>
-      </div>
+    <div class="cases__progress" id="casesProgress">
+      <p class="cases__count"><span id="casesCount">1</span> / <span id="casesTotal">3</span></p>
+      <span class="cases__bar" aria-hidden="true"><i id="casesBarFill"></i></span>
+    </div>
 
-      <div class="cs-grain" aria-hidden="true"></div>
+    <div class="cases__cta reveal" style="--d:140ms">
+      <p class="cases__cta-text" data-edit-id="cases-cta-text">Похожая задача? Посчитаем вашу поставку за два дня.</p>
+      <a class="btn btn--cta btn--lg" href="#contacts" data-product="Расчёт поставки по кейсам" data-edit-id="cases-cta-btn">Оставить заявку</a>
     </div>
   </div>
 </section>
@@ -961,9 +1165,7 @@
 </section>
 
 <!-- ==========================================================
-     8. ВОПРОСЫ — FAQ, нативный <details>/<summary> (состояние и
-     доступность — от браузера; анимацию раскрытия ведёт js/faq-accordion.js,
-     см. .faq-item__content в css/styles.css).
+     8. ВОПРОСЫ — FAQ
      ========================================================== -->
 <section class="faq" id="faq" data-header="light" aria-labelledby="faq-heading">
   <div class="container container--narrow">
@@ -1051,13 +1253,13 @@
           <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><use href="#icon-phone"></use></svg>
           <span data-edit-id="final-cta-phone">+7 (000) 000-00-00</span>
         </a>
-        <a class="final-cta__contact" href="mailto:info@corex-trade.example">
+        <a class="final-cta__contact" href="mailto:info@corex.example">
           <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><use href="#icon-mail"></use></svg>
-          <span data-edit-id="final-cta-email">info@corex-trade.example</span>
+          <span data-edit-id="final-cta-email">info@corex.example</span>
         </a>
         <a class="final-cta__contact" href="#">
           <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><use href="#icon-telegram"></use></svg>
-          <span data-edit-id="final-cta-telegram">@corex_trade</span>
+          <span data-edit-id="final-cta-telegram">@corex</span>
         </a>
       </div>
     </div>
@@ -1066,8 +1268,20 @@
       <form class="final-cta__form" id="contact-form" novalidate>
         <div class="form-field form-field--on-dark">
           <label for="contact-name">Имя</label>
-          <input type="text" id="contact-name" name="name" placeholder="Как к вам обращаться" required>
+          <input type="text" id="contact-name" name="name" placeholder="Как к вам обращаться" autocomplete="name" required>
           <span class="form-field__error" id="contact-name-error" aria-live="polite"></span>
+        </div>
+        <div class="form-field form-field--on-dark" id="contact-need-field">
+          <label for="contact-need">Что нужно</label>
+          <select id="contact-need" name="need">
+            <option value="Бесплатный расчёт импорта" selected>Бесплатный расчёт импорта</option>
+            <option value="Подбор и проверка фабрики">Подбор и проверка фабрики</option>
+            <option value="Импорт под ключ">Импорт под ключ</option>
+            <option value="Импорт на мою компанию">Импорт на мою компанию</option>
+            <option value="Доставка и таможня">Доставка и таможня</option>
+            <option value="Сертификация и документы">Сертификация и документы</option>
+            <option value="Пока не знаю">Пока не знаю</option>
+          </select>
         </div>
         <div class="form-field form-field--on-dark">
           <label for="contact-contact">Телефон, почта или Telegram</label>
@@ -1076,7 +1290,7 @@
         </div>
         <div class="form-field form-field--on-dark">
           <label for="contact-product">Что за товар и примерный объём</label>
-          <textarea id="contact-product" name="product" rows="3" placeholder="Например: дозаторы промышленные, 200 шт." required></textarea>
+          <textarea id="contact-product" name="product" rows="4" placeholder="Например: дозаторы промышленные, 200 шт." required></textarea>
           <span class="form-field__error" id="contact-product-error" aria-live="polite"></span>
         </div>
         <div class="form-field form-field--on-dark">
@@ -1094,25 +1308,94 @@
     </div>
   </div>
 
-  <p class="final-cta__footnote" data-edit-id="final-cta-footnote">Corex-Trade — закупка и официальный импорт из Китая</p>
+  <p class="final-cta__footnote" data-edit-id="final-cta-footnote">COREX — закупка и официальный импорт из Китая</p>
 </section>
 
 </main>
 
+<a class="cta-dock" id="cta-dock" href="#contacts" hidden>Оставить заявку</a>
+
+<!-- DEV-ИНСТРУМЕНТЫ — НЕ ПОДКЛЮЧАТЬ НА ПРОДАКШЕНЕ.
 <script src="js/inline-editor.js"></script>
 <script src="js/appearance-panel.js"></script>
+-->
 <script src="js/scroll-engine.js"></script>
 <script src="js/hero-panorama.js"></script>
 <script src="js/cases.js"></script>
 <script src="js/reveal.js"></script>
 <script src="js/faq-accordion.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="js/vendor/gsap.min.js"></script>
+<script src="js/vendor/ScrollTrigger.min.js"></script>
 <script src="js/animations.js"></script>
 <script src="js/coverage.js"></script>
 <script src="js/categories.js"></script>
 <script src="js/calculator.js"></script>
 <script src="js/contact-form.js"></script>
+<script src="js/services.js"></script>
 <script src="js/site-header.js"></script>
+
+<script>
+(function(){
+  var header;
+  var lastTopState=null;
+
+  function forceTopHeader(){
+    header = header || document.querySelector('.site-header');
+    var y = window.scrollY || window.pageYOffset || 0;
+    var atTop = y <= 4;
+
+    if (atTop !== lastTopState) {
+      document.documentElement.classList.toggle('is-at-top', atTop);
+      lastTopState = atTop;
+    }
+
+    if (header && atTop) {
+      /* Исправляем только исчезновение шапки.
+         Цвет, фон и контраст НЕ переопределяем. */
+      header.style.setProperty('position','fixed','important');
+      header.style.setProperty('top','0','important');
+      header.style.setProperty('left','0','important');
+      header.style.setProperty('right','0','important');
+      header.style.setProperty('width','100%','important');
+      header.style.setProperty('z-index','99999','important');
+      header.style.setProperty('transform','translate3d(0,0,0)','important');
+      header.style.setProperty('opacity','1','important');
+      header.style.setProperty('visibility','visible','important');
+      header.style.setProperty('display','block','important');
+      header.style.setProperty('pointer-events','auto','important');
+    }
+  }
+
+  function init(){
+    header=document.querySelector('.site-header');
+    forceTopHeader();
+
+    window.addEventListener('scroll',forceTopHeader,{passive:true});
+    window.addEventListener('wheel',forceTopHeader,{passive:true});
+    window.addEventListener('touchmove',forceTopHeader,{passive:true});
+    window.addEventListener('resize',forceTopHeader,{passive:true});
+    window.addEventListener('hashchange',forceTopHeader);
+
+    if(window.MutationObserver && header){
+      var observer=new MutationObserver(function(){
+        var y=window.scrollY || window.pageYOffset || 0;
+        if(y<=4) forceTopHeader();
+      });
+      observer.observe(header,{
+        attributes:true,
+        attributeFilter:['style','class']
+      });
+    }
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',init,{once:true});
+  }else{
+    init();
+  }
+
+  window.addEventListener('load',forceTopHeader,{once:true});
+})();
+</script>
 </body>
 </html>
