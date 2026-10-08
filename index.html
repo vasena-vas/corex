@@ -283,6 +283,53 @@ html.is-at-top body .site-header{
 }
 </style>
 
+
+<style id="corex-brief-fixes-v4">
+/* ===== ТЗ: структура и хиро ===== */
+.hero__panel-media{position:relative;overflow:hidden}
+.hero__image-caption{position:absolute;left:24px;bottom:24px;padding:10px 14px;border:1px solid rgba(53,171,171,.42);background:rgba(5,18,31,.78);backdrop-filter:blur(8px);color:#fff;font:600 11px/1.2 var(--font-mono,monospace);letter-spacing:.12em;text-transform:uppercase;box-shadow:0 12px 30px rgba(0,0,0,.25)}
+.hero__image-caption--price{left:auto;right:24px;color:#72d2d0}
+.hero-stats__row{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+@media(max-width:980px){.hero-stats__row{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(max-width:620px){.hero-stats__row{grid-template-columns:repeat(2,minmax(0,1fr))!important}.hero__image-caption{left:14px;bottom:14px;font-size:9px;padding:8px 10px}.hero__image-caption--price{left:auto;right:14px}}
+
+/* Плашки под хиро: команда + склад, 2019 */
+.hero-stats__value{max-width:100%;}
+
+/* ===== КАЛЬКУЛЯТОР: только через кнопку в шапке ===== */
+.calculator--modal{display:none;position:fixed!important;inset:0!important;z-index:100000!important;width:100vw!important;height:100dvh!important;overflow:auto!important;padding:24px!important;background:rgba(2,13,24,.74)!important;backdrop-filter:blur(10px);}
+#calculator:target{display:block!important}
+.calculator--modal .calculator__modal-backdrop{position:fixed;inset:0;background:transparent;z-index:0}
+.calculator--modal .calculator__modal-inner{position:relative;z-index:1;max-width:1320px;margin:0 auto;min-height:100%;padding:clamp(34px,5vw,72px) 0}
+.calculator--modal .container{position:relative;z-index:2}
+.calculator__close{position:fixed;top:18px;right:22px;width:44px;height:44px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.25);border-radius:50%;background:rgba(7,25,41,.82);color:#fff;font-size:28px;line-height:1;text-decoration:none;z-index:5}
+.calculator__close:hover{background:#35abab;color:#071d35}
+
+/* ===== КЕЙСЫ ===== */
+.cases__catalog{margin-top:42px;padding-top:26px;border-top:1px solid rgba(255,255,255,.12)}
+.cases__catalog-kicker{margin:0 0 16px;color:rgba(255,255,255,.48);font:500 10px/1.2 var(--font-mono,monospace);letter-spacing:.14em;text-transform:uppercase}
+.cases__catalog-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.cases__catalog-grid span{display:flex;align-items:center;min-height:54px;padding:13px 16px;border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.035);color:rgba(255,255,255,.82);font-size:14px;line-height:1.35}
+.cases__catalog-note{margin:16px 0 0;color:rgba(255,255,255,.42);font-size:12px;line-height:1.6}
+@media(max-width:760px){.cases__catalog-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.cases__catalog-grid{grid-template-columns:1fr}.cases__catalog-grid span{min-height:48px}}
+
+/* ===== КОНТАКТЫ ===== */
+.final-cta__messengers{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:8px}
+.final-cta__messengers-label{width:100%;font:500 10px/1.2 var(--font-mono,monospace);letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:3px}
+.final-cta__messenger{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:0 14px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.045);color:#fff;text-decoration:none;font-size:12px;transition:.2s ease}
+.final-cta__messenger:hover{border-color:#35abab;color:#72d2d0;background:rgba(53,171,171,.08)}
+.final-cta__contact--pending{cursor:default}
+
+/* ===== ХИРО: более плавное прохождение шагов ===== */
+@media (min-width:901px){
+  .hero{scroll-margin-top:0}
+  .hero__stage{will-change:transform}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero__stage{will-change:auto}
+}
+</style>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Перейти к основному содержимому</a>
@@ -324,10 +371,11 @@ html.is-at-top body .site-header{
     </a>
     <nav class="site-header__nav" aria-label="Разделы страницы">
       <a href="#coverage">Как работаем</a>
-      <a href="#services">Услуги</a>
+      <a href="#categories">Что возим</a>
+      <a href="#cases">Кейсы</a>
       <a href="#timelines">Сроки</a>
-      <a href="#calculator">Расчёт</a>
       <a href="#faq">Вопросы</a>
+      <a href="#calculator" class="site-header__calculator-link">Расчёт</a>
     </nav>
     <div class="site-header__actions">
       <a class="site-header__telegram" href="#" aria-label="Telegram COREX">
@@ -340,34 +388,7 @@ html.is-at-top body .site-header{
 
 <main id="main-content">
 
-<!-- ==========================================================
-     1. HERO — тёмная сцена с шестью шагами процесса.
-
-     Один пик на всю секцию: .hero высотой 350vh; первый экран усилен самостоятельной визуальной картой предложения,
-     .hero__pin внутри — sticky на 100svh. Внутри пина семь панелей:
-     вступление и шесть шагов. Каждая панель — единый <article>:
-     слева текст (номер, заголовок, абзац), справа иллюстрация.
-     Появляются и уходят они вместе, потому что живут в одном
-     элементе и анимируются как одно целое — именно этого не хватало
-     прежней панораме, где сначала подъезжала станция, и только
-     потом проявлялся текст.
-
-     Высота 350vh — вдвое короче прежних 700vh: на каждый шаг
-     приходится 50vh прокрутки, пролистывается вдвое быстрее.
-
-     Стилистика — та же тёмная сцена, что у секций «Кейсы» и
-     «Заявка»: --color-bg-dark-base, teal-подсвет, белый текст,
-     .btn--cta и .btn--ghost-on-dark.
-
-     Круглая кнопка-круглешок внизу (акцентный коралловый круг со
-     стрелкой) плавно «прыгает» и ведёт на #hero-stats — следующий
-     блок страницы. Клик перехватывает js/scroll-engine.js тем же
-     делегированным обработчиком якорей, что и все внутренние ссылки.
-
-     prefers-reduced-motion (и ширина меньше 340px): sticky
-     отключается, панели встают обычным вертикальным списком —
-     см. styles.css §5.2.
-     ========================================================== -->
+<!-- 1. ХИРО -->
 <section class="hero" id="hero" data-header="dark" aria-label="Главный экран">
   <div class="hero__pin" id="hero-pin">
     <div class="hero__glow" aria-hidden="true"></div>
@@ -421,7 +442,7 @@ html.is-at-top body .site-header{
         <div class="hero__panel-text">
           <p class="hero__panel-num"><span class="hero__panel-num-rule" aria-hidden="true"></span>Шаг 01 / 06</p>
           <h2 class="hero__panel-title" data-edit-id="hero-act-1-title">Заявка</h2>
-          <p class="hero__panel-desc" data-edit-id="hero-act-1-text">Вы называете товар и объём. Если фабрика уже есть — работаем с ней. Если нет — ищем производителя под вашу спецификацию, обычно за 2–3 дня.</p>
+          <p class="hero__panel-desc" data-edit-id="hero-act-1-text">Вы называете товар и объём.<br>Если фабрика уже есть — работаем с ней.<br>Если нет — ищем производителя под вашу спецификацию, обычно за 2–3 дня.</p>
         </div>
         <figure class="hero__panel-media">
           <img src="assets/hero/station-01.webp"
@@ -436,7 +457,7 @@ html.is-at-top body .site-header{
         <div class="hero__panel-text">
           <p class="hero__panel-num"><span class="hero__panel-num-rule" aria-hidden="true"></span>Шаг 02 / 06</p>
           <h2 class="hero__panel-title" data-edit-id="hero-act-2-title">Цены с фабрики</h2>
-          <p class="hero__panel-desc" data-edit-id="hero-act-2-text">Связываемся с производителем, снимаем реальные цены и запрашиваем документы фабрики. Если решим, что нужно, — организуем инспекцию и образцы: в Китае у нас своя команда.</p>
+          <p class="hero__panel-desc" data-edit-id="hero-act-2-text">Связываемся с производителем и снимаем реальные цены.<br>Запрашиваем документы фабрики.<br>Если решим, что нужно, — организуем инспекцию и образцы.<br>В Китае у нас своя команда и склад.</p>
         </div>
         <figure class="hero__panel-media">
           <img src="assets/hero/station-02.webp"
@@ -519,9 +540,7 @@ html.is-at-top body .site-header{
   </div>
 </section>
 
-<!-- ==========================================================
-     Четыре плашки под первым экраном — вне пина, обычный поток.
-     ========================================================== -->
+<!-- Плашки под хиро -->
 <section class="hero-stats" id="hero-stats" data-header="light" aria-label="Ключевые цифры">
   <div class="container">
     <span class="hero-stats__rule" data-animate="hero-stats-rule" aria-hidden="true"></span>
@@ -539,16 +558,18 @@ html.is-at-top body .site-header{
         <p class="hero-stats__label" data-edit-id="hero-stat-3-label">берём и единичные позиции, и контейнеры</p>
       </div>
       <div class="hero-stats__item" data-animate="hero-stat">
-        <p class="hero-stats__value" data-edit-id="hero-stat-4-value">Своя команда в Китае</p>
+        <p class="hero-stats__value" data-edit-id="hero-stat-4-value">Команда и склад в Китае</p>
         <p class="hero-stats__label" data-edit-id="hero-stat-4-label">образцы, инспекция, контроль перед отгрузкой</p>
+      </div>
+      <div class="hero-stats__item" data-animate="hero-stat">
+        <p class="hero-stats__value" data-edit-id="hero-stat-5-value">С 2019 года</p>
+        <p class="hero-stats__label" data-edit-id="hero-stat-5-label">занимаемся закупкой и импортом из Китая</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ==========================================================
-     2. ЧТО ЗАКРЫВАЕМ ВМЕСТО ВАС — схема связей «как обычно / с COREX»
-     ========================================================== -->
+<!-- 2. БЕЗ НАС -->
 <section class="coverage" id="coverage" data-header="light" aria-labelledby="coverage-heading">
   <div class="container">
     <div class="section-head reveal">
@@ -663,181 +684,86 @@ html.is-at-top body .site-header{
   </div>
 </section>
 
-<!-- ==========================================================
-     3. УСЛУГИ — карточки-документы
-     ========================================================== -->
-<section class="services" id="services" data-header="light" aria-labelledby="services-heading">
+<!-- 3. ЧТО ВОЗИМ -->
+<section class="categories" id="categories" data-header="light" aria-labelledby="categories-heading">
   <div class="container">
     <div class="section-head reveal">
-      <p class="eyebrow" data-edit-id="services-eyebrow">Услуги</p>
-      <h2 class="section-title" id="services-heading" data-edit-id="services-title">Весь путь или только нужный участок</h2>
-      <p class="section-lede" data-edit-id="services-lede">Можно отдать нам импорт целиком, а можно только то, что не получается закрыть своими силами. Любая работа начинается с бесплатного расчёта.</p>
+      <p class="eyebrow" data-edit-id="categories-eyebrow">Что возим</p>
+      <h2 class="section-title" id="categories-heading" data-edit-id="categories-title">Что возим</h2>
+      <p class="section-lede" data-edit-id="categories-lede">Промышленное оборудование, робототехника, электроника, комплектующие, складское оборудование и товары для маркетплейсов. По каждой категории заранее выясняем требования для официального ввоза.</p>
     </div>
 
-    <ul class="sv-grid">
-      <li class="sv-cell sv-cell--lead reveal" style="--d:0ms">
-        <article class="sv-card sv-card--lead">
-          <div class="sv-card__col">
-            <p class="sv-tag" data-edit-id="services-lead-tag">Бесплатно</p>
-            <h3 class="sv-card__title" data-edit-id="services-lead-title">Расчёт импорта</h3>
-            <p class="sv-card__for" data-edit-id="services-lead-for">Везёте через карго или от текущего поставщика и хотите понять, сколько стоит официальный ввоз.</p>
+    <div class="cv-board">
+      <ul class="cv-cats" id="cvCats" role="tablist" aria-label="Категории товаров">
+        <li class="cv-cat-item reveal" style="--d:0ms"><button class="cv-cat" type="button" role="tab" aria-selected="true" data-edit-id="category-item-1">Промышленное оборудование</button></li>
+        <li class="cv-cat-item reveal" style="--d:70ms"><button class="cv-cat" type="button" role="tab" aria-selected="false" data-edit-id="category-item-2">Робототехника и автоматизация</button></li>
+        <li class="cv-cat-item reveal" style="--d:140ms"><button class="cv-cat" type="button" role="tab" aria-selected="false" data-edit-id="category-item-3">Платы, электроника и компоненты</button></li>
+        <li class="cv-cat-item reveal" style="--d:210ms"><button class="cv-cat" type="button" role="tab" aria-selected="false" data-edit-id="category-item-4">Комплектующие и запчасти</button></li>
+        <li class="cv-cat-item reveal" style="--d:280ms"><button class="cv-cat" type="button" role="tab" aria-selected="false" data-edit-id="category-item-5">Складское и упаковочное оборудование</button></li>
+        <li class="cv-cat-item reveal" style="--d:350ms"><button class="cv-cat" type="button" role="tab" aria-selected="false" data-edit-id="category-item-6">Товары для маркетплейсов</button></li>
+      </ul>
+      <div class="cv-panel reveal" id="cvPanel" role="tabpanel" style="--d:420ms"></div>
+    </div>
 
-            <p class="sv-label" data-edit-id="services-lead-do-label">Что получите</p>
-            <ul class="sv-do">
-              <li data-edit-id="services-lead-do-1">Код ТН ВЭД и ставки таможенных платежей</li>
-              <li data-edit-id="services-lead-do-2">Способ доставки под ваш срок</li>
-              <li data-edit-id="services-lead-do-3">Какие документы нужны на товар</li>
-              <li data-edit-id="services-lead-do-4">Себестоимость «в белую» — диапазон от и до</li>
-              <li data-edit-id="services-lead-do-5">Сравнение с тем, как вы везёте сейчас</li>
-            </ul>
-          </div>
-
-          <div class="sv-card__col sv-card__col--side">
-            <p class="sv-term"><span class="sv-term__l">Срок</span><b class="sv-term__v" data-edit-id="services-lead-term">1–3 дня</b></p>
-
-            <p class="sv-label" data-edit-id="services-lead-start-label">Чтобы начать</p>
-            <p class="sv-card__start" data-edit-id="services-lead-start">название товара, фото или ссылка, количество, цена закупки и город доставки</p>
-
-            <p class="sv-card__cta">
-              <a class="btn btn--cta btn--lg sv-btn" href="#contacts" data-product="Бесплатный расчёт импорта" data-edit-id="services-lead-btn">Рассчитать бесплатно</a>
-              <span class="sv-card__undercta" data-edit-id="services-lead-undercta">Без предоплаты и обязательств</span>
-            </p>
-          </div>
-        </article>
-      </li>
-
-      <li class="sv-cell reveal" style="--d:70ms">
-        <article class="sv-card">
-          <p class="sv-card__ix">01</p>
-          <h3 class="sv-card__title" data-edit-id="services-1-title">Подбор и проверка фабрики</h3>
-          <p class="sv-card__for" data-edit-id="services-1-for">Есть товар или техзадание, но нет проверенного поставщика.</p>
-
-          <p class="sv-label" data-edit-id="services-1-do-label">Что делаем</p>
-          <ul class="sv-do">
-            <li data-edit-id="services-1-do-1">Находим фабрики под вашу спецификацию</li>
-            <li data-edit-id="services-1-do-2">Ведём переговоры, сравниваем цены, минимальный заказ и сроки</li>
-            <li data-edit-id="services-1-do-3">Проверяем благонадёжность финалиста</li>
-            <li data-edit-id="services-1-do-4">Отдаём отчёт с рекомендацией</li>
-          </ul>
-
-          <p class="sv-term"><span class="sv-term__l">Срок</span><b class="sv-term__v" data-edit-id="services-1-term">первые фабрики через 2–3 дня, отчёт до трёх недель</b></p>
-
-          <p class="sv-card__cta">
-            <a class="btn btn--outline btn--sm sv-btn" href="#contacts" data-product="Подбор и проверка фабрики" data-edit-id="services-1-btn">Рассчитать</a>
-          </p>
-        </article>
-      </li>
-
-      <li class="sv-cell reveal" style="--d:140ms">
-        <article class="sv-card">
-          <p class="sv-card__ix">02</p>
-          <h3 class="sv-card__title" data-edit-id="services-2-title">Импорт под ключ</h3>
-          <p class="sv-card__for" data-edit-id="services-2-for">Первый импорт, своего отдела ВЭД нет, нужен товар на складе.</p>
-
-          <p class="sv-label" data-edit-id="services-2-do-label">Что делаем</p>
-          <ul class="sv-do">
-            <li data-edit-id="services-2-do-1">Находим фабрику и организуем образцы</li>
-            <li data-edit-id="services-2-do-2">Контракт готовят наши юристы</li>
-            <li data-edit-id="services-2-do-3">Проводим сертификацию, доставку и таможню</li>
-            <li data-edit-id="services-2-do-4">Доводим до вашего склада или склада маркетплейса</li>
-          </ul>
-
-          <p class="sv-term"><span class="sv-term__l">Срок</span><b class="sv-term__v" data-edit-id="services-2-term">60–120 дней от старта до склада, включая производство</b></p>
-
-          <p class="sv-card__cta">
-            <a class="btn btn--outline btn--sm sv-btn" href="#contacts" data-product="Импорт под ключ" data-edit-id="services-2-btn">Рассчитать</a>
-          </p>
-        </article>
-      </li>
-
-      <li class="sv-cell reveal" style="--d:210ms">
-        <article class="sv-card">
-          <p class="sv-card__ix">03</p>
-          <h3 class="sv-card__title" data-edit-id="services-3-title">Импорт на вашу компанию</h3>
-          <p class="sv-card__for" data-edit-id="services-3-for">Регулярно закупаете оборудование, комплектующие или сырьё и ввозите на своё юрлицо.</p>
-
-          <p class="sv-label" data-edit-id="services-3-do-label">Что делаем</p>
-          <ul class="sv-do">
-            <li data-edit-id="services-3-do-1">Работаем как ваш внешний отдел ВЭД</li>
-            <li data-edit-id="services-3-do-2">Договариваемся о цене, отсрочке или рассрочке и гарантии</li>
-            <li data-edit-id="services-3-do-3">Контролируем производство и отгрузку</li>
-            <li data-edit-id="services-3-do-4">Ведём логистику, таможню и документы</li>
-          </ul>
-
-          <p class="sv-note" data-edit-id="services-3-note">Платите напрямую: поставщику, перевозчику и нам — три отдельных счёта.</p>
-
-          <p class="sv-term"><span class="sv-term__l">Срок</span><b class="sv-term__v" data-edit-id="services-3-term">45–150 дней, зависит от производства</b></p>
-
-          <p class="sv-card__cta">
-            <a class="btn btn--outline btn--sm sv-btn" href="#contacts" data-product="Импорт на мою компанию" data-edit-id="services-3-btn">Рассчитать</a>
-          </p>
-        </article>
-      </li>
-
-      <li class="sv-cell reveal" style="--d:280ms">
-        <article class="sv-card">
-          <p class="sv-card__ix">04</p>
-          <h3 class="sv-card__title" data-edit-id="services-4-title">Доставка и таможня по готовому контракту</h3>
-          <p class="sv-card__for" data-edit-id="services-4-for">Контракт с фабрикой уже есть, нужно официально ввезти партию.</p>
-
-          <p class="sv-label" data-edit-id="services-4-do-label">Что делаем</p>
-          <ul class="sv-do">
-            <li data-edit-id="services-4-do-1">Подбираем маршрут: авиа, фура, ж/д или море</li>
-            <li data-edit-id="services-4-do-2">До отгрузки проверяем документы, код ТН ВЭД и контрагента</li>
-            <li data-edit-id="services-4-do-3">Оформляем декларацию на товары</li>
-            <li data-edit-id="services-4-do-4">Доставляем до склада, в страны СНГ — по запросу</li>
-          </ul>
-
-          <p class="sv-note" data-edit-id="services-4-note">Всё проверяем до отгрузки, а не на границе.</p>
-
-          <p class="sv-term"><span class="sv-term__l">Срок</span><b class="sv-term__v" data-edit-id="services-4-term">от 10 дней, зависит от способа доставки</b></p>
-
-          <p class="sv-card__cta">
-            <a class="btn btn--outline btn--sm sv-btn" href="#contacts" data-product="Доставка и таможня" data-edit-id="services-4-btn">Рассчитать</a>
-          </p>
-        </article>
-      </li>
-
-      <li class="sv-cell reveal" style="--d:350ms">
-        <article class="sv-card">
-          <p class="sv-card__ix">05</p>
-          <h3 class="sv-card__title" data-edit-id="services-5-title">Сертификация и документы</h3>
-          <p class="sv-card__for" data-edit-id="services-5-for">Не знаете, какие документы нужны на товар, или их требует маркетплейс.</p>
-
-          <p class="sv-label" data-edit-id="services-5-do-label">Что делаем</p>
-          <ul class="sv-do">
-            <li data-edit-id="services-5-do-1">Определяем применимые техрегламенты ЕАЭС и нужна ли маркировка «Честный знак»</li>
-            <li data-edit-id="services-5-do-2">Выбираем схему: декларация или сертификат, на партию или на серию</li>
-            <li data-edit-id="services-5-do-3">Оформляем через аккредитованный орган</li>
-            <li data-edit-id="services-5-do-4">Если документы не нужны — оформляем письмо-отказ</li>
-          </ul>
-
-          <p class="sv-note" data-edit-id="services-5-note">Сопровождение бесплатно — платите только за сам документ.</p>
-
-          <p class="sv-term"><span class="sv-term__l">Срок</span><b class="sv-term__v" data-edit-id="services-5-term">от недели до полутора месяцев, зависит от схемы</b></p>
-
-          <p class="sv-card__cta">
-            <a class="btn btn--outline btn--sm sv-btn" href="#contacts" data-product="Сертификация и документы" data-edit-id="services-5-btn">Рассчитать</a>
-          </p>
-        </article>
-      </li>
-
-      <li class="sv-cell sv-cell--ask reveal" style="--d:420ms">
-        <div class="sv-ask">
-          <p class="sv-ask__t" data-edit-id="services-ask-title">Не знаете, что из этого подходит?</p>
-          <p class="sv-ask__s" data-edit-id="services-ask-sub">Опишите задачу — подберём сами.</p>
-          <p class="sv-card__cta">
-            <a class="btn btn--outline btn--sm sv-btn" href="#contacts" data-product="Пока не знаю" data-edit-id="services-ask-btn">Описать задачу</a>
-          </p>
-        </div>
-      </li>
-    </ul>
+    <div class="cv-claims">
+      <div class="cv-claim reveal" style="--d:0ms">
+        <h3 class="cv-claim__title" data-edit-id="categories-claim-1-title">Возим бывшее в употреблении оборудование</h3>
+        <p class="cv-claim__text" data-edit-id="categories-claim-1-text">От него отказывается большинство: нужно подтверждать состав, год выпуска и состояние. Мы собираем эти документы у прежнего владельца через нашу команду и склад в Китае.</p>
+      </div>
+      <div class="cv-claim reveal" style="--d:70ms">
+        <h3 class="cv-claim__title" data-edit-id="categories-claim-2-title">Минимальной партии нет</h3>
+        <p class="cv-claim__text" data-edit-id="categories-claim-2-text">Одна позиция и полный контейнер проходят один и тот же процесс. Разница только в способе доставки и в сроке.</p>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- ==========================================================
-     3. СРОКИ — подготовка + доставка, две таблицы
-     ========================================================== -->
+<!-- 4. КЕЙСЫ -->
+<section class="cases" id="cases" data-header="dark" aria-labelledby="cases-heading">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow eyebrow--on-dark" data-edit-id="cases-eyebrow">Кейсы</p>
+      <h2 class="cases__title" id="cases-heading" data-edit-id="cases-title">Поставки, которые уже закрыли</h2>
+      <p class="cases__lede" data-edit-id="cases-lede">По каждому кейсу показываем продукт, задачу клиента, объём, способ доставки, срок от заявки до склада и результат в цифрах. Имя клиента публикуем только с его согласия.</p>
+    </div>
+
+    <div class="cases__board" id="casesBoard">
+      <div class="cases__tabs reveal" id="casesTabs" role="tablist" aria-label="Кейсы" aria-orientation="vertical" style="--d:70ms">
+        <span class="cases__mark" aria-hidden="true"></span>
+      </div>
+
+      <div class="cases__stage" id="casesStage"></div>
+    </div>
+
+    <div class="cases__progress" id="casesProgress">
+      <p class="cases__count"><span id="casesCount">1</span> / <span id="casesTotal">3</span></p>
+      <span class="cases__bar" aria-hidden="true"><i id="casesBarFill"></i></span>
+    </div>
+
+    <div class="cases__cta reveal" style="--d:140ms">
+      <p class="cases__cta-text" data-edit-id="cases-cta-text">Это лишь малая часть того, что мы возили. Со всеми кейсами компании можно ознакомиться по запросу.</p>
+      <a class="btn btn--cta btn--lg" href="#contacts" data-product="Расчёт поставки по кейсам" data-edit-id="cases-cta-btn">Оставить заявку</a>
+    </div>
+
+    <div class="cases__catalog reveal" style="--d:190ms" aria-label="Дополнительные кейсы">
+      <p class="cases__catalog-kicker">Также в портфеле</p>
+      <div class="cases__catalog-grid">
+        <span>Шлюзовые дозаторы</span>
+        <span>Двигатели Siemens</span>
+        <span>Переход с карго на белый импорт</span>
+        <span>Стеариновая кислота</span>
+        <span>Роботы-мойщики полов для аэропортов и ТЦ</span>
+        <span>Продукция бренда ABB</span>
+        <span>Электропогрузчик</span>
+        <span>Электробайки</span>
+        <span>Боксы для зарядки АКБ электробайков</span>
+      </div>
+      <p class="cases__catalog-note">Фактура по дополнительным кейсам добавляется после сбора и согласования цифр, сроков и фотографий.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 5. СРОКИ -->
 <section class="timelines" id="timelines" data-header="light" aria-labelledby="timelines-heading">
   <div class="container">
     <div class="section-head reveal">
@@ -946,10 +872,156 @@ html.is-at-top body .site-header{
   </div>
 </section>
 
-<!-- ==========================================================
-     4. КАЛЬКУЛЯТОР
-     ========================================================== -->
-<section class="calculator" id="calculator" data-header="light" aria-labelledby="calculator-heading">
+<!-- 6. ВОПРОСЫ -->
+<section class="faq" id="faq" data-header="light" aria-labelledby="faq-heading">
+  <div class="container container--narrow">
+    <div class="section-head reveal">
+      <p class="eyebrow" data-edit-id="faq-eyebrow">Вопросы</p>
+      <h2 class="section-title" id="faq-heading" data-edit-id="faq-title">Что обычно спрашивают до заявки</h2>
+    </div>
+
+    <div class="faq__list">
+      <details class="faq-item" data-animate="faq-item">
+        <summary><span data-edit-id="faq-1-q">Кто платит фабрике?</span></summary>
+        <div class="faq-item__content">
+          <p data-edit-id="faq-1-a">Есть два варианта. Первый — вы платите фабрике напрямую по контракту между вами и производителем. Мы в платежах не участвуем, чаще всего оплата идёт через ВТБ Шанхай или через платёжного агента, которого мы подскажем.<br><br>Второй — мы привозим груз на себя и продаём его вам уже в России. Тогда вам не нужно участвовать во внешнеэкономической сделке.</p>
+        </div>
+      </details>
+      <details class="faq-item" data-animate="faq-item">
+        <summary><span data-edit-id="faq-2-q">Нужно ли мне самому общаться с фабрикой?</span></summary>
+        <div class="faq-item__content">
+          <p data-edit-id="faq-2-a">Нет. Вы передаёте требования к товару, а переговоры о цене, сроках, условиях оплаты, маркировке и упаковке ведём мы — в том числе договариваемся о форме оплаты: полная предоплата, частичная или рассрочка.<br><br>При этом вся коммуникация прозрачна. Если захотите, добавим вас в чаты с фабриками: будете видеть каждое сообщение и сможете подключиться в любой момент.</p>
+        </div>
+      </details>
+      <details class="faq-item" data-animate="faq-item">
+        <summary><span data-edit-id="faq-3-q">У меня уже есть фабрика. Вы с ней будете работать?</span></summary>
+        <div class="faq-item__content">
+          <p data-edit-id="faq-3-a">Да, это частый случай. Поиск производителя тогда просто не включается в процесс — начинаем сразу со сбора характеристик и расчёта.</p>
+        </div>
+      </details>
+      <details class="faq-item" data-animate="faq-item">
+        <summary><span data-edit-id="faq-4-q">Какая минимальная партия?</span></summary>
+        <div class="faq-item__content">
+          <p data-edit-id="faq-4-a">Минимума нет. Берём и единичные позиции, и полные контейнеры.</p>
+        </div>
+      </details>
+      <details class="faq-item" data-animate="faq-item">
+        <summary><span data-edit-id="faq-5-q">Всегда ли нужна сертификация?</span></summary>
+        <div class="faq-item__content">
+          <p data-edit-id="faq-5-a">Нет. Выясняем на третьем шаге. Если товару сертификация не требуется — этого этапа нет ни в сроках, ни в стоимости.</p>
+        </div>
+      </details>
+      <details class="faq-item" data-animate="faq-item">
+        <summary><span data-edit-id="faq-6-q">Насколько финальный расчёт отличается от предварительного?</span></summary>
+        <div class="faq-item__content">
+          <p data-edit-id="faq-6-a">Расхождение минимальное: считаем по реальным затратам на товар, логистику и сертификацию. Пошлина и НДС рассчитываются по государственным ставкам и от нас не зависят.</p>
+        </div>
+      </details>
+      <details class="faq-item" data-animate="faq-item">
+        <summary><span data-edit-id="faq-7-q">Проверяете ли вы фабрику?</span></summary>
+        <div class="faq-item__content">
+          <p data-edit-id="faq-7-a">Да, каждую — до начала работы. Проверяем фабрику по базам китайских поставщиков и через государственные сервисы проверки контрагентов Китая. Смотрим юрлицо фабрики на все риски: регистрацию, статус, споры и другие признаки неблагонадёжности.<br><br>Если по товару нужно, организуем инспекцию и образцы — в Китае у нас своя команда и склад.</p>
+        </div>
+      </details>
+      <details class="faq-item" data-animate="faq-item">
+        <summary><span data-edit-id="faq-8-q">Сколько стоят ваши услуги?</span></summary>
+        <div class="faq-item__content">
+          <p data-edit-id="faq-8-a">Зависит от объёма работы по конкретной поставке. Называем в коммерческом предложении вместе с полной калькуляцией.</p>
+        </div>
+      </details>
+      <details class="faq-item" data-animate="faq-item">
+        <summary><span data-edit-id="faq-9-q">Сколько идёт груз?</span></summary>
+        <div class="faq-item__content">
+          <p data-edit-id="faq-9-a">Авиа 4–7 дней, авто 22–25, железная дорога и море 25–30. Подробнее — в блоке со сроками.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- 7. ЗАЯВКА И КОНТАКТЫ -->
+<section class="final-cta" id="contacts" data-header="dark" aria-labelledby="final-cta-heading">
+  <div class="final-cta__veil" data-animate="final-veil" aria-hidden="true"></div>
+  <div class="section-seam section-seam--final-in" data-animate="transition-final-in" aria-hidden="true"></div>
+
+  <div class="final-cta__inner">
+    <div class="final-cta__intro">
+      <div class="section-head reveal">
+        <p class="eyebrow eyebrow--on-dark" data-edit-id="final-cta-eyebrow">Заявка</p>
+        <h2 class="final-cta__title" id="final-cta-heading" data-edit-id="final-cta-title">Опишите товар — вернёмся с расчётом за два дня</h2>
+        <p class="final-cta__lede" data-edit-id="final-cta-lede">Достаточно сказать, что за товар, примерный объём и город доставки. Если нужных характеристик у вас нет — запросим их у фабрики сами.</p>
+      </div>
+
+      <div class="final-cta__contacts" data-animate="final-contacts">
+        <div class="final-cta__contact final-cta__contact--pending">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><use href="#icon-phone"></use></svg>
+          <span data-edit-id="final-cta-phone">Рабочий номер будет добавлен</span>
+        </div>
+        <a class="final-cta__contact" href="mailto:info@corextrade.ru">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><use href="#icon-mail"></use></svg>
+          <span data-edit-id="final-cta-email">info@corextrade.ru</span>
+        </a>
+        <div class="final-cta__messengers" aria-label="Мессенджеры">
+          <span class="final-cta__messengers-label">Мессенджеры</span>
+          <a class="final-cta__messenger" href="#" aria-label="Telegram">Telegram</a>
+          <a class="final-cta__messenger" href="#" aria-label="MAX">MAX</a>
+          <a class="final-cta__messenger" href="#" aria-label="WhatsApp">WhatsApp</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="final-cta__panel glass-panel" data-animate="final-panel">
+      <form class="final-cta__form" id="contact-form" novalidate>
+        <div class="form-field form-field--on-dark">
+          <label for="contact-name">Имя</label>
+          <input type="text" id="contact-name" name="name" placeholder="Как к вам обращаться" autocomplete="name" required>
+          <span class="form-field__error" id="contact-name-error" aria-live="polite"></span>
+        </div>
+        <div class="form-field form-field--on-dark" id="contact-need-field">
+          <label for="contact-need">Что нужно</label>
+          <select id="contact-need" name="need">
+            <option value="Бесплатная консультация" selected>Бесплатная консультация</option>
+            <option value="Бесплатный расчёт импорта">Бесплатный расчёт импорта</option>
+            <option value="Подбор и проверка фабрики">Подбор и проверка фабрики</option>
+            <option value="Импорт под ключ">Импорт под ключ</option>
+            <option value="Импорт на мою компанию">Импорт на мою компанию</option>
+            <option value="Доставка и таможня">Доставка и таможня</option>
+            <option value="Сертификация и документы">Сертификация и документы</option>
+            <option value="Пока не знаю">Пока не знаю</option>
+          </select>
+        </div>
+        <div class="form-field form-field--on-dark">
+          <label for="contact-contact">Телефон, почта или Telegram</label>
+          <input type="text" id="contact-contact" name="contact" placeholder="Куда вам ответить" required>
+          <span class="form-field__error" id="contact-contact-error" aria-live="polite"></span>
+        </div>
+        <div class="form-field form-field--on-dark">
+          <label for="contact-product">Что за товар и примерный объём</label>
+          <textarea id="contact-product" name="product" rows="4" placeholder="Например: дозаторы промышленные, 200 шт." required></textarea>
+          <span class="form-field__error" id="contact-product-error" aria-live="polite"></span>
+        </div>
+        <div class="form-field form-field--on-dark">
+          <label for="contact-link">Ссылка на товар или фабрику <span class="form-field__optional">(если есть)</span></label>
+          <input type="text" id="contact-link" name="link" placeholder="Ссылка на 1688, Alibaba или сайт фабрики">
+        </div>
+        <button type="submit" class="btn btn--cta btn--lg final-cta__submit" data-state="idle">
+          <span class="final-cta__submit-bar" aria-hidden="true"></span>
+          <span class="final-cta__submit-label">Отправить заявку</span>
+          <svg class="final-cta__submit-check" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 6"></path></svg>
+        </button>
+        <p class="final-cta__form-note">Предварительный расчёт — без обязательств.</p>
+        <p class="form-status" id="contact-form-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+
+  <p class="final-cta__footnote" data-edit-id="final-cta-footnote">COREX — закупка и официальный импорт из Китая</p>
+</section>
+
+<section class="calculator calculator--modal" id="calculator" data-header="dark" aria-labelledby="calculator-heading" role="dialog" aria-modal="true">
+  <div class="calculator__modal-backdrop" aria-hidden="true"></div>
+  <div class="calculator__modal-inner">
+    <a class="calculator__close" href="#" aria-label="Закрыть калькулятор">×</a>
   <div class="container">
     <div class="section-head reveal">
       <p class="eyebrow" data-edit-id="calculator-eyebrow">Расчёт</p>
@@ -1058,257 +1130,7 @@ html.is-at-top body .site-header{
       </div>
     </div>
   </div>
-</section>
-
-<!-- ==========================================================
-     5. КЕЙСЫ — три закрытые поставки
-     ========================================================== -->
-<section class="cases" id="cases" data-header="dark" aria-labelledby="cases-heading">
-  <div class="container">
-    <div class="section-head reveal">
-      <p class="eyebrow eyebrow--on-dark" data-edit-id="cases-eyebrow">Кейсы</p>
-      <h2 class="cases__title" id="cases-heading" data-edit-id="cases-title">Поставки, которые уже закрыли</h2>
-      <p class="cases__lede" data-edit-id="cases-lede">В каждой у клиента уже была цена — от другого поставщика или российского производителя. Показываем, сколько вышло у нас.</p>
-    </div>
-
-    <div class="cases__board" id="casesBoard">
-      <div class="cases__tabs reveal" id="casesTabs" role="tablist" aria-label="Кейсы" aria-orientation="vertical" style="--d:70ms">
-        <span class="cases__mark" aria-hidden="true"></span>
-      </div>
-
-      <div class="cases__stage" id="casesStage"></div>
-    </div>
-
-    <div class="cases__progress" id="casesProgress">
-      <p class="cases__count"><span id="casesCount">1</span> / <span id="casesTotal">3</span></p>
-      <span class="cases__bar" aria-hidden="true"><i id="casesBarFill"></i></span>
-    </div>
-
-    <div class="cases__cta reveal" style="--d:140ms">
-      <p class="cases__cta-text" data-edit-id="cases-cta-text">Похожая задача? Посчитаем вашу поставку за два дня.</p>
-      <a class="btn btn--cta btn--lg" href="#contacts" data-product="Расчёт поставки по кейсам" data-edit-id="cases-cta-btn">Оставить заявку</a>
-    </div>
   </div>
-</section>
-
-<!-- ==========================================================
-     6. ЧТО ВОЗИМ
-     ========================================================== -->
-<section class="categories" id="categories" data-header="light" aria-labelledby="categories-heading">
-  <div class="container">
-    <div class="section-head reveal">
-      <p class="eyebrow" data-edit-id="categories-eyebrow">Что возим</p>
-      <h2 class="section-title" id="categories-heading" data-edit-id="categories-title">Ограничений по категориям нет</h2>
-      <p class="section-lede" data-edit-id="categories-lede">Кроме товаров, ограниченных к ввозу законодательно. Вопрос не в том, возьмёмся ли мы за товар, а в том, что конкретно требуется для его официального ввоза. Это мы и выясняем на третьем шаге.</p>
-    </div>
-
-    <div class="cv-board">
-      <ul class="cv-cats" id="cvCats" role="tablist" aria-label="Категории товаров">
-        <li class="cv-cat-item reveal" style="--d:0ms"><button class="cv-cat" type="button" role="tab" aria-selected="true" data-edit-id="category-item-1">Промышленное оборудование</button></li>
-        <li class="cv-cat-item reveal" style="--d:70ms"><button class="cv-cat" type="button" role="tab" aria-selected="false" data-edit-id="category-item-2">Робототехника и автоматизация</button></li>
-        <li class="cv-cat-item reveal" style="--d:140ms"><button class="cv-cat" type="button" role="tab" aria-selected="false" data-edit-id="category-item-3">Платы, электроника и компоненты</button></li>
-        <li class="cv-cat-item reveal" style="--d:210ms"><button class="cv-cat" type="button" role="tab" aria-selected="false" data-edit-id="category-item-4">Комплектующие и запчасти</button></li>
-        <li class="cv-cat-item reveal" style="--d:280ms"><button class="cv-cat" type="button" role="tab" aria-selected="false" data-edit-id="category-item-5">Складское и упаковочное оборудование</button></li>
-        <li class="cv-cat-item reveal" style="--d:350ms"><button class="cv-cat" type="button" role="tab" aria-selected="false" data-edit-id="category-item-6">Товары для маркетплейсов</button></li>
-      </ul>
-      <div class="cv-panel reveal" id="cvPanel" role="tabpanel" style="--d:420ms"></div>
-    </div>
-
-    <div class="cv-claims">
-      <div class="cv-claim reveal" style="--d:0ms">
-        <h3 class="cv-claim__title" data-edit-id="categories-claim-1-title">Возим бывшее в употреблении оборудование</h3>
-        <p class="cv-claim__text" data-edit-id="categories-claim-1-text">От него отказывается большинство: нужно подтверждать состав, год выпуска и состояние. Мы собираем эти документы у прежнего владельца через нашего человека в Китае.</p>
-      </div>
-      <div class="cv-claim reveal" style="--d:70ms">
-        <h3 class="cv-claim__title" data-edit-id="categories-claim-2-title">Минимальной партии нет</h3>
-        <p class="cv-claim__text" data-edit-id="categories-claim-2-text">Одна позиция и полный контейнер проходят один и тот же процесс. Разница только в способе доставки и в сроке.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ==========================================================
-     7. ЧЕМ ЭТО ПОДТВЕРЖДАЕТСЯ
-     ========================================================== -->
-<section class="proof" id="proof" data-header="light" aria-labelledby="proof-heading">
-  <div class="container">
-    <div class="section-head reveal">
-      <p class="eyebrow" data-edit-id="proof-eyebrow">Фактами</p>
-      <h2 class="section-title" id="proof-heading" data-edit-id="proof-title">Чем это подтверждается</h2>
-    </div>
-
-    <div class="proof__list">
-      <div class="proof-item" data-animate="proof-item">
-        <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><use href="#icon-map-pin"></use></svg>
-        <p data-edit-id="proof-item-1"><strong>Своя команда в Китае.</strong> Образцы, инспекция фабрики и контроль перед отгрузкой — не через посредника и не по переписке</p>
-      </div>
-      <div class="proof-item" data-animate="proof-item">
-        <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><use href="#icon-truck"></use></svg>
-        <p data-edit-id="proof-item-2"><strong>Постоянный партнёр по перевозке и таможенному оформлению</strong>, а не разовый подрядчик под каждую сделку: согласованные ставки, направления и сроки забора партий</p>
-      </div>
-      <div class="proof-item" data-animate="proof-item">
-        <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><use href="#icon-certificate"></use></svg>
-        <p data-edit-id="proof-item-3"><strong>Сертификацией занимаются профильные специалисты</strong>, с которыми работаем постоянно</p>
-      </div>
-      <div class="proof-item" data-animate="proof-item">
-        <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><use href="#icon-document"></use></svg>
-        <p data-edit-id="proof-item-4"><strong>Полный пакет документов остаётся у вас:</strong> контракт с фабрикой, инвойс, packing list, транспортные и таможенные документы, документы по сертификации</p>
-      </div>
-      <div class="proof-item" data-animate="proof-item">
-        <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><use href="#icon-eye"></use></svg>
-        <p data-edit-id="proof-item-5"><strong>Расчёт вы видите дважды</strong>, договор подписывается только после финального</p>
-      </div>
-    </div>
-
-    <p class="proof__caption" data-edit-id="proof-item-6">Работаем с 2025 года</p>
-  </div>
-</section>
-
-<!-- ==========================================================
-     8. ВОПРОСЫ — FAQ
-     ========================================================== -->
-<section class="faq" id="faq" data-header="light" aria-labelledby="faq-heading">
-  <div class="container container--narrow">
-    <div class="section-head reveal">
-      <p class="eyebrow" data-edit-id="faq-eyebrow">Вопросы</p>
-      <h2 class="section-title" id="faq-heading" data-edit-id="faq-title">Что обычно спрашивают до заявки</h2>
-    </div>
-
-    <div class="faq__list">
-      <details class="faq-item" data-animate="faq-item">
-        <summary><span data-edit-id="faq-1-q">Кто платит фабрике?</span></summary>
-        <div class="faq-item__content">
-          <p data-edit-id="faq-1-a">Вы, напрямую по контракту между вами и производителем. Мы в платежах не участвуем и не проводим деньги от своего имени. Чаще всего оплата идёт через ВТБ Шанхай или через платёжного агента, которого мы подскажем.</p>
-        </div>
-      </details>
-      <details class="faq-item" data-animate="faq-item">
-        <summary><span data-edit-id="faq-2-q">Нужно ли мне самому общаться с фабрикой?</span></summary>
-        <div class="faq-item__content">
-          <p data-edit-id="faq-2-a">Нет. Вы передаёте требования к товару, а переговоры о цене, сроках, условиях оплаты, маркировке и упаковке ведём мы. В том числе договариваемся о форме оплаты — полная предоплата, частичная или рассрочка, — исходя из того, что удобно вам.</p>
-        </div>
-      </details>
-      <details class="faq-item" data-animate="faq-item">
-        <summary><span data-edit-id="faq-3-q">У меня уже есть фабрика. Вы с ней будете работать?</span></summary>
-        <div class="faq-item__content">
-          <p data-edit-id="faq-3-a">Да, это частый случай. Поиск производителя тогда просто не включается в процесс — начинаем сразу со сбора характеристик и расчёта.</p>
-        </div>
-      </details>
-      <details class="faq-item" data-animate="faq-item">
-        <summary><span data-edit-id="faq-4-q">Какая минимальная партия?</span></summary>
-        <div class="faq-item__content">
-          <p data-edit-id="faq-4-a">Минимума нет. Берём и единичные позиции, и полные контейнеры.</p>
-        </div>
-      </details>
-      <details class="faq-item" data-animate="faq-item">
-        <summary><span data-edit-id="faq-5-q">Всегда ли нужна сертификация?</span></summary>
-        <div class="faq-item__content">
-          <p data-edit-id="faq-5-a">Нет. Выясняем на третьем шаге. Если товару сертификация не требуется — этого этапа нет ни в сроках, ни в стоимости.</p>
-        </div>
-      </details>
-      <details class="faq-item" data-animate="faq-item">
-        <summary><span data-edit-id="faq-6-q">Насколько финальный расчёт отличается от предварительного?</span></summary>
-        <div class="faq-item__content">
-          <p data-edit-id="faq-6-a">Расхождение минимальное: считаем по реальным затратам на товар, логистику и сертификацию. Пошлина и НДС рассчитываются по государственным ставкам и от нас не зависят.</p>
-        </div>
-      </details>
-      <details class="faq-item" data-animate="faq-item">
-        <summary><span data-edit-id="faq-7-q">Проверяете ли вы фабрику?</span></summary>
-        <div class="faq-item__content">
-          <p data-edit-id="faq-7-a">Запрашиваем у производителя необходимые документы. Инспекцию и образцы перед отгрузкой организуем, если вместе решим, что по этому товару они нужны — наша команда в Китае это закрывает.</p>
-        </div>
-      </details>
-      <details class="faq-item" data-animate="faq-item">
-        <summary><span data-edit-id="faq-8-q">Сколько стоят ваши услуги?</span></summary>
-        <div class="faq-item__content">
-          <p data-edit-id="faq-8-a">Зависит от объёма работы по конкретной поставке. Называем в коммерческом предложении вместе с полной калькуляцией.</p>
-        </div>
-      </details>
-      <details class="faq-item" data-animate="faq-item">
-        <summary><span data-edit-id="faq-9-q">Сколько идёт груз?</span></summary>
-        <div class="faq-item__content">
-          <p data-edit-id="faq-9-a">Авиа 4–7 дней, авто 22–25, железная дорога и море 25–30. Подробнее — в блоке со сроками.</p>
-        </div>
-      </details>
-    </div>
-  </div>
-</section>
-
-<!-- ==========================================================
-     9. ЗАЯВКА И КОНТАКТЫ
-     ========================================================== -->
-<section class="final-cta" id="contacts" data-header="dark" aria-labelledby="final-cta-heading">
-  <div class="final-cta__veil" data-animate="final-veil" aria-hidden="true"></div>
-  <div class="section-seam section-seam--final-in" data-animate="transition-final-in" aria-hidden="true"></div>
-
-  <div class="final-cta__inner">
-    <div class="final-cta__intro">
-      <div class="section-head reveal">
-        <p class="eyebrow eyebrow--on-dark" data-edit-id="final-cta-eyebrow">Заявка</p>
-        <h2 class="final-cta__title" id="final-cta-heading" data-edit-id="final-cta-title">Опишите товар — вернёмся с расчётом за два дня</h2>
-        <p class="final-cta__lede" data-edit-id="final-cta-lede">Достаточно сказать, что за товар, примерный объём и город доставки. Если нужных характеристик у вас нет — запросим их у фабрики сами.</p>
-      </div>
-
-      <div class="final-cta__contacts" data-animate="final-contacts">
-        <a class="final-cta__contact" href="tel:+70000000000">
-          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><use href="#icon-phone"></use></svg>
-          <span data-edit-id="final-cta-phone">+7 (000) 000-00-00</span>
-        </a>
-        <a class="final-cta__contact" href="mailto:info@corex.example">
-          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><use href="#icon-mail"></use></svg>
-          <span data-edit-id="final-cta-email">info@corex.example</span>
-        </a>
-        <a class="final-cta__contact" href="#">
-          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><use href="#icon-telegram"></use></svg>
-          <span data-edit-id="final-cta-telegram">@corex</span>
-        </a>
-      </div>
-    </div>
-
-    <div class="final-cta__panel glass-panel" data-animate="final-panel">
-      <form class="final-cta__form" id="contact-form" novalidate>
-        <div class="form-field form-field--on-dark">
-          <label for="contact-name">Имя</label>
-          <input type="text" id="contact-name" name="name" placeholder="Как к вам обращаться" autocomplete="name" required>
-          <span class="form-field__error" id="contact-name-error" aria-live="polite"></span>
-        </div>
-        <div class="form-field form-field--on-dark" id="contact-need-field">
-          <label for="contact-need">Что нужно</label>
-          <select id="contact-need" name="need">
-            <option value="Бесплатный расчёт импорта" selected>Бесплатный расчёт импорта</option>
-            <option value="Подбор и проверка фабрики">Подбор и проверка фабрики</option>
-            <option value="Импорт под ключ">Импорт под ключ</option>
-            <option value="Импорт на мою компанию">Импорт на мою компанию</option>
-            <option value="Доставка и таможня">Доставка и таможня</option>
-            <option value="Сертификация и документы">Сертификация и документы</option>
-            <option value="Пока не знаю">Пока не знаю</option>
-          </select>
-        </div>
-        <div class="form-field form-field--on-dark">
-          <label for="contact-contact">Телефон, почта или Telegram</label>
-          <input type="text" id="contact-contact" name="contact" placeholder="Куда вам ответить" required>
-          <span class="form-field__error" id="contact-contact-error" aria-live="polite"></span>
-        </div>
-        <div class="form-field form-field--on-dark">
-          <label for="contact-product">Что за товар и примерный объём</label>
-          <textarea id="contact-product" name="product" rows="4" placeholder="Например: дозаторы промышленные, 200 шт." required></textarea>
-          <span class="form-field__error" id="contact-product-error" aria-live="polite"></span>
-        </div>
-        <div class="form-field form-field--on-dark">
-          <label for="contact-link">Ссылка на товар или фабрику <span class="form-field__optional">(если есть)</span></label>
-          <input type="text" id="contact-link" name="link" placeholder="Ссылка на 1688, Alibaba или сайт фабрики">
-        </div>
-        <button type="submit" class="btn btn--cta btn--lg final-cta__submit" data-state="idle">
-          <span class="final-cta__submit-bar" aria-hidden="true"></span>
-          <span class="final-cta__submit-label">Отправить заявку</span>
-          <svg class="final-cta__submit-check" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 6"></path></svg>
-        </button>
-        <p class="final-cta__form-note">Предварительный расчёт — без обязательств.</p>
-        <p class="form-status" id="contact-form-status" role="status" aria-live="polite"></p>
-      </form>
-    </div>
-  </div>
-
-  <p class="final-cta__footnote" data-edit-id="final-cta-footnote">COREX — закупка и официальный импорт из Китая</p>
 </section>
 
 </main>
@@ -1331,7 +1153,6 @@ html.is-at-top body .site-header{
 <script src="js/categories.js"></script>
 <script src="js/calculator.js"></script>
 <script src="js/contact-form.js"></script>
-<script src="js/services.js"></script>
 <script src="js/site-header.js"></script>
 
 <script>
@@ -1395,6 +1216,148 @@ html.is-at-top body .site-header{
   }
 
   window.addEventListener('load',forceTopHeader,{once:true});
+})();
+</script>
+
+<script id="corex-brief-fixes-js">
+(function(){
+  'use strict';
+
+  /*
+   * HERO — жёсткая пошаговая докрутка.
+   * Важно: браузер НЕ успевает прокрутить страницу в промежуточное
+   * положение. Один жест = один полный экран/панель.
+   * Это убирает момент, когда две панели HERO видны одновременно.
+   */
+  var hero=document.getElementById('hero');
+  var pin=document.getElementById('hero-pin');
+  var panels=hero ? hero.querySelectorAll('.hero__panel') : [];
+  var locked=false;
+  var unlockTimer=null;
+  var touchStartY=null;
+
+  function isDesktopHero(){
+    return window.innerWidth>900 && hero && pin && panels.length>1;
+  }
+
+  function heroMetrics(){
+    if(!hero) return null;
+    var start=hero.offsetTop;
+    var travel=Math.max(1,hero.offsetHeight-window.innerHeight);
+    var maxIndex=panels.length-1;
+    return {start:start,travel:travel,maxIndex:maxIndex};
+  }
+
+  function currentStep(){
+    var m=heroMetrics();
+    if(!m) return 0;
+    var y=window.scrollY || window.pageYOffset || 0;
+    var progress=(y-m.start)/m.travel;
+    progress=Math.min(1,Math.max(0,progress));
+    return Math.round(progress*m.maxIndex);
+  }
+
+  function stepTop(index){
+    var m=heroMetrics();
+    if(!m) return null;
+    index=Math.max(0,Math.min(m.maxIndex,index));
+    return Math.round(m.start + m.travel*(index/m.maxIndex));
+  }
+
+  function nextOutsideHero(direction){
+    if(direction>0){
+      var next=hero.nextElementSibling;
+      if(next){
+        var y=next.getBoundingClientRect().top + (window.scrollY || window.pageYOffset || 0);
+        window.scrollTo(0,Math.round(y));
+      }
+    }else{
+      window.scrollTo(0,Math.max(0,hero.offsetTop));
+    }
+  }
+
+  function goOneStep(direction){
+    if(!isDesktopHero() || locked) return false;
+
+    var step=currentStep();
+    var targetStep=step + (direction>0 ? 1 : -1);
+    var m=heroMetrics();
+
+    if(targetStep<0){
+      window.scrollTo(0,Math.max(0,hero.offsetTop));
+    }else if(targetStep>m.maxIndex){
+      nextOutsideHero(direction);
+    }else{
+      var target=stepTop(targetStep);
+      if(target!=null) window.scrollTo(0,target);
+    }
+
+    locked=true;
+    clearTimeout(unlockTimer);
+    unlockTimer=setTimeout(function(){locked=false;},520);
+    return true;
+  }
+
+  function onWheel(e){
+    if(!isDesktopHero()) return;
+
+    var rect=hero.getBoundingClientRect();
+    var active=rect.top<=2 && rect.bottom>=window.innerHeight-2;
+    if(!active) return;
+
+    var delta=e.deltaY;
+    if(Math.abs(delta)<2) return;
+
+    /* Полностью забираем жест у браузера, чтобы не было промежуточной
+       позиции между двумя hero-панелями. */
+    e.preventDefault();
+    e.stopPropagation();
+    goOneStep(delta>0 ? 1 : -1);
+  }
+
+  function onTouchStart(e){
+    if(!isDesktopHero()) return;
+    touchStartY=e.touches[0].clientY;
+  }
+
+  function onTouchEnd(e){
+    if(!isDesktopHero() || touchStartY==null) return;
+    var dy=touchStartY-e.changedTouches[0].clientY;
+    touchStartY=null;
+
+    var rect=hero.getBoundingClientRect();
+    var active=rect.top<=2 && rect.bottom>=window.innerHeight-2;
+    if(!active || Math.abs(dy)<24) return;
+
+    goOneStep(dy>0 ? 1 : -1);
+  }
+
+  window.addEventListener('wheel',onWheel,{passive:false,capture:true});
+  window.addEventListener('touchstart',onTouchStart,{passive:true});
+  window.addEventListener('touchend',onTouchEnd,{passive:true});
+
+  /* ESC закрывает калькулятор. */
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape' && location.hash==='#calculator') history.replaceState(null,'',location.pathname+location.search);
+  });
+
+  /* Явно добавляем бесплатную консультацию в форме, если скрипт формы перезапишет список. */
+  function ensureConsultationOption(){
+    var select=document.getElementById('contact-need');
+    if(!select) return;
+    var exists=[].some.call(select.options,function(o){return o.value==='Бесплатная консультация';});
+    if(!exists){
+      var o=document.createElement('option');
+      o.value='Бесплатная консультация';
+      o.textContent='Бесплатная консультация';
+      select.insertBefore(o,select.firstChild);
+    }
+  }
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',ensureConsultationOption,{once:true});
+  }else{
+    ensureConsultationOption();
+  }
 })();
 </script>
 </body>
