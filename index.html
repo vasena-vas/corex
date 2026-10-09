@@ -330,6 +330,77 @@ html.is-at-top body .site-header{
   .hero__stage{will-change:auto}
 }
 </style>
+
+<style id="corex-services-correction">
+.services{position:relative;isolation:isolate;padding:clamp(76px,9vw,132px) 0;background:var(--color-bg-light,#f3f7f6);color:var(--color-text-light,#102b40);overflow:hidden}
+.services:before{content:"";position:absolute;z-index:-1;inset:0 0 auto;height:220px;background:linear-gradient(180deg,rgba(53,171,171,.08),transparent);pointer-events:none}
+.services__head{max-width:780px;margin:0 0 clamp(28px,4vw,48px);text-align:left!important;align-items:flex-start!important}
+.services__head .section-title,.services__head .section-lede,.services__head .eyebrow{text-align:left!important;margin-left:0!important;margin-right:auto!important}
+.services__featured{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(240px,.75fr);gap:clamp(24px,4vw,58px);padding:clamp(24px,3.5vw,46px);background:rgba(255,255,255,.88);border:1px solid rgba(16,43,64,.12);border-radius:8px;box-shadow:0 18px 48px rgba(16,43,64,.055);margin-bottom:18px}
+.services__tag{display:inline-flex;padding:6px 9px;border-radius:3px;background:rgba(53,171,171,.12);color:#168b8b;font:600 10px/1.2 var(--font-mono,monospace);letter-spacing:.1em;text-transform:uppercase}
+.services__featured h3{font-size:clamp(23px,2.5vw,32px);line-height:1.12;margin:14px 0 10px;letter-spacing:-.035em}
+.services__featured-copy>p,.services__featured-action>p{font-size:13px;line-height:1.65;color:var(--color-muted-light,#667985);max-width:600px}
+.services__featured ul,.services-card ul{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:9px}
+.services__featured li,.services-card li{position:relative;padding-left:17px;font-size:12px;line-height:1.5;color:var(--color-text-light,#183448)}
+.services__featured li:before,.services-card li:before{content:"—";position:absolute;left:0;color:#35abab}
+.services__featured-action{border-left:1px solid rgba(16,43,64,.12);padding-left:clamp(22px,3vw,42px);display:flex;flex-direction:column;align-items:flex-start;justify-content:center}
+.services__meta-label,.services-card__label{font:500 9px/1.3 var(--font-mono,monospace);letter-spacing:.11em;text-transform:uppercase;color:#81919b}
+.services__featured-action strong{font-size:23px;margin:7px 0 19px;letter-spacing:-.03em}
+.services__featured-action .btn{margin-top:12px;gap:12px}
+.services__featured-action small{font-size:10px;line-height:1.5;color:#82919a;margin-top:10px}
+.services__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.services-card{min-width:0;display:flex;flex-direction:column;padding:clamp(20px,2.3vw,30px);background:rgba(255,255,255,.76);border:1px solid rgba(16,43,64,.14);border-radius:6px;transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease}
+.services-card:hover{transform:translateY(-3px);border-color:rgba(53,171,171,.5);box-shadow:0 14px 32px rgba(16,43,64,.07)}
+.services-card__num{font:500 10px/1.2 var(--font-mono,monospace);color:#168b8b;letter-spacing:.12em}
+.services-card h3{font-size:clamp(17px,1.5vw,21px);line-height:1.18;letter-spacing:-.025em;margin:17px 0 10px}
+.services-card>p{font-size:12px;line-height:1.6;color:var(--color-muted-light,#667985);margin:0 0 18px}
+.services-card__label{padding-top:15px;border-top:1px solid rgba(16,43,64,.1)}
+.services-card ul{margin:12px 0 22px;gap:8px}
+.services-card li{font-size:11px}
+.services-card__foot{font-size:10px;line-height:1.55;color:#778994;border-top:1px solid rgba(16,43,64,.1);padding-top:13px;margin-top:auto}
+.services-card__link{display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:13px;border-top:1px solid rgba(16,43,64,.1);font-size:11px;font-weight:600;color:inherit;text-decoration:none}
+.services-card__link span{color:#168b8b;font-size:16px;transition:transform .2s ease}.services-card__link:hover span{transform:translate(2px,-2px)}
+.services-card--help{justify-content:center;background:#0a2240;color:#fff;border-color:#0a2240}.services-card--help .services-card__num{color:#72d2d0}.services-card--help h3{font-size:clamp(21px,2vw,28px)}.services-card--help>p{color:rgba(255,255,255,.66)}.services-card--help .btn{align-self:flex-start;margin-top:14px}
+/* После шестого шага — мягкая световая связка с блоком услуг. */
+.hero{position:relative}.hero:after{content:"";position:absolute;z-index:4;left:0;right:0;bottom:-1px;height:clamp(55px,10vh,120px);pointer-events:none;background:linear-gradient(180deg,rgba(7,22,36,0),var(--color-bg-light,#f3f7f6));}
+@media(max-width:900px){.services__featured{grid-template-columns:1fr}.services__featured-action{border-left:0;border-top:1px solid rgba(16,43,64,.12);padding:22px 0 0}.services__grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.services{padding:66px 0}.services__featured{padding:22px;gap:24px}.services__grid{grid-template-columns:1fr;gap:11px}.services-card{padding:23px}.services-card h3{font-size:20px}.hero:after{height:56px}}
+@media(prefers-reduced-motion:reduce){.services-card,.services-card__link span{transition:none}}
+</style>
+
+
+<style id="corex-restored-stats-and-polish">
+/* Восстановленный блок фактов: визуально связан с хиро, но отделён мягким переходом */
+.hero-stats{position:relative;isolation:isolate;overflow:hidden;padding:clamp(58px,7.5vw,104px) 0 clamp(64px,8vw,112px);background:linear-gradient(180deg,#f7faf9 0%,#fff 24%,#fff 100%);color:#101b2a;border-top:1px solid rgba(16,43,64,.1)}
+.hero-stats:before{content:"";position:absolute;z-index:-1;inset:0 0 auto;height:150px;background:radial-gradient(ellipse at 50% 0%,rgba(53,171,171,.12),transparent 72%);pointer-events:none}
+.hero-stats__inner{position:relative}
+.hero-stats__intro{display:flex;align-items:end;justify-content:space-between;gap:28px;margin:0 0 clamp(24px,3.5vw,44px);padding-bottom:20px;border-bottom:1px solid rgba(16,43,64,.13)}
+.hero-stats__intro .eyebrow{margin:0;color:#168b8b;font:600 10px/1.3 var(--font-mono,monospace);letter-spacing:.14em;text-transform:uppercase}
+.hero-stats__intro>p:last-child{max-width:440px;margin:0;color:#718095;font-size:13px;line-height:1.6}
+.hero-stats__row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0!important}
+.hero-stats__item{position:relative;min-width:0;padding:8px clamp(16px,2.3vw,34px) 10px;border-left:1px solid rgba(16,43,64,.14);transition:background .25s ease,transform .25s ease}
+.hero-stats__item:first-child{border-left:0;padding-left:0}
+.hero-stats__item:last-child{padding-right:0}
+.hero-stats__item:before{content:"";position:absolute;left:clamp(16px,2.3vw,34px);right:clamp(16px,2.3vw,34px);top:-9px;height:2px;background:#35abab;transform:scaleX(0);transform-origin:left;transition:transform .3s ease}
+.hero-stats__item:first-child:before{left:0}
+.hero-stats__item:hover:before{transform:scaleX(1)}
+.hero-stats__index{display:block;margin-bottom:20px;color:#8a98a8;font:500 9px/1.2 var(--font-mono,monospace);letter-spacing:.12em}
+.hero-stats__value{display:block;max-width:100%;margin:0 0 15px;color:#101b2a;font-size:clamp(22px,2.35vw,36px);font-weight:800;line-height:1.12;letter-spacing:-.045em;overflow-wrap:anywhere}
+.hero-stats__item p{max-width:230px;margin:0;color:#718095;font-size:clamp(12px,.98vw,14px);line-height:1.65}
+/* Мягкий выход после шестого этапа: затухание сетки/подложки без резкой границы */
+.hero{position:relative;isolation:isolate}
+.hero:after{content:"";position:absolute;z-index:8;pointer-events:none;left:0;right:0;bottom:-1px;height:clamp(95px,14vw,190px);background:linear-gradient(180deg,rgba(8,20,32,0) 0%,rgba(8,20,32,.12) 24%,rgba(247,250,249,.72) 72%,#f7faf9 100%);opacity:.95}
+/* Аккуратные кнопки внутри блока услуг */
+.services__featured-action .btn--cta{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:46px;padding:0 20px;border-radius:6px;box-shadow:0 7px 18px rgba(16,43,64,.12);font-size:12px;font-weight:700;letter-spacing:.01em;transition:transform .2s ease,box-shadow .2s ease,filter .2s ease}
+.services__featured-action .btn--cta:hover{transform:translateY(-2px);box-shadow:0 11px 24px rgba(16,43,64,.17);filter:saturate(1.05)}
+.services-card__link{display:inline-flex!important;align-items:center;justify-content:center!important;gap:12px;min-height:40px;margin-top:20px!important;padding:0 14px!important;border:1px solid rgba(22,139,139,.32)!important;border-radius:5px;background:rgba(53,171,171,.045);color:#126f76!important;font-size:11px!important;font-weight:700!important;text-decoration:none!important;transition:background .2s ease,border-color .2s ease,transform .2s ease!important}
+.services-card__link span{color:inherit!important;font-size:14px!important}
+.services-card__link:hover{background:rgba(53,171,171,.11);border-color:rgba(22,139,139,.65)!important;transform:translateY(-1px)}
+@media(max-width:1050px){.hero-stats__row{grid-template-columns:repeat(3,minmax(0,1fr))!important;row-gap:28px!important}.hero-stats__item:nth-child(4){border-left:0;padding-left:0}.hero-stats__item:nth-child(4):before{left:0}}
+@media(max-width:650px){.hero-stats{padding:48px 0 58px}.hero-stats__intro{display:block;margin-bottom:26px}.hero-stats__intro>p:last-child{margin-top:10px}.hero-stats__row{grid-template-columns:repeat(2,minmax(0,1fr))!important;row-gap:26px!important}.hero-stats__item{padding:7px 12px 8px!important;border-left:1px solid rgba(16,43,64,.14)}.hero-stats__item:nth-child(odd){border-left:0;padding-left:0!important}.hero-stats__item:nth-child(odd):before{left:0}.hero-stats__item:nth-child(even){padding-right:0!important}.hero-stats__index{margin-bottom:12px}.hero-stats__value{font-size:clamp(22px,6vw,30px);margin-bottom:9px}.hero-stats__item p{font-size:12px}.hero:after{height:82px}.services__featured-action .btn--cta{width:100%}.services-card__link{width:100%}}
+@media(prefers-reduced-motion:reduce){.hero-stats__item,.hero-stats__item:before,.services-card__link,.services__featured-action .btn--cta{transition:none!important}}
+</style>
+
 </head>
 <body>
 <a class="skip-link" href="#main-content">Перейти к основному содержимому</a>
@@ -370,12 +441,13 @@ html.is-at-top body .site-header{
       COREX
     </a>
     <nav class="site-header__nav" aria-label="Разделы страницы">
+      <a href="#services">Услуги</a>
       <a href="#coverage">Как работаем</a>
       <a href="#categories">Что возим</a>
       <a href="#cases">Кейсы</a>
       <a href="#timelines">Сроки</a>
       <a href="#faq">Вопросы</a>
-      <a href="#calculator" class="site-header__calculator-link">Расчёт</a>
+      <a href="#calculator" class="site-header__calculator-link">Калькулятор</a>
     </nav>
     <div class="site-header__actions">
       <a class="site-header__telegram" href="#" aria-label="Telegram COREX">
@@ -531,8 +603,8 @@ html.is-at-top body .site-header{
 
     <!-- Круглая кнопка-круглешок: акцентный коралловый круг со стрелкой
          вниз, плавный bounce, ведёт к следующему блоку страницы
-         (#hero-stats). -->
-    <a class="hero__scroll-cue" id="hero-scroll-cue" href="#hero-stats" aria-label="К следующему блоку">
+         (#services). -->
+    <a class="hero__scroll-cue" id="hero-scroll-cue" href="#services" aria-label="К услугам">
       <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
         <path d="M12 5v14M5 13l7 7 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
@@ -540,31 +612,102 @@ html.is-at-top body .site-header{
   </div>
 </section>
 
-<!-- Плашки под хиро -->
-<section class="hero-stats" id="hero-stats" data-header="light" aria-label="Ключевые цифры">
-  <div class="container">
-    <span class="hero-stats__rule" data-animate="hero-stats-rule" aria-hidden="true"></span>
+
+<!-- 2. ФАКТЫ COREX: восстановленный блок преимуществ -->
+<section class="hero-stats" id="facts" data-header="light" aria-label="Ключевые факты COREX">
+  <div class="hero-stats__inner container">
+    <div class="hero-stats__intro">
+      <p class="eyebrow">COREX / В ЦИФРАХ</p>
+      <p>Понятный процесс импорта — от первого запроса до поставки на ваш склад.</p>
+    </div>
     <div class="hero-stats__row">
-      <div class="hero-stats__item" data-animate="hero-stat">
-        <p class="hero-stats__value" data-edit-id="hero-stat-1-value">2 дня</p>
-        <p class="hero-stats__label" data-edit-id="hero-stat-1-label">предварительный расчёт после заявки</p>
+      <article class="hero-stats__item"><span class="hero-stats__index">01 / СТАРТ</span><strong class="hero-stats__value">2 дня</strong><p>предварительный расчёт после заявки</p></article>
+      <article class="hero-stats__item"><span class="hero-stats__index">02 / ПОИСК</span><strong class="hero-stats__value">2–3 дня</strong><p>поиск фабрики под вашу спецификацию</p></article>
+      <article class="hero-stats__item"><span class="hero-stats__index">03 / ОБЪЁМ</span><strong class="hero-stats__value">Без минимума</strong><p>берём и единичные позиции, и контейнеры</p></article>
+      <article class="hero-stats__item"><span class="hero-stats__index">04 / КИТАЙ</span><strong class="hero-stats__value">Команда и склад в Китае</strong><p>образцы, инспекция, контроль перед отгрузкой</p></article>
+      <article class="hero-stats__item"><span class="hero-stats__index">05 / ОПЫТ</span><strong class="hero-stats__value">С 2019 года</strong><p>занимаемся закупкой и импортом из Китая</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- 3. УСЛУГИ: блок после фактов -->
+<section class="services" id="services" data-header="light" aria-labelledby="services-heading">
+  <div class="container">
+    <div class="section-head reveal services__head">
+      <p class="eyebrow">Услуги COREX</p>
+      <h2 class="section-title" id="services-heading">Весь путь или только нужный участок</h2>
+      <p class="section-lede">Можно отдать нам импорт целиком, а можно подключить только те этапы, которые не получается закрыть своими силами. Работа начинается с бесплатного расчёта.</p>
+    </div>
+
+    <div class="services__featured reveal">
+      <div class="services__featured-copy">
+        <span class="services__tag">Бесплатно</span>
+        <h3>Расчёт импорта</h3>
+        <p>Возьмём цену товара от поставщика и поможем понять, сколько стоит официальная поставка до вашего склада.</p>
+        <ul>
+          <li>Код ТН ВЭД и ставки таможенных платежей</li>
+          <li>Способ доставки под ваш срок</li>
+          <li>Какие документы нужны на товар</li>
+          <li>Себестоимость «до двери» — доставка и оформление</li>
+          <li>Связь с командой в Китае при необходимости</li>
+        </ul>
       </div>
-      <div class="hero-stats__item" data-animate="hero-stat">
-        <p class="hero-stats__value" data-edit-id="hero-stat-2-value">2–3 дня</p>
-        <p class="hero-stats__label" data-edit-id="hero-stat-2-label">поиск фабрики под вашу спецификацию</p>
+      <div class="services__featured-action">
+        <span class="services__meta-label">Срок</span>
+        <strong>1–2 дня</strong>
+        <span class="services__meta-label">Что нужно</span>
+        <p>Название товара, фото или ссылка, количество и цена закупки</p>
+        <a class="btn btn--cta" href="#calculator">Открыть калькулятор <span aria-hidden="true">↗</span></a>
+        <small>Без обязательств и оплаты за предварительный расчёт</small>
       </div>
-      <div class="hero-stats__item" data-animate="hero-stat">
-        <p class="hero-stats__value" data-edit-id="hero-stat-3-value">Без минимума</p>
-        <p class="hero-stats__label" data-edit-id="hero-stat-3-label">берём и единичные позиции, и контейнеры</p>
-      </div>
-      <div class="hero-stats__item" data-animate="hero-stat">
-        <p class="hero-stats__value" data-edit-id="hero-stat-4-value">Команда и склад в Китае</p>
-        <p class="hero-stats__label" data-edit-id="hero-stat-4-label">образцы, инспекция, контроль перед отгрузкой</p>
-      </div>
-      <div class="hero-stats__item" data-animate="hero-stat">
-        <p class="hero-stats__value" data-edit-id="hero-stat-5-value">С 2019 года</p>
-        <p class="hero-stats__label" data-edit-id="hero-stat-5-label">занимаемся закупкой и импортом из Китая</p>
-      </div>
+    </div>
+
+    <div class="services__grid">
+      <article class="services-card reveal" style="--d:0ms">
+        <span class="services-card__num">01</span><h3>Подбор и проверка фабрики</h3>
+        <p>Есть товар или техзадание, но нет проверенного поставщика.</p>
+        <span class="services-card__label">Что делаем</span>
+        <ul><li>Находим фабрики под вашу спецификацию</li><li>Выбираем производителя, сравниваем цены и минимальные заказы</li><li>Проверяем благонадёжность поставщика</li><li>Организуем образцы и проверку качества</li></ul>
+        <span class="services-card__foot">Подбор обычно занимает 2–3 дня после получения спецификации</span>
+        <a class="services-card__link" href="#contacts">Обсудить задачу <span aria-hidden="true">↗</span></a>
+      </article>
+      <article class="services-card reveal" style="--d:60ms">
+        <span class="services-card__num">02</span><h3>Импорт под ключ</h3>
+        <p>Первый импорт, своего отдела ВЭД нет, нужно закрыть все этапы.</p>
+        <span class="services-card__label">Что делаем</span>
+        <ul><li>Находим фабрику и организуем образцы</li><li>Контракт, инвойс и комплект поставки</li><li>Проводим сертификацию, доставку и таможню</li><li>Доводим до вашего склада или склада маркетплейса</li></ul>
+        <span class="services-card__foot">Один ответственный за весь процесс</span>
+        <a class="services-card__link" href="#contacts">Обсудить задачу <span aria-hidden="true">↗</span></a>
+      </article>
+      <article class="services-card reveal" style="--d:120ms">
+        <span class="services-card__num">03</span><h3>Импорт на вашу компанию</h3>
+        <p>Регулярно закупаете оборудование, комплектующие или сырьё и хотите работать напрямую.</p>
+        <span class="services-card__label">Что делаем</span>
+        <ul><li>Работаем как ваш внешний отдел ВЭД</li><li>Договороспособные условия и прозрачные расходы и гарантии</li><li>Контролируем производство и отгрузку</li><li>Ведём логистику, таможню и документы</li></ul>
+        <span class="services-card__foot">Для регулярных поставок и долгосрочной работы</span>
+        <a class="services-card__link" href="#contacts">Обсудить задачу <span aria-hidden="true">↗</span></a>
+      </article>
+      <article class="services-card reveal" style="--d:180ms">
+        <span class="services-card__num">04</span><h3>Доставка и таможня по готовому контракту</h3>
+        <p>Поставщик уже найден, но нужна помощь с перевозкой и оформлением.</p>
+        <span class="services-card__label">Что делаем</span>
+        <ul><li>Проверяем документы и условия поставки</li><li>Подбираем маршрут и транспорт</li><li>Организуем таможенное оформление</li><li>Доставляем груз до согласованного склада</li></ul>
+        <span class="services-card__foot">Подключаемся к нужному этапу</span>
+        <a class="services-card__link" href="#contacts">Обсудить задачу <span aria-hidden="true">↗</span></a>
+      </article>
+      <article class="services-card reveal" style="--d:240ms">
+        <span class="services-card__num">05</span><h3>Сертификация и документы</h3>
+        <p>Не знаете, какие документы нужны на товар, или требуется подготовить оформление.</p>
+        <span class="services-card__label">Что делаем</span>
+        <ul><li>Определяем требования к товару</li><li>Проверяем необходимость сертификатов и деклараций</li><li>Помогаем подготовить комплект документов</li><li>Согласуем сроки и стоимость до начала работ</li></ul>
+        <span class="services-card__foot">Состав документов зависит от категории товара</span>
+        <a class="services-card__link" href="#contacts">Обсудить задачу <span aria-hidden="true">↗</span></a>
+      </article>
+      <article class="services-card services-card--help reveal" style="--d:300ms">
+        <span class="services-card__num">06</span><h3>Не знаете, что из этого подходит?</h3>
+        <p>Опишите задачу — подберём формат работы и подскажем, с чего начать.</p>
+        <a class="btn btn--cta" href="#contacts">Получить консультацию <span aria-hidden="true">→</span></a>
+      </article>
     </div>
   </div>
 </section>
@@ -1024,7 +1167,7 @@ html.is-at-top body .site-header{
     <a class="calculator__close" href="#" aria-label="Закрыть калькулятор">×</a>
   <div class="container">
     <div class="section-head reveal">
-      <p class="eyebrow" data-edit-id="calculator-eyebrow">Расчёт</p>
+      <p class="eyebrow" data-edit-id="calculator-eyebrow">КАЛЬКУЛЯТОР</p>
       <h2 class="section-title" id="calculator-heading" data-edit-id="calculator-title">Во сколько обойдётся партия на складе</h2>
       <p class="section-lede" data-edit-id="calculator-lede">Самая частая ошибка в самостоятельном расчёте — посчитать по цене завода и ставке перевозки. Здесь видно всё, что добавляется сверху: логистика, пошлина, НДС и оформление. Точный расчёт по вашему товару — через два дня после заявки.</p>
     </div>
